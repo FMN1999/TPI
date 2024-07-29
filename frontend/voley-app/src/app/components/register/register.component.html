@@ -1,0 +1,63 @@
+<form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+  <div>
+    <label for="usuario">Usuario</label>
+    <input type="text" id="usuario" required [(ngModel)]="registroData.usuario" name="usuario">
+  </div>
+
+  <div>
+    <label for="contrasenia">Contraseña</label>
+    <input type="password" id="contrasenia" required [(ngModel)]="registroData.contrasenia" name="contrasenia">
+  </div>
+
+  <div>
+    <label for="nombre">Nombre</label>
+    <input type="text" id="nombre" required [(ngModel)]="registroData.nombre" name="nombre">
+  </div>
+
+  <div>
+    <label for="apellido">Apellido</label>
+    <input type="text" id="apellido" required [(ngModel)]="registroData.apellido" name="apellido">
+  </div>
+
+  <div>
+    <label for="email">Email</label>
+    <input type="email" id="email" required [(ngModel)]="registroData.email" name="email">
+  </div>
+
+  <div>
+    <label for="sexo">Sexo</label>
+    <select id="sexo" required [(ngModel)]="registroData.sexo" name="sexo">
+      <option value="Masculino">Masculino</option>
+      <option value="Femenino">Femenino</option>
+      <option value="Otro">Otro</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="tipo_usuario">Tipo de Usuario</label>
+    <select id="tipo_usuario" required [(ngModel)]="registroData.tipo_usuario" name="tipo_usuario" (change)="onTipoUsuarioChange($event)">
+      <option value="Asistente">Asistente</option>
+      <option value="DT">DT</option>
+      <option value="Jugador">Jugador</option>
+    </select>
+  </div>
+
+  <div *ngIf="registroData.tipo_usuario === 'DT'">
+    <label for="telefono">Teléfono</label>
+    <input type="text" id="telefono" [(ngModel)]="registroData.telefono" name="telefono">
+  </div>
+
+  <div *ngIf="registroData.tipo_usuario === 'Jugador'">
+    <label for="altura">Altura</label>
+    <input type="number" id="altura" [(ngModel)]="registroData.altura" name="altura">
+
+    <label for="peso">Peso</label>
+    <input type="number" id="peso" [(ngModel)]="registroData.peso" name="peso">
+  </div>
+
+  <button type="submit">Registrarse</button>
+</form>
+
+
+
+

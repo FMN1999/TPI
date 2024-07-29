@@ -1,0 +1,21 @@
+/* header.component.css */
+
+.navbar {
+  background-color: #563d7c; /* Cambiar el color de fondo según sea necesario */
+}
+
+.nav-link {
+  color: #ffffff; /* Color del texto de los enlaces de navegación */
+}
+
+.nav-link:hover {
+  color: #dddddd; /* Color del texto de los enlaces de navegación al pasar el mouse */
+}
+
+.dropdown-menu {
+  position: absolute; /* Asegura que el menú desplegable esté correctamente posicionado */
+}
+
+.dropdown-menu.show {
+  display: block; /* Asegura que el menú desplegable se muestre cuando está activo */
+}

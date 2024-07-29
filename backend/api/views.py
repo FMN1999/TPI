@@ -1,41 +1,67 @@
-from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import authenticate
-from .serializers import UserSerializer
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .models import Usuario
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views import View
+import json
+from .controller import UsuarioController
 
 
-class RegisterView(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class RegisterView(View):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            data = json.loads(request.body)
+            usuario = UsuarioController.registrar_usuario(data)
+            return JsonResponse({'message': 'Usuario registrado con éxito', 'id': usuario.id}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
 
-class LoginView(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class LoginView(View):
     def post(self, request):
-        username = request.data.get('usuario')
-        password = request.data.get('contrasenia')
-        user = authenticate(usuario=username, contrasenia=password)
-        if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-        return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            data = json.loads(request.body)
+            usuario = data.get('usuario')
+            contrasenia = data.get('contrasenia')
+            usuario_obj = UsuarioController.autenticar_usuario(usuario, contrasenia)
+            if usuario_obj:
+                response_data = {
+                    'token': 'fake-token',  # Aquí normalmente se devolvería un token real.
+                    'user_id': usuario_obj.id
+                }
+                return JsonResponse(response_data)
+            else:
+                return JsonResponse({'error': 'Invalid credentials'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
 
-class UserListCreate(generics.ListCreateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UserSerializer
+class UsuarioPerfilView(View):
+    def get(self, request, usuario_id):
+        usuario = UsuarioController.obtener_usuario_por_id(usuario_id)
+        if usuario:
+            return JsonResponse({
+                'id': usuario.id,
+                'usuario': usuario.usuario,
+                'nombre': usuario.nombre,
+                'apellido': usuario.apellido,
+                'email': usuario.email,
+                'sexo': usuario.sexo,
+                'fecha_nacimiento': usuario.fecha_nacimiento,
+                'ciudad_nacimiento': usuario.ciudad_nacimiento,
+                'provincia_nacimiento': usuario.provincia_nacimiento
+            })
+        return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
 
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+class UsuariosView(View):
+    def get(self, request):
+        usuarios = UsuarioController.obtener_todos_usuarios()
+        usuarios_list = [{
+            'id': usuario.id,
+            'usuario': usuario.usuario,
+            'nombre': usuario.nombre,
+            'apellido': usuario.apellido
+        } for usuario in usuarios]
+        return JsonResponse(usuarios_list, safe=False)

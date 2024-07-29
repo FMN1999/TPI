@@ -1,0 +1,10 @@
+<div>
+  <h1>Lista de Usuarios</h1>
+  <input type="text" [(ngModel)]="query" (input)="buscarUsuarios()" placeholder="Buscar por nombre o apellido">
+  <ul>
+    <li *ngFor="let usuario of usuarios">
+      <a [routerLink]="['/perfil', usuario.id]">{{ usuario.nombre }} {{ usuario.apellido }}</a>
+    </li>
+  </ul>
+</div>
+

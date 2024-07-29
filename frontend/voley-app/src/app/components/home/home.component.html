@@ -1,0 +1,17 @@
+<app-header></app-header>
+<body>
+  <app-carousel></app-carousel>
+    <ng-template #loggedInTemplate>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Usuario
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Perfil</a>
+          <a class="dropdown-item" (click)="logout()">Cerrar Sesión</a>
+        </div>
+      </li>
+    </ng-template>
+</body>
+
+
