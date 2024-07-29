@@ -1,0 +1,17 @@
+{% extends "Master.html" %}
+
+{% block title %}
+  Voley App - Listas de Usuarios
+{% endblock %}
+
+
+{% block content %}
+  <p><a href="/">HOME</a></p>
+  <h1>Usuarios</h1>
+  
+  <ul>
+    {% for x in misusuarios %}
+      <li><a href="usuario/{{ x.id }}">{{ x.nombre }} {{ x.apellido }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
