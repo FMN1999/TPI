@@ -1,0 +1,11 @@
+<div class="container" *ngIf="equipo">
+  <h2>{{ equipo.nombre }}</h2>
+  <p><strong>Dirección:</strong> {{ equipo.direccion }}</p>
+  <p><strong>Ciudad:</strong> {{ equipo.ciudad }}</p>
+  <p><strong>Provincia:</strong> {{ equipo.provincia }}</p>
+  <p><strong>Victorias como Local:</strong> {{ equipo.cant_victorias_local }}</p>
+  <p><strong>Victorias como Visitante:</strong> {{ equipo.cant_victorias_visit }}</p>
+  <p><strong>Campeonatos Ganados:</strong> {{ equipo.campeonatos }}</p>
+  <p><strong>Campeones Actuales:</strong> {{ equipo.campeones_actuales ? 'Sí' : 'No' }}</p>
+</div>
+

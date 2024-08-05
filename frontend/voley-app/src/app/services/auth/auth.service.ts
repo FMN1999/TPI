@@ -52,5 +52,6 @@ export class AuthService {
   getProfileData(usuarioId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/usuario/${usuarioId}/`);
   }
+
 }
 

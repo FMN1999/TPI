@@ -1,0 +1,94 @@
+<div class="container">
+  <h2>Alta de Equipo</h2>
+  <form (ngSubmit)="onSubmit()" #equipoForm="ngForm">
+    <div class="form-group">
+      <label for="nombre">Nombre del Equipo</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="team.nombre" required />
+    </div>
+    <div class="form-group">
+      <label for="logo">Logo URL</label>
+      <input type="text" class="form-control" id="logo" name="logo" [(ngModel)]="team.logo" />
+    </div>
+    <div class="form-group">
+      <label for="direccion">Dirección</label>
+      <input type="text" class="form-control" id="direccion" name="direccion" [(ngModel)]="team.direccion" required />
+    </div>
+    <div class="form-group">
+      <label for="ciudad">Ciudad</label>
+      <input type="text" class="form-control" id="ciudad" name="ciudad" [(ngModel)]="team.ciudad" required />
+    </div>
+    <div class="form-group">
+      <label for="provincia">Provincia</label>
+      <input type="text" class="form-control" id="provincia" name="provincia" [(ngModel)]="team.provincia" required />
+    </div>
+    <div class="form-group">
+      <label for="cant_victorias_local">Victorias como Local</label>
+      <input type="number" class="form-control" id="cant_victorias_local" name="cant_victorias_local" [(ngModel)]="team.cant_victorias_local" required />
+    </div>
+    <div class="form-group">
+      <label for="cant_victorias_visit">Victorias como Visitante</label>
+      <input type="number" class="form-control" id="cant_victorias_visit" name="cant_victorias_visit" [(ngModel)]="team.cant_victorias_visit" required />
+    </div>
+    <div class="form-group">
+      <label for="campeonatos">Campeonatos Ganados</label>
+      <input type="number" class="form-control" id="campeonatos" name="campeonatos" [(ngModel)]="team.campeonatos" required />
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="campeones_actuales" name="campeones_actuales" [(ngModel)]="team.campeones_actuales" />
+      <label class="form-check-label" for="campeones_actuales">Campeones Actuales</label>
+    </div>
+
+    <div class="form-group">
+      <label for="dt">Seleccionar DT:</label>
+      <select id="dt" name="dt" class="form-control" (change)="onDtChange($event)">
+        <option *ngFor="let dt of dts" [value]="dt.id">{{ dt.nombre }}</option>
+      </select>
+      <div *ngIf="selectedDt">
+        <label for="dt_fecha_desde">Fecha Desde:</label>
+        <input type="date" id="dt_fecha_desde" name="dt_fecha_desde" [(ngModel)]="selectedDt.fecha_desde" required>
+
+        <label for="dt_fecha_hasta">Fecha Hasta:</label>
+        <input type="date" id="dt_fecha_hasta" name="dt_fecha_hasta" [(ngModel)]="selectedDt.fecha_hasta">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="asistentes">Seleccionar Asistentes:</label>
+      <select id="asistentes" name="asistentes" class="form-control" multiple (change)="onAsistentesChange($event)">
+        <option *ngFor="let asistente of asistentes" [value]="asistente.id">{{ asistente.nombre }}</option>
+      </select>
+      <div *ngFor="let asistente of selectedAsistentes">
+        <label for="asistente_fecha_desde">Fecha Desde:</label>
+        <input type="date" [(ngModel)]="asistente.fecha_desde" name="asistente_fecha_desde_{{asistente.id}}" required>
+
+        <label for="asistente_fecha_hasta">Fecha Hasta:</label>
+        <input type="date" [(ngModel)]="asistente.fecha_hasta" name="asistente_fecha_hasta_{{asistente.id}}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="jugadores">Seleccionar Jugadores:</label>
+      <select id="jugadores" name="jugadores" class="form-control" multiple (change)="onJugadoresChange($event)">
+        <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
+      </select>
+      <div *ngFor="let jugador of selectedJugadores">
+        <label for="jugador_nro">Nro Jugador:</label>
+        <input type="number" [(ngModel)]="jugador.nro_jugador" name="jugador_nro_{{jugador.id}}" required>
+
+        <label for="jugador_pos_pcpal">Posición Principal:</label>
+        <input type="text" [(ngModel)]="jugador.posicion_pcpal" name="jugador_pos_pcpal_{{jugador.id}}" required>
+
+        <label for="jugador_pos_sec">Posición Secundaria:</label>
+        <input type="text" [(ngModel)]="jugador.posicion_secundaria" name="jugador_pos_sec_{{jugador.id}}">
+
+        <label for="jugador_fecha_ingreso">Fecha Ingreso:</label>
+        <input type="date" [(ngModel)]="jugador.fecha_ingreso" name="jugador_fecha_ingreso_{{jugador.id}}" required>
+
+        <label for="jugador_fecha_salida">Fecha Salida:</label>
+        <input type="date" [(ngModel)]="jugador.fecha_salida" name="jugador_fecha_salida_{{jugador.id}}">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Equipo</button>
+  </form>
+</div>

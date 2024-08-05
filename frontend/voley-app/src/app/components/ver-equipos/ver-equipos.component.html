@@ -1,0 +1,20 @@
+<div class="container">
+  <h2>Lista de Equipos</h2>
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Buscar equipos"
+    [(ngModel)]="searchQuery"
+    (input)="onSearchChange(searchQuery)"
+  />
+  <ul class="list-group mt-3">
+    <li
+      class="list-group-item"
+      *ngFor="let equipo of filteredEquipos"
+      [routerLink]="['/equipo', equipo.id]"
+    >
+      {{ equipo.nombre }}
+    </li>
+  </ul>
+</div>
+
