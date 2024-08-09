@@ -154,3 +154,41 @@ class LigaController:
     @staticmethod
     def obtener_liga_por_id(liga_id):
         return LigaData.obtener_liga_por_id(liga_id)
+
+class TemporadaController:
+
+    @staticmethod
+    def obtener_temporadas_por_liga(id_liga):
+        return TemporadaData.obtener_temporadas_por_liga(id_liga)
+
+    @staticmethod
+    def crear_temporada(anio_desde, anio_hasta, estado, id_liga):
+        liga = LigaData.obtener_liga_por_id(id_liga)
+        return TemporadaData.crear_temporada(anio_desde, anio_hasta, estado, liga)
+
+    @staticmethod
+    def obtener_temporada(id):
+        return TemporadaData.obtener_temporada_por_id(id)
+
+
+class PosicionesController:
+    @staticmethod
+    def agregar_equipo(id_equipo, id_temporada):
+        equipo = EquipoData.get_equipo_by_id(id_equipo)
+        temporada = TemporadaData.obtener_temporada_por_id(id_temporada)
+        return PosicionesData.agregar_equipo_a_temporada(equipo, temporada)
+
+    @staticmethod
+    def obtener_posiciones(id_temporada):
+        return PosicionesData.obtener_posiciones_por_temporada(id_temporada)
+
+
+class PartidoController:
+    @staticmethod
+    def agregar_partido(partido_data):
+
+        return PartidoData.agregar_partido(partido_data)
+
+    @staticmethod
+    def obtener_partidos_por_temporada(temporada_id):
+        return PartidoData.obtener_partidos_por_temporada(temporada_id)

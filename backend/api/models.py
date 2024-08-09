@@ -155,24 +155,21 @@ class Liga(models.Model):
         db_table = 'Liga'
 
 
-class Partido(models.Model):
+class Temporada(models.Model):
     id = models.AutoField(primary_key=True)
-    id_local= models.IntegerField()
-    fecha = models.DateField()
-    hora = models.TimeField()
-    set_ganados_local = models.IntegerField()
-    id_temporada = models.IntegerField()
-    set_ganados_visita = models.IntegerField()
-    id_visita = models.IntegerField()
+    anio_desde = models.IntegerField()
+    anio_hasta = models.IntegerField()
+    estado = models.CharField(max_length=20)
+    id_liga = models.ForeignKey(Liga, on_delete=models.CASCADE,db_column='id_liga')
 
     class Meta:
-        db_table = 'Partido'
+        db_table = 'Temporada'
 
 
 class Posiciones(models.Model):
     id = models.AutoField(primary_key=True)
-    id_equipo = models.IntegerField()
-    id_temporada = models.IntegerField()
+    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE,db_column='id_equipo')
+    id_temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE,db_column='id_temporada')
     puntaje = models.IntegerField()
     set_ganados = models.IntegerField()
     set_en_contra = models.IntegerField()
@@ -180,6 +177,20 @@ class Posiciones(models.Model):
 
     class Meta:
         db_table = 'Posiciones'
+
+
+class Partido(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_local = models.ForeignKey(Equipo, on_delete=models.CASCADE, db_column='id_local', related_name='partidos_local')
+    fecha = models.DateField()
+    hora = models.TimeField()
+    set_ganados_local = models.IntegerField()
+    id_temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE, db_column='id_temporada')
+    set_ganados_visita = models.IntegerField()
+    id_visita = models.ForeignKey(Equipo, on_delete=models.CASCADE, db_column='id_visita', related_name='partidos_visita')
+
+    class Meta:
+        db_table = 'Partido'
 
 
 class Set(models.Model):
@@ -193,14 +204,3 @@ class Set(models.Model):
 
     class Meta:
         db_table = 'Set'
-
-
-class Temporada(models.Model):
-    id = models.AutoField(primary_key=True)
-    anio_desde = models.IntegerField()
-    anio_hasta = models.IntegerField()
-    estado = models.CharField(max_length=20)
-    id_liga = models.IntegerField()
-
-    class Meta:
-        db_table = 'Temporada'

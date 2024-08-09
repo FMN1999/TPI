@@ -8,6 +8,10 @@ import {RegisterComponent} from "./components/register/register.component";
 import {AltaEquipoComponent} from "./components/alta-equipo/alta-equipo.component";
 import {VerEquiposComponent} from "./components/ver-equipos/ver-equipos.component";
 import {EquipoDetalleComponent} from "./components/equipo/equipo.component";
+import {AltaLigaComponent} from "./components/alta-liga/alta-liga.component";
+import {VerLigasComponent} from "./components/ver-ligas/ver-ligas.component";
+import {LigaComponent} from "./components/liga/liga.component";
+import {TemporadaComponent} from "./components/temporada/temporada.component";
 
 const routes: Routes = [
   { path: '', component:HomeComponent },
@@ -19,7 +23,12 @@ const routes: Routes = [
   { path: 'logout', redirectTo: '/login', pathMatch: 'full' },
   { path: 'alta-equipo', component: AltaEquipoComponent },
   { path: 'ver-equipos', component: VerEquiposComponent },
-  { path: 'equipo/:id', component: EquipoDetalleComponent }
+  { path: 'equipo/:id', component: EquipoDetalleComponent },
+  { path: 'alta-liga', component: AltaLigaComponent },
+  { path: 'ver-ligas', component: VerLigasComponent },
+  { path: 'liga/:id', component: LigaComponent },
+  { path: 'temporada/:id', component: TemporadaComponent },
+
 ];
 
 @NgModule({

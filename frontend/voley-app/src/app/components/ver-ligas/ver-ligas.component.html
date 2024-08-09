@@ -1,0 +1,18 @@
+<div class="container">
+  <h2>Listado de Ligas</h2>
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar por categoría..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+    />
+  </div>
+  <ul class="list-group">
+    <li *ngFor="let liga of ligas" class="list-group-item">
+      <a [routerLink]="['/liga', liga.id]">{{ liga.categoria }}</a>
+    </li>
+  </ul>
+</div>
+

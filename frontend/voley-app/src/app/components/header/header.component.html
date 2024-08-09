@@ -15,23 +15,32 @@
           </li>
         </ng-container>
         <ng-template #loggedInTemplate>
-          <li class="nav-item dropdown" [class.show]="dropdownOpen">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" (click)="toggleDropdown($event)" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen">
+          <li class="nav-item dropdown" [class.show]="dropdownOpen.usuario">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" (click)="toggleDropdown($event, 'usuario')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.usuario">
               Usuario
             </a>
-            <div class="dropdown-menu" [class.show]="dropdownOpen" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu" [class.show]="dropdownOpen.usuario" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" routerLink="/perfil">Mi perfil</a>
               <a class="dropdown-item" routerLink="/usuarios">Usuarios</a>
               <a class="dropdown-item" (click)="logout()">Cerrar Sesión</a>
             </div>
           </li>
-          <li class="nav-item dropdown" [class.show]="dropdownOpen">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" (click)="toggleDropdown($event)" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen">
-              Equipo
+          <li class="nav-item dropdown" [class.show]="dropdownOpen.equipos">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" (click)="toggleDropdown($event, 'equipos')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.equipos">
+              Equipos
             </a>
-            <div class="dropdown-menu" [class.show]="dropdownOpen" aria-labelledby="navbarDropdown2">
+            <div class="dropdown-menu" [class.show]="dropdownOpen.equipos" aria-labelledby="navbarDropdown2">
               <a class="dropdown-item" routerLink="/alta-equipo">Alta de Equipo</a>
               <a class="dropdown-item" routerLink="/ver-equipos">Ver equipos</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown" [class.show]="dropdownOpen.ligas">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" (click)="toggleDropdown($event, 'ligas')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.ligas">
+              Ligas
+            </a>
+            <div class="dropdown-menu" [class.show]="dropdownOpen.ligas" aria-labelledby="navbarDropdown3">
+              <a class="dropdown-item" routerLink="/alta-liga">Alta de Ligas</a>
+              <a class="dropdown-item" routerLink="/ver-ligas">Ver ligas</a>
             </div>
           </li>
         </ng-template>
@@ -39,3 +48,4 @@
     </div>
   </nav>
 </header>
+

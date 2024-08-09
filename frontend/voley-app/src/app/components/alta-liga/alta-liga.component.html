@@ -1,0 +1,51 @@
+<div class="container">
+  <h2>Alta de Liga</h2>
+  <form (ngSubmit)="onSubmit()" #ligaForm="ngForm">
+    <div class="form-group">
+      <label for="categoria">Categoría</label>
+      <input
+        type="text"
+        class="form-control"
+        id="categoria"
+        name="categoria"
+        [(ngModel)]="liga.categoria"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="ptos_x_victoria">Puntos por Victoria</label>
+      <input
+        type="number"
+        class="form-control"
+        id="ptos_x_victoria"
+        name="ptos_x_victoria"
+        [(ngModel)]="liga.ptos_x_victoria"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="ptos_x_32_vict">Puntos por 32 Victoria</label>
+      <input
+        type="number"
+        class="form-control"
+        id="ptos_x_32_vict"
+        name="ptos_x_32_vict"
+        [(ngModel)]="liga.ptos_x_32_vict"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="ptos_x_32_derrota">Puntos por 32 Derrota</label>
+      <input
+        type="number"
+        class="form-control"
+        id="ptos_x_32_derrota"
+        name="ptos_x_32_derrota"
+        [(ngModel)]="liga.ptos_x_32_derrota"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Crear Liga</button>
+  </form>
+</div>
+

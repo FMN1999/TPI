@@ -153,3 +153,51 @@ class LigaData:
     @staticmethod
     def obtener_liga_por_id(liga_id):
         return Liga.objects.filter(id=liga_id).first()
+
+
+class TemporadaData:
+    @staticmethod
+    def obtener_temporadas_por_liga(id_liga):
+        return Temporada.objects.filter(id_liga=id_liga).all()
+
+    @staticmethod
+    def crear_temporada(anio_desde, anio_hasta, estado, id_liga):
+        nueva_temporada = Temporada(anio_desde=anio_desde, anio_hasta=anio_hasta, estado=estado, id_liga=id_liga)
+        nueva_temporada.save()
+        return nueva_temporada
+
+    def obtener_temporada_por_id(id):
+        return Temporada.objects.get(id=id)
+
+
+class PosicionesData:
+    @staticmethod
+    def agregar_equipo_a_temporada(id_equipo, id_temporada):
+        nueva_posicion = Posiciones(id_equipo=id_equipo, id_temporada=id_temporada, puntaje=0, set_ganados=0,
+                                    set_en_contra=0, diferencia_sets=0)
+        nueva_posicion.save()
+        return nueva_posicion
+
+    @staticmethod
+    def obtener_posiciones_por_temporada(id_temporada):
+        return Posiciones.objects.filter(id_temporada=id_temporada)
+
+
+class PartidoData:
+    def agregar_partido(partido_data):
+        partido = Partido(
+            id_local=EquipoData.get_equipo_by_id(partido_data['id_local']),
+            id_visita=EquipoData.get_equipo_by_id(partido_data['id_visita']),
+            fecha=partido_data['fecha'],
+            hora=partido_data['hora'],
+            set_ganados_local=partido_data.get('set_ganados_local', 0),
+            set_ganados_visita=partido_data.get('set_ganados_visita', 0),
+            id_temporada=TemporadaData.obtener_temporada_por_id(partido_data['id_temporada'])
+        )
+        partido.save()
+        return partido
+
+
+    @staticmethod
+    def obtener_partidos_por_temporada(temporada_id):
+        return Partido.objects.filter(id_temporada=temporada_id)

@@ -7,6 +7,9 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import {AltaEquipoComponent} from "./components/alta-equipo/alta-equipo.component";
 import {VerEquiposComponent} from "./components/ver-equipos/ver-equipos.component";
 import {EquipoDetalleComponent} from "./components/equipo/equipo.component";
+import {VerLigasComponent} from "./components/ver-ligas/ver-ligas.component";
+import {LigaComponent} from "./components/liga/liga.component";
+import {TemporadaComponent} from "./components/temporada/temporada.component";
 
 export const routes: Routes = [
   { path: '', component:HomeComponent },
@@ -18,6 +21,9 @@ export const routes: Routes = [
   { path: 'logout', redirectTo: '/login', pathMatch: 'full' },
   { path: 'alta-equipo', component: AltaEquipoComponent },
   { path: 'ver-equipos', component: VerEquiposComponent },
-  { path: 'equipo/:id', component: EquipoDetalleComponent }
+  { path: 'equipo/:id', component: EquipoDetalleComponent },
+  { path: 'ver-ligas', component: VerLigasComponent },
+  { path: 'liga/:id', component: LigaComponent },
+  { path: 'temporada/:id', component: TemporadaComponent }
 ];
 

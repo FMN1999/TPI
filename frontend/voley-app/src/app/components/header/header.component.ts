@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import {RouterLink} from "@angular/router";
-import {NgIf} from "@angular/common";
+import { RouterLink } from "@angular/router";
+import { NgIf } from "@angular/common";
 
 @Component({
   selector: 'app-header',
@@ -14,7 +14,11 @@ import {NgIf} from "@angular/common";
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  dropdownOpen = false;
+  dropdownOpen: { [key in 'usuario' | 'equipos' | 'ligas']: boolean } = {
+    usuario: false,
+    equipos: false,
+    ligas: false
+  };
 
   constructor(public authService: AuthService) { }
 
@@ -24,12 +28,13 @@ export class HeaderComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
-  toggleDropdown(event: Event): void {
+  toggleDropdown(event: Event, dropdown: 'usuario' | 'equipos' | 'ligas'): void {
     event.preventDefault();
-    this.dropdownOpen = !this.dropdownOpen;
+    this.dropdownOpen[dropdown] = !this.dropdownOpen[dropdown];
   }
 
   logout(): void {
     this.authService.logout();
   }
 }
+

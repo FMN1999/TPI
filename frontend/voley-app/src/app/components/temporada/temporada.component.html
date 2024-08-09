@@ -1,0 +1,55 @@
+<div class="container">
+  <!-- Detalles de la Temporada -->
+  <h2>Detalles de la Temporada</h2>
+  <div *ngIf="temporada">
+    <p><strong>Año Desde:</strong> {{ temporada.anio_desde }}</p>
+    <p><strong>Año Hasta:</strong> {{ temporada.anio_hasta }}</p>
+    <p><strong>Estado:</strong> {{ temporada.estado }}</p>
+  </div>
+
+  <!-- Equipos en esta Temporada -->
+  <h3>Equipos en esta Temporada</h3>
+  <ul class="list-group">
+    <li *ngFor="let posicion of posiciones" class="list-group-item">
+      {{ posicion.id_equipo.nombre }} - Puntos: {{ posicion.puntaje }}
+    </li>
+  </ul>
+
+  <h4>Agregar Equipo a la Temporada</h4>
+  <div class="form-group">
+    <select class="form-control" [(ngModel)]="nuevoEquipoId">
+      <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
+    </select>
+    <button class="btn btn-primary mt-2" (click)="agregarEquipo()">Agregar Equipo</button>
+  </div>
+
+  <!-- Partidos en esta Temporada -->
+  <h3>Partidos en esta Temporada</h3>
+  <ul class="list-group">
+    <li *ngFor="let partido of partidos" class="list-group-item">
+      {{ partido.fecha }} - {{ partido.hora }} | {{ partido.id_local }} vs {{ partido.id_visita }}
+    </li>
+  </ul>
+
+  <!-- Botón para abrir el modal de agregar partido -->
+  <button class="btn btn-primary mt-4" (click)="abrirModal()">Agregar Partido</button>
+
+  <!-- Modal para agregar partido -->
+  <div *ngIf="modalAbierto" class="modal">
+    <div class="modal-content">
+      <span class="close" (click)="cerrarModal()">&times;</span>
+      <h4>Agregar Partido</h4>
+      <div class="form-group">
+        <input type="date" class="form-control" [(ngModel)]="nuevoPartido.fecha" placeholder="Fecha">
+        <input type="time" class="form-control" [(ngModel)]="nuevoPartido.hora" placeholder="Hora">
+        <select class="form-control" [(ngModel)]="nuevoPartido.id_local">
+          <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
+        </select>
+        <select class="form-control" [(ngModel)]="nuevoPartido.id_visita">
+          <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
+        </select>
+        <button class="btn btn-primary mt-2" (click)="agregarPartido()">Agregar Partido</button>
+      </div>
+    </div>
+  </div>
+</div>
