@@ -44,9 +44,6 @@ export class UsuariosComponent implements OnInit {
     );
   }
 
-  irAlPerfil(usuarioId: number): void {
-    // Implementa la lógica para navegar al perfil del usuario
-  }
 }
 
 

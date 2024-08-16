@@ -20,7 +20,7 @@
               Usuario
             </a>
             <div class="dropdown-menu" [class.show]="dropdownOpen.usuario" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" routerLink="/perfil">Mi perfil</a>
+              <a class="dropdown-item" [routerLink]="['/perfil', getUsuarioId()]">Mi perfil</a>
               <a class="dropdown-item" routerLink="/usuarios">Usuarios</a>
               <a class="dropdown-item" (click)="logout()">Cerrar Sesión</a>
             </div>
@@ -41,6 +41,14 @@
             <div class="dropdown-menu" [class.show]="dropdownOpen.ligas" aria-labelledby="navbarDropdown3">
               <a class="dropdown-item" routerLink="/alta-liga">Alta de Ligas</a>
               <a class="dropdown-item" routerLink="/ver-ligas">Ver ligas</a>
+            </div>
+          </li>
+           <li class="nav-item dropdown" [class.show]="dropdownOpen.partidos">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown4" role="button" (click)="toggleDropdown($event, 'partidos')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.partidos">
+              Partidos
+            </a>
+            <div class="dropdown-menu" [class.show]="dropdownOpen.partidos" aria-labelledby="navbarDropdown4">
+              <a class="dropdown-item" routerLink="/ver-partidos">Ver Partidos</a>
             </div>
           </li>
         </ng-template>

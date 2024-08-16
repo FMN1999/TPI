@@ -1,0 +1,90 @@
+<div *ngIf="partido">
+  <h2>Detalles del Partido</h2>
+  <p>{{ partido.local }} vs {{ partido.visita }}</p>
+
+  <h3>Agregar Set</h3>
+  <form (submit)="agregarSet()">
+    <div>
+      <label for="puntosLocal">Puntos Local:</label>
+      <input type="number" id="puntosLocal" [(ngModel)]="nuevoSet.puntos_local" name="puntosLocal" required>
+    </div>
+    <div>
+      <label for="puntosVisita">Puntos Visita:</label>
+      <input type="number" id="puntosVisita" [(ngModel)]="nuevoSet.puntos_visita" name="puntosVisita" required>
+    </div>
+    <div>
+      <label for="formacionLocal">Formación Local:</label>
+      <select id="formacionLocal" [(ngModel)]="nuevoSet.id_formacion_local" name="formacionLocal" required>
+        <option *ngFor="let formacion of formacionesLocal" [value]="formacion.id">
+          {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
+        </option>
+      </select>
+    </div>
+    <div>
+      <label for="formacionVisit">Formación Visit:</label>
+      <select id="formacionVisit" [(ngModel)]="nuevoSet.id_formacion_visit" name="formacionVisit" required>
+        <option *ngFor="let formacion of formacionesVisit" [value]="formacion.id">
+          {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
+        </option>
+      </select>
+    </div>
+    <button type="submit">Agregar Set</button>
+  </form>
+
+  <h3>Sets</h3>
+  <ul>
+    <li *ngFor="let set of partido.sets">
+      Local: {{ set.puntos_local }} - Visita: {{ set.puntos_visita }}
+      <button (click)="abrirFormularioCambio()">Cambio</button>
+    </li>
+  </ul>
+
+  <!-- Formulario de cambio -->
+  <div *ngIf="nuevoCambio">
+    <h4>Registrar Cambio</h4>
+    <form (ngSubmit)="registrarCambio()">
+      <div>
+        <label for="id_formacion">Formación:</label>
+        <select id="id_formacion" [(ngModel)]="nuevoCambio.id_formacion" name="id_formacion" (change)="onFormacionChange()" required>
+          <optgroup label="Formaciones Local">
+            <option *ngFor="let formacion of formacionesLocal" [value]="formacion.id">
+              {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
+            </option>
+          </optgroup>
+          <optgroup label="Formaciones Visit">
+            <option *ngFor="let formacion of formacionesVisit" [value]="formacion.id">
+              {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
+            </option>
+          </optgroup>
+        </select>
+      </div>
+      <div>
+        <label for="id_jugador_sale">Jugador que sale:</label>
+        <select id="id_jugador_sale" [(ngModel)]="nuevoCambio.id_jugador_sale" name="id_jugador_sale" required>
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">
+            {{ jugador.nombre }} {{ jugador.apellido }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label for="id_jugador_entra">Jugador que entra:</label>
+        <select id="id_jugador_entra" [(ngModel)]="nuevoCambio.id_jugador_entra" name="id_jugador_entra" required>
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">
+            {{ jugador.nombre }} {{ jugador.apellido }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label for="cerro">¿Cerró el punto?</label>
+        <input id="cerro" type="checkbox" [(ngModel)]="nuevoCambio.cerro" name="cerro">
+      </div>
+      <div>
+        <label for="permanente">¿Es un cambio permanente?</label>
+        <input id="permanente" type="checkbox" [(ngModel)]="nuevoCambio.permanente" name="permanente">
+      </div>
+      <button type="submit">Registrar Cambio</button>
+    </form>
+  </div>
+
+  <button (click)="terminarPartido()">Terminar Partido</button>
+</div>

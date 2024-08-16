@@ -1,0 +1,14 @@
+<div class="container">
+  <h2>Partidos</h2>
+
+  <ul class="list-group">
+    <li *ngFor="let partido of partidos" class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ partido.local }}</strong> vs <strong>{{ partido.visita }}</strong>
+        <span class="badge badge-secondary ml-2">Fecha: {{ partido.fecha | date }}</span>
+      </div>
+      <button class="btn btn-primary btn-sm" (click)="verDetalles(partido.id)">Ver Detalles</button>
+    </li>
+  </ul>
+</div>
+

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Equipo } from '../../models/equipo.model';
+import {Jugador} from "../../models/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +35,9 @@ export class EquiposService {
 
   getEquipo(id: number): Observable<Equipo> {
     return this.http.get<Equipo>(`${this.baseUrl}/equipos/${id}/`);
+  }
+
+  getJugadoresPorEquipo(id_equipo: number): Observable<Jugador[]> {
+    return this.http.get<Jugador[]>(`${this.baseUrl}/equipos/${id_equipo}/jugadores/`);
   }
 }

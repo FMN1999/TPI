@@ -14,10 +14,11 @@ import { NgIf } from "@angular/common";
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  dropdownOpen: { [key in 'usuario' | 'equipos' | 'ligas']: boolean } = {
+  dropdownOpen: { [key in 'usuario' | 'equipos' | 'ligas' | 'partidos']: boolean } = {
     usuario: false,
     equipos: false,
-    ligas: false
+    ligas: false,
+    partidos: false
   };
 
   constructor(public authService: AuthService) { }
@@ -28,7 +29,11 @@ export class HeaderComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
-  toggleDropdown(event: Event, dropdown: 'usuario' | 'equipos' | 'ligas'): void {
+  getUsuarioId(): string | null {
+    return this.authService.getUsuarioId();
+  }
+
+  toggleDropdown(event: Event, dropdown: 'usuario' | 'equipos' | 'ligas' | 'partidos'): void {
     event.preventDefault();
     this.dropdownOpen[dropdown] = !this.dropdownOpen[dropdown];
   }

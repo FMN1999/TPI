@@ -44,18 +44,6 @@ class Jugador(models.Model):
         db_table = 'Jugador'  # nombre de la tabla en MySQL
 
 
-class Cambio(models.Model):
-    id = models.AutoField(primary_key=True)
-    id_jugador_sale = models.IntegerField()
-    id_jugador_entra = models.IntegerField()
-    id_formacion = models.IntegerField()
-    cerro = models.BooleanField()
-    permanente = models.BooleanField()
-
-    class Meta:
-        db_table = 'Cambio'
-
-
 class Equipo(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
@@ -108,37 +96,16 @@ class EquipoJugador(models.Model):
         db_table = 'Equipo_Jugador'
 
 
-class Estadisticas(models.Model):
-    id = models.AutoField(primary_key=True)
-    remates_fallidos = models.IntegerField()
-    remates_buenos = models.IntegerField()
-    defensas_fallidas = models.IntegerField()
-    defensas_buenas = models.IntegerField()
-    bloqueos_fallidos = models.IntegerField()
-    bloqueos_buenos = models.IntegerField()
-    saques_fallidos = models.IntegerField()
-    saques_buenos = models.IntegerField()
-    recepciones_buenas = models.IntegerField()
-    recepciones_fallidas = models.IntegerField()
-    fecha_carga = models.DateField()
-    id_partido = models.IntegerField()
-    id_asistente = models.IntegerField()
-    id_jugador = models.IntegerField()
-
-    class Meta:
-        db_table = 'Estadisticas'
-
-
 class Formacion(models.Model):
     id = models.AutoField(primary_key=True)
-    id_equipo = models.IntegerField()
-    jugador_1 = models.IntegerField()
-    jugador_2 = models.IntegerField()
-    jugador_3 = models.IntegerField()
-    jugador_4 = models.IntegerField()
-    jugador_5 = models.IntegerField()
-    jugador_6 = models.IntegerField()
-    libero = models.IntegerField()
+    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, db_column='id_equipo', related_name='formaciones')
+    jugador_1 = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='jugador_1', related_name='formaciones_jugador_1')
+    jugador_2 = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='jugador_2', related_name='formaciones_jugador_2')
+    jugador_3 = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='jugador_3', related_name='formaciones_jugador_3')
+    jugador_4 = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='jugador_4', related_name='formaciones_jugador_4')
+    jugador_5 = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='jugador_5', related_name='formaciones_jugador_5')
+    jugador_6 = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='jugador_6', related_name='formaciones_jugador_6')
+    libero = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='libero', related_name='formaciones_libero')
 
     class Meta:
         db_table = 'Formacion'
@@ -193,14 +160,51 @@ class Partido(models.Model):
         db_table = 'Partido'
 
 
+class Estadisticas(models.Model):
+    id = models.AutoField(primary_key=True)
+    remates_fallidos = models.IntegerField()
+    remates_buenos = models.IntegerField()
+    defensas_fallidas = models.IntegerField()
+    defensas_buenas = models.IntegerField()
+    bloqueos_fallidos = models.IntegerField()
+    bloqueos_buenos = models.IntegerField()
+    saques_fallidos = models.IntegerField()
+    saques_buenos = models.IntegerField()
+    recepciones_buenas = models.IntegerField()
+    recepciones_fallidas = models.IntegerField()
+    fecha_carga = models.DateField()
+    id_partido = models.ForeignKey(Partido, on_delete=models.CASCADE, db_column='id_partido')
+    id_asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE, db_column='id_asistente')
+    id_jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='id_jugador')
+
+    class Meta:
+        db_table = 'Estadisticas'
+
+
 class Set(models.Model):
     id = models.AutoField(primary_key=True)
     puntos_visita = models.IntegerField()
     puntos_local = models.IntegerField()
-    id_partido = models.IntegerField()
+    id_partido = models.ForeignKey(Partido, on_delete=models.CASCADE, db_column='id_partido')
     nro_set = models.IntegerField()
-    id_formacion_local = models.IntegerField()
-    id_formacion_visit = models.IntegerField()
+    id_formacion_local = models.ForeignKey(Formacion, on_delete=models.CASCADE, db_column='id_formacion_local',
+                                           related_name='id_formacion_local')
+    id_formacion_visit = models.ForeignKey(Formacion, on_delete=models.CASCADE, db_column='id_formacion_visit',
+                                           related_name='id_formacion_visit')
 
     class Meta:
         db_table = 'Set'
+
+
+class Cambio(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_jugador_sale = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='id_jugador_sale',
+                                        related_name='id_jugador_sale')
+    id_jugador_entra = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='id_jugador_entra',
+                                         related_name='id_jugador_entra')
+    id_formacion = models.ForeignKey(Formacion, on_delete=models.CASCADE, db_column='id_formacion')
+    cerro = models.BooleanField()
+    permanente = models.BooleanField()
+
+    class Meta:
+        db_table = 'Cambio'

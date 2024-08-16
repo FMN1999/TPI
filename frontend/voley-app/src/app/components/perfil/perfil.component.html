@@ -1,3 +1,4 @@
+<!-- perfil.component.html -->
 <div class="perfil">
   <h2>Mi Perfil</h2>
   <p><strong>Nombre:</strong> {{ perfil.nombre }}</p>
@@ -7,6 +8,62 @@
   <p><strong>Ciudad de Nacimiento:</strong> {{ perfil.ciudad_nacimiento }}</p>
   <p><strong>Provincia de Nacimiento:</strong> {{ perfil.provincia_nacimiento }}</p>
   <p><strong>Sexo:</strong> {{ perfil.sexo }}</p>
+
+  <div *ngIf="esAsistente">
+    <h3>Información de Asistente</h3>
+    <p>El usuario es un Asistente.</p>
+    <!-- Botón para agregar estadísticas -->
+    <button class="btn btn-primary" (click)="mostrarFormulario = true">Agregar estadísticas</button>
+
+    <!-- Formulario para cargar estadísticas -->
+    <div *ngIf="mostrarFormulario" class="formulario-estadisticas mt-3">
+      <h4>Cargar Estadísticas</h4>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="rematesBuenos">Remates Buenos</label>
+          <input type="number" id="rematesBuenos" [(ngModel)]="estadisticas.remates_buenos" name="rematesBuenos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="rematesFallidos">Remates Fallidos</label>
+          <input type="number" id="rematesFallidos" [(ngModel)]="estadisticas.remates_fallidos" name="rematesFallidos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="defensasBuenas">Defensas Buenas</label>
+          <input type="number" id="defensasBuenas" [(ngModel)]="estadisticas.defensas_buenas" name="defensasBuenas" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="defensasFallidas">Defensas Fallidas</label>
+          <input type="number" id="defensasFallidas" [(ngModel)]="estadisticas.defensas_fallidas" name="defensasFallidas" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="bloqueosBuenos">Bloqueos Buenos</label>
+          <input type="number" id="bloqueosBuenos" [(ngModel)]="estadisticas.bloqueos_buenos" name="bloqueosBuenos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="bloqueosFallidos">Bloqueos Fallidos</label>
+          <input type="number" id="bloqueosFallidos" [(ngModel)]="estadisticas.bloqueos_fallidos" name="bloqueosFallidos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="saquesBuenos">Saques Buenos</label>
+          <input type="number" id="saquesBuenos" [(ngModel)]="estadisticas.saques_buenos" name="saquesBuenos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="saquesFallidos">Saques Fallidos</label>
+          <input type="number" id="saquesFallidos" [(ngModel)]="estadisticas.saques_fallidos" name="saquesFallidos" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="recepcionesBuenas">Recepciones Buenas</label>
+          <input type="number" id="recepcionesBuenas" [(ngModel)]="estadisticas.recepciones_buenas" name="recepcionesBuenas" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="recepcionesFallidas">Recepciones Fallidas</label>
+          <input type="number" id="recepcionesFallidas" [(ngModel)]="estadisticas.recepciones_fallidas" name="recepcionesFallidas" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Guardar Estadísticas</button>
+      </form>
+    </div>
+  </div>
 </div>
+
 
 

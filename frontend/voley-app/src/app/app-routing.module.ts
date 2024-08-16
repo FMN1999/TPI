@@ -12,6 +12,10 @@ import {AltaLigaComponent} from "./components/alta-liga/alta-liga.component";
 import {VerLigasComponent} from "./components/ver-ligas/ver-ligas.component";
 import {LigaComponent} from "./components/liga/liga.component";
 import {TemporadaComponent} from "./components/temporada/temporada.component";
+import {VerPartidosComponent} from "./components/ver-partidos/ver-partidos.component";
+import {PartidoComponent} from "./components/partido/partido.component";
+
+
 
 const routes: Routes = [
   { path: '', component:HomeComponent },
@@ -28,6 +32,8 @@ const routes: Routes = [
   { path: 'ver-ligas', component: VerLigasComponent },
   { path: 'liga/:id', component: LigaComponent },
   { path: 'temporada/:id', component: TemporadaComponent },
+  { path: 'ver-partidos', component: VerPartidosComponent },
+  { path: 'partido/:id', component: PartidoComponent },
 
 ];
 

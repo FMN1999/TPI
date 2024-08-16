@@ -27,8 +27,7 @@ class LoginView(View):
             usuario_obj = UsuarioController.autenticar_usuario(usuario, contrasenia)
             if usuario_obj:
                 response_data = {
-                    'token': 'fake-token',  # Aquí normalmente se devolvería un token real.
-                    'user_id': usuario_obj.id
+                    'user_id': usuario_obj.id  # Devolver el ID del usuario
                 }
                 return JsonResponse(response_data)
             else:
@@ -330,3 +329,248 @@ class PartidosView(View):
             return JsonResponse(partidos_data, safe=False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CrearFormacionView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            formacion = FormacionController.crear_formacion(data)
+            return JsonResponse({'success': True, 'formacion_id': formacion.id}, status=201)
+        except ValueError as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+class EquipoJugadorView(View):
+    def get(self, request, equipo_id):
+        # Obtener todos los registros de EquipoJugador para el id_equipo
+        equipo_jugadores = EquipoJugadorController.obtener_jugadores_por_equipo(equipo_id)
+
+        if equipo_jugadores:
+            # Crear una lista para almacenar los datos de los jugadores
+            jugadores_list = [
+                {
+                    'id': ej.id_jugador.id,
+                    'nombre': ej.id_jugador.id_usuario.nombre,
+                    'apellido': ej.id_jugador.id_usuario.apellido,
+                    'altura': ej.id_jugador.altura,
+                    'peso': ej.id_jugador.peso
+                }
+                for ej in equipo_jugadores
+            ]
+            return JsonResponse(jugadores_list, safe=False)
+
+        return JsonResponse({'error': 'No se encontraron jugadores para el equipo especificado'}, status=404)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class SetView(View):
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            id_partido = data.get('id_partido')
+            puntos_local = data.get('puntos_local')
+            puntos_visita = data.get('puntos_visita')
+            nro_set = data.get('nro_set')
+            id_formacion_local = data.get('id_formacion_local')
+            id_formacion_visit = data.get('id_formacion_visit')
+
+            # Llama al controlador para manejar la lógica de creación del set
+            resultado = SetController.crear_set_controller(
+                id_partido=id_partido,
+                puntos_local=puntos_local,
+                puntos_visita=puntos_visita,
+                nro_set=nro_set,
+                id_formacion_local=id_formacion_local,
+                id_formacion_visit=id_formacion_visit
+            )
+
+            if 'error' in resultado:
+                return JsonResponse({'error': resultado['error']}, status=400)
+
+            return JsonResponse({'success': True, 'partido': resultado['partido']}, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+class PartidosSinSetsGanadosView(View):
+    def get(self, request, *args, **kwargs):
+        partidos = Partido.objects.filter(set_ganados_local=0, set_ganados_visita=0)
+        data = list(partidos.values())
+        return JsonResponse(data, safe=False)
+
+
+class DetallePartidoView(View):
+    def get(self, request, id_partido):
+        detalles = PartidoController.ver_detalles_partido(id_partido)
+        if detalles:
+            return JsonResponse(detalles, safe=False, status=200)
+        return JsonResponse({"error": "Partido no encontrado"}, status=404)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AgregarSetView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            print(f"Datos recibidos: {data}")  # Añade este log para ver los datos que llegan
+
+            # Extrae los valores de 'data'
+            id_partido = data.get('id_partido')
+            puntos_local = data.get('puntos_local')
+            puntos_visita = data.get('puntos_visita')
+            id_formacion_local = data.get('id_formacion_local')
+            id_formacion_visit = data.get('id_formacion_visit')
+
+            print(f"id_partido: {id_partido}, puntos_local: {puntos_local}, puntos_visita: {puntos_visita}, id_formacion_local: {id_formacion_local}, id_formacion_visit: {id_formacion_visit}")  # Log de los valores individuales
+
+            # Llama al controlador
+            nuevo_set = SetController.agregar_set(id_partido, puntos_local, puntos_visita, id_formacion_local, id_formacion_visit)
+
+            if nuevo_set:
+                return JsonResponse({"success": "Set agregado exitosamente"}, status=201)
+            return JsonResponse({"error": "No se pudo agregar el set"}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "JSON malformado"}, status=400)
+        except KeyError as e:
+            return JsonResponse({"error": f"Falta el campo {str(e)}"}, status=400)
+        except Exception as e:
+            print(f"Error inesperado: {e}")  # Añade este log para errores inesperados
+            return JsonResponse({"error": "Error inesperado"}, status=500)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TerminarPartidoView(View):
+    def post(self, request):
+        data = request.POST
+        id_partido = data.get('id_partido')
+        resultado = PartidoController.terminar_partido(id_partido)
+        if resultado:
+            return JsonResponse({"message": "Partido terminado con éxito"}, status=200)
+        return JsonResponse({"error": "No se pudo terminar el partido"}, status=400)
+
+
+class ObtenerFormacionesView(View):
+    def get(self, request, id_equipo):
+        formaciones = FormacionController.obtener_formaciones_equipo(id_equipo)
+        if formaciones is not None:
+            # Construimos la lista de diccionarios en la vista
+            form_list = [
+                {
+                    "id": f.id,
+                    "id_equipo": f.id_equipo.id,
+                    "jugador_1": f.jugador_1.id_usuario.nombre,
+                    "jugador_2": f.jugador_2.id_usuario.nombre,
+                    "jugador_3": f.jugador_3.id_usuario.nombre,
+                    "jugador_4": f.jugador_4.id_usuario.nombre,
+                    "jugador_5": f.jugador_5.id_usuario.nombre,
+                    "jugador_6": f.jugador_6.id_usuario.nombre,
+                    "libero": f.libero.id_usuario.nombre
+                }
+                for f in formaciones
+            ]
+            print(form_list)
+            return JsonResponse(form_list, safe=False)
+
+        return JsonResponse({"error": "No se pudieron obtener los sets"}, status=400)
+
+
+
+class ObtenerSetsPorPartidoView(View):
+    def get(self, request, id_partido):
+        sets = SetController.obtener_sets_por_partido(id_partido)
+
+        if sets is not None:
+            # Construimos la lista de diccionarios en la vista
+            sets_list = [
+                {
+                    "id": s.id,
+                    "id_partido": s.id_partido.id,
+                    "puntos_local": s.puntos_local,
+                    "puntos_visita": s.puntos_visita,
+                    "id_formacion_local": {
+                        "id": s.id_formacion_local.id,
+                        "jugador_1": s.id_formacion_local.jugador_1.id,
+                        "jugador_2": s.id_formacion_local.jugador_2.id,
+                        "jugador_3": s.id_formacion_local.jugador_3.id,
+                        "jugador_4": s.id_formacion_local.jugador_4.id,
+                        "jugador_5": s.id_formacion_local.jugador_5.id,
+                        "jugador_6": s.id_formacion_local.jugador_6.id,
+                        "libero": s.id_formacion_local.libero.id if s.id_formacion_local.libero else None
+                    } if s.id_formacion_local else None,
+                    "id_formacion_visit": {
+                        "id": s.id_formacion_visit.id,
+                        "jugador_1": s.id_formacion_visit.jugador_1.id,
+                        "jugador_2": s.id_formacion_visit.jugador_2.id,
+                        "jugador_3": s.id_formacion_visit.jugador_3.id,
+                        "jugador_4": s.id_formacion_visit.jugador_4.id,
+                        "jugador_5": s.id_formacion_visit.jugador_5.id,
+                        "jugador_6": s.id_formacion_visit.jugador_6.id,
+                        "libero": s.id_formacion_visit.libero.id if s.id_formacion_visit.libero else None
+                    } if s.id_formacion_visit else None,
+                }
+                for s in sets
+            ]
+            return JsonResponse(sets_list, safe=False)
+
+        return JsonResponse({"error": "No se pudieron obtener los sets"}, status=400)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class RegistrarCambioView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            print(f"Esto es antes: {data}")
+
+            id_jugador_sale = int(data['id_jugador_sale'])
+            id_jugador_entra = int(data['id_jugador_entra'])
+            id_formacion = int(data['id_formacion'])  # Asegúrate de convertir a entero si es un ID
+            cerro = data.get('cerro', False)  # Proveer un valor por defecto
+            permanente = data.get('permanente', False)  # Proveer un valor por defecto
+
+            print(f"Jugador que sale ID: {id_jugador_sale}")
+            print(f"Jugador que entra ID: {id_jugador_entra}")
+            print(f"Formación ID: {id_formacion}")
+            print(f"Cerró punto: {cerro}")
+            print(f"Cambio permanente: {permanente}")
+
+            # Usar el controlador para manejar la lógica
+            response_data = CambioController.registrar_cambio(
+                id_jugador_sale,
+                id_jugador_entra,
+                id_formacion,
+                cerro,
+                permanente
+            )
+
+            return JsonResponse(response_data, status=201)
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return JsonResponse({"error": str(e)}, status=500)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class EstadisticasView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            estadistica = EstadisticasController.registrar_estadisticas_controller(data)
+            return JsonResponse({'mensaje': 'Estadísticas registradas exitosamente'})
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': 'Error al registrar las estadísticas'}, status=500)
+        
+    
+class CompruebaUsuario(View):
+    def get(self, request, usuario_id):
+        tipo_usuario = UsuarioController.obtener_tipo_usuario_controller(usuario_id)
+        return JsonResponse({'tipo': tipo_usuario})

@@ -17,8 +17,8 @@ El siguiente checklist permite una fácil detección de malas prácticas y posib
 
 ## Opcional
 
-- [ ] Utilizar un Framework de Front-End (Vue, React, Angular).
+- [X] Utilizar un Framework de Front-End (Vue, React, Angular).
 - [ ] Incorporar soporte para múltiples idiomas (L10N y/o I18N).
 - [ ] Utilizar Test Unitarios (Pytest).
-- [ ] Incorporar Autorización (Roles).
-- [ ] El sitio debe ser Responsive o Adaptative (verse bien en dispositivos móviles).
+- [X] Incorporar Autorización (Roles).
+- [X] El sitio debe ser Responsive o Adaptative (verse bien en dispositivos móviles).

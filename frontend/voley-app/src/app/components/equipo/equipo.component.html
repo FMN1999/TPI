@@ -7,5 +7,26 @@
   <p><strong>Victorias como Visitante:</strong> {{ equipo.cant_victorias_visit }}</p>
   <p><strong>Campeonatos Ganados:</strong> {{ equipo.campeonatos }}</p>
   <p><strong>Campeones Actuales:</strong> {{ equipo.campeones_actuales ? 'Sí' : 'No' }}</p>
+
+  <button (click)="toggleFormacionForm()">Agregar Formación</button>
+
+  <div *ngIf="showFormacionForm">
+    <form (ngSubmit)="crearFormacion()">
+      <div *ngFor="let i of arrayDeIndices; let index = index">
+        <label for="jugador_{{index + 1}}">Jugador {{index + 1}}:</label>
+        <select id="jugador_{{index + 1}}" [(ngModel)]="formacion.jugadores[index]" name="jugador_{{index + 1}}">
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
+        </select>
+      </div>
+
+      <label for="libero">Líbero:</label>
+      <select id="libero" [(ngModel)]="formacion.libero" name="libero">
+        <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
+      </select>
+
+      <button type="submit">Crear Formación</button>
+    </form>
+  </div>
 </div>
+
 
