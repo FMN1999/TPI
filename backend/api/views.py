@@ -153,12 +153,7 @@ class CrearLigaView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            categoria = data.get('categoria')
-            ptos_x_victoria = data.get('ptos_x_victoria')
-            ptos_x_32_vict = data.get('ptos_x_32_vict')
-            ptos_x_32_derrota = data.get('ptos_x_32_derrota')
-
-            liga = LigaController.crear_liga(categoria, ptos_x_victoria, ptos_x_32_vict, ptos_x_32_derrota)
+            liga = LigaController.crear_liga(data)
             return JsonResponse({'message': 'Liga registrada con éxito', 'id': liga.id}, safe=False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
@@ -218,16 +213,13 @@ class TemporadasPorLigaView(View):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CrearTemporadaView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            anio_desde = data.get('anio_desde')
-            anio_hasta = data.get('anio_hasta')
-            estado = data.get('estado')
-            id_liga = data.get('id_liga')
-            nueva_temporada = TemporadaController.crear_temporada(anio_desde, anio_hasta, estado, id_liga)
+            nueva_temporada = TemporadaController.crear_temporada(data)
             temporada_data = {
                 'id': nueva_temporada.id,
                 'anio_desde': nueva_temporada.anio_desde,
@@ -370,22 +362,8 @@ class SetView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            id_partido = data.get('id_partido')
-            puntos_local = data.get('puntos_local')
-            puntos_visita = data.get('puntos_visita')
-            nro_set = data.get('nro_set')
-            id_formacion_local = data.get('id_formacion_local')
-            id_formacion_visit = data.get('id_formacion_visit')
-
             # Llama al controlador para manejar la lógica de creación del set
-            resultado = SetController.crear_set_controller(
-                id_partido=id_partido,
-                puntos_local=puntos_local,
-                puntos_visita=puntos_visita,
-                nro_set=nro_set,
-                id_formacion_local=id_formacion_local,
-                id_formacion_visit=id_formacion_visit
-            )
+            resultado = SetController.crear_set_controller(data)
 
             if 'error' in resultado:
                 return JsonResponse({'error': resultado['error']}, status=400)
@@ -418,19 +396,7 @@ class AgregarSetView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            print(f"Datos recibidos: {data}")  # Añade este log para ver los datos que llegan
-
-            # Extrae los valores de 'data'
-            id_partido = data.get('id_partido')
-            puntos_local = data.get('puntos_local')
-            puntos_visita = data.get('puntos_visita')
-            id_formacion_local = data.get('id_formacion_local')
-            id_formacion_visit = data.get('id_formacion_visit')
-
-            print(f"id_partido: {id_partido}, puntos_local: {puntos_local}, puntos_visita: {puntos_visita}, id_formacion_local: {id_formacion_local}, id_formacion_visit: {id_formacion_visit}")  # Log de los valores individuales
-
-            # Llama al controlador
-            nuevo_set = SetController.agregar_set(id_partido, puntos_local, puntos_visita, id_formacion_local, id_formacion_visit)
+            nuevo_set = SetController.agregar_set(data)
 
             if nuevo_set:
                 return JsonResponse({"success": "Set agregado exitosamente"}, status=201)
@@ -527,29 +493,7 @@ class RegistrarCambioView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            print(f"Esto es antes: {data}")
-
-            id_jugador_sale = int(data['id_jugador_sale'])
-            id_jugador_entra = int(data['id_jugador_entra'])
-            id_formacion = int(data['id_formacion'])  # Asegúrate de convertir a entero si es un ID
-            cerro = data.get('cerro', False)  # Proveer un valor por defecto
-            permanente = data.get('permanente', False)  # Proveer un valor por defecto
-
-            print(f"Jugador que sale ID: {id_jugador_sale}")
-            print(f"Jugador que entra ID: {id_jugador_entra}")
-            print(f"Formación ID: {id_formacion}")
-            print(f"Cerró punto: {cerro}")
-            print(f"Cambio permanente: {permanente}")
-
-            # Usar el controlador para manejar la lógica
-            response_data = CambioController.registrar_cambio(
-                id_jugador_sale,
-                id_jugador_entra,
-                id_formacion,
-                cerro,
-                permanente
-            )
-
+            response_data = CambioController.registrar_cambio(data)
             return JsonResponse(response_data, status=201)
 
         except Exception as e:
@@ -572,5 +516,5 @@ class EstadisticasView(View):
     
 class CompruebaUsuario(View):
     def get(self, request, usuario_id):
-        tipo_usuario = UsuarioController.obtener_tipo_usuario_controller(usuario_id)
+        tipo_usuario = UsuarioController.obtener_tipo_usuario(usuario_id)
         return JsonResponse({'tipo': tipo_usuario})
