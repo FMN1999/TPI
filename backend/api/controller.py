@@ -1,6 +1,7 @@
 from .db import *
 from datetime import datetime
 import logging
+import bcrypt
 
 logger = logging.getLogger(__name__)
 
@@ -20,12 +21,15 @@ class UsuarioController:
     @staticmethod
     def iniciar_sesion(usuario, contrasenia):
         usuario_obj = UsuarioData.obtener_usuario_por_usuario(usuario)
-        if usuario_obj and usuario_obj.contrasenia == contrasenia:
+        if usuario_obj and bcrypt.checkpw   (contrasenia.encode('utf-8'), usuario_obj.contrasenia.encode('utf-8')):
             return usuario_obj
         return None
 
     @staticmethod
     def registrar_usuario(data):
+        contrasenia_plana = data.get('contrasenia')
+        contrasenia_hashed = bcrypt.hashpw(contrasenia_plana.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
         user = Usuario(
             fecha_nacimiento=data.get('fecha_nacimiento'),
             nombre=data.get('nombre'),
@@ -34,7 +38,7 @@ class UsuarioController:
             provincia_nacimiento=data.get('provincia_nacimiento'),
             email=data.get('email'),
             usuario=data.get('usuario'),
-            contrasenia=data.get('contrasenia'),
+            contrasenia=contrasenia_hashed,  # Guardar la contraseña hasheada
             sexo=data.get('sexo')
         )
         usuario = UsuarioData.crear_usuario(user)

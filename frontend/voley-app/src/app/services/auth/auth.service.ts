@@ -64,7 +64,7 @@ export class AuthService {
 
   getTipoUsuario(): string {
     // Devuelve la inicial del tipo de usuario desde el local storage o variable global
-    return localStorage.getItem('tipoUsuario') || this.tipoUsuario;
+    return sessionStorage.getItem('tipoUsuario') || this.tipoUsuario;
   }
 }
 

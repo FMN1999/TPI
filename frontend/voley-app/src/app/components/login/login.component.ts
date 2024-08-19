@@ -3,21 +3,39 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { HttpClientModule } from '@angular/common/http';
+import { NgIf } from '@angular/common'
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
   styleUrls: ['./login.component.css'],
-  imports: [FormsModule, HttpClientModule]
+  imports: [FormsModule, HttpClientModule, NgIf]
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
+  errorMessage: string = '';  // Variable para manejar errores
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  ngOnInit(): void {
+    // Verificar si el usuario ya está autenticado
+    const userId = sessionStorage.getItem('user_id');
+
+    if (userId) {
+      // Redirigir al usuario al home si ya está autenticado
+      this.router.navigate(['/']).then(r => {});
+    }
+  }
+
   onSubmit(): void {
+    // Verificar si ambos campos están completos
+    if (!this.username || !this.password) {
+      this.errorMessage = 'Por favor, complete ambos campos';  // Mensaje de error si falta algún campo
+      return;
+    }
+
     this.authService.login(this.username, this.password).subscribe(
       response => {
         localStorage.setItem('token', response.token);
@@ -28,24 +46,31 @@ export class LoginComponent {
           this.authService.obtenerTipoUsuario(idUsuarioNumber).subscribe(
             (response) => {
               this.authService.guardarTipoUsuario(response.tipo);
-              this.router.navigate(['/']).then(r => {});
+              this.router.navigate(['/']).then(r=>{});
             },
             (error) => {
               console.error('Error al obtener el tipo de usuario:', error);
             }
           );
         } else {
-          console.error('ID de usuario no encontrado en la respuesta del login');
+          this.errorMessage = 'ID de usuario no encontrado en la respuesta del login';
         }
       },
       error => {
+        if (error.status === 401) {
+          this.errorMessage = 'Nombre de usuario o contraseña incorrectos';
+        }
         console.error('Login error', error);
       }
     );
   }
 
-
+  cerrarFormulario(): void {
+    this.router.navigate(['/']).then(r => {});
+  }
 }
+
+
 
 
 

@@ -86,6 +86,7 @@ class EquiposView(View):
             for equipo in equipos
         ]
         return JsonResponse(equipos_data, safe=False)
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CrearEquipoView(View):
     def post(self, request):

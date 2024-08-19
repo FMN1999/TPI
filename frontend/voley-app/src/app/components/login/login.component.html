@@ -1,6 +1,12 @@
 <div class="container mt-5">
+  <button class="btn btn-close position-absolute top-0 end-0" aria-label="Close" (click)="cerrarFormulario()"></button>
+
+
   <h2>Iniciar Sesión</h2>
   <form (submit)="onSubmit()">
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
     <div class="mb-3">
       <label for="username" class="form-label">Nombre de usuario</label>
       <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required>
