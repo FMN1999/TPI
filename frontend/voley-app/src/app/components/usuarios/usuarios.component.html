@@ -3,9 +3,12 @@
   <input type="text" [(ngModel)]="query" (input)="buscarUsuarios()" placeholder="Buscar por nombre o apellido">
   <ul>
     <li *ngFor="let usuario of usuarios">
-      <a [routerLink]="['/perfil', usuario.id]">{{ usuario.nombre }} {{ usuario.apellido }}</a>
+      <a [routerLink]="['/perfil', usuario.id]">
+        {{ usuario.apellido }}, {{ usuario.nombre }} - {{ usuario.tipo_usuario }} - {{ usuario.equipo_actual || 'Sin equipo' }}
+      </a>
     </li>
   </ul>
 </div>
+
 
 

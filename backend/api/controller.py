@@ -21,7 +21,7 @@ class UsuarioController:
     @staticmethod
     def iniciar_sesion(usuario, contrasenia):
         usuario_obj = UsuarioData.obtener_usuario_por_usuario(usuario)
-        if usuario_obj and bcrypt.checkpw   (contrasenia.encode('utf-8'), usuario_obj.contrasenia.encode('utf-8')):
+        if usuario_obj and bcrypt.checkpw(contrasenia.encode('utf-8'), usuario_obj.contrasenia.encode('utf-8')):
             return usuario_obj
         return None
 
@@ -71,8 +71,41 @@ class UsuarioController:
         return UsuarioData.buscar_usuarios(query)
 
     @staticmethod
+    def obtener_equipo_actual(id_usuario, tipo_usuario):
+        equipo = None
+        if tipo_usuario == 'D':
+            dt = UsuarioData.obtener_dt_por_id(id_usuario)
+            equipo = EquipoDtData.obtener_equipo_actual_por_dt(dt.id)
+        elif tipo_usuario == 'A':
+            asis = UsuarioData.obtener_asist_por_id(id_usuario)
+            equipo = EquipoAsistenteData.obtener_equipo_actual_por_asistente(asis.id)
+        elif tipo_usuario == 'J':
+            jug = UsuarioData.obtener_jug_por_id(id_usuario)
+            equipo = EquipoJugadorData.obtener_equipo_actual_por_jugador(jug.id)
+
+        return equipo
+
+    @staticmethod
     def obtener_todos_usuarios():
-        return UsuarioData.obtener_todos()
+        usuarios = UsuarioData.obtener_todos()
+        usuarios_list = []
+
+        for usuario in usuarios:
+            tipo_usuario = UsuarioController.obtener_tipo_usuario(usuario.id)
+            equipo_actual = UsuarioController.obtener_equipo_actual(usuario.id, tipo_usuario)
+
+            usuarios_list.append({
+                'id': usuario.id,
+                'usuario': usuario.usuario,
+                'nombre': usuario.nombre,
+                'apellido': usuario.apellido,
+                'tipo_usuario': ('Asistente' if tipo_usuario == 'A' else
+                                 'Jugador' if tipo_usuario == 'J' else
+                                 'DT' if tipo_usuario == 'D' else 'Ninguno'),
+                'equipo_actual': equipo_actual.id_equipo.nombre if equipo_actual is not None else 'LIBRE'
+            })
+
+        return usuarios_list
 
     @staticmethod
     def obtener_dts():
@@ -96,6 +129,64 @@ class UsuarioController:
             return 'D'
         else:
             return 'N'  # Ninguno de los anteriores"""
+
+    @staticmethod
+    def usuario_existe(data):
+        return UsuarioData.usuario_existe(data.get('usuario'), data.get('email'))
+
+    @staticmethod
+    def obtiene_datos_completos(id_user):
+        datos = {
+            'peso': None,
+            'altura': None,
+            'telefono': None
+        }
+
+        tipo_usuario = UsuarioController.obtener_tipo_usuario(id_user)
+
+        if tipo_usuario == 'D':
+            dt = UsuarioData.obtener_dt_por_id(id_user)
+            if dt:
+                datos['telefono'] = dt.telefono
+        elif tipo_usuario == 'J':
+            jugador = UsuarioData.obtener_jug_por_id(id_user)
+            if jugador:
+                datos['peso'] = jugador.peso
+                datos['altura'] = jugador.altura
+
+        return datos
+
+    @staticmethod
+    def actualizar_usuario(usuario_id, data):
+        usuario = UsuarioData.obtener_usuario_por_id(usuario_id)
+        if usuario:
+            usuario.nombre = data.get('nombre', usuario.nombre)
+            usuario.apellido = data.get('apellido', usuario.apellido)
+            usuario.email = data.get('email', usuario.email)
+            usuario.sexo = data.get('sexo', usuario.sexo)
+            usuario.fecha_nacimiento = data.get('fecha_nacimiento', usuario.fecha_nacimiento)
+            usuario.ciudad_nacimiento = data.get('ciudad_nacimiento', usuario.ciudad_nacimiento)
+            usuario.provincia_nacimiento = data.get('provincia_nacimiento', usuario.provincia_nacimiento)
+            return UsuarioData.actualizar_usuario(usuario)
+        return None
+
+    @staticmethod
+    def actualizar_dt(usuario_id, data):
+        dt = UsuarioData.obtener_dt_por_id(usuario_id)
+        if dt:
+            dt.telefono = data.get('telefono', dt.telefono)
+            return UsuarioData.actualizar_dt(dt)
+        return None
+
+    @staticmethod
+    def actualizar_jugador(usuario_id, data):
+        jugador = UsuarioData.obtener_jug_por_id(usuario_id)
+        if jugador:
+            jugador.altura = data.get('altura', jugador.altura)
+            jugador.peso = data.get('peso', jugador.peso)
+            return UsuarioData.actualizar_jugador(jugador)
+        return None
+    
 
 
 class EquipoController:
@@ -452,8 +543,25 @@ class EstadisticasController:
             data['id_partido'] = partido
             data['id_asistente'] = asistente
             data['id_jugador'] = jugador
+            estad_data = Estadisticas(
+                remates_fallidos=data['remates_fallidos'],
+                remates_buenos=data['remates_buenos'],
+                defensas_fallidas=data['defensas_fallidas'],
+                defensas_buenas=data['defensas_buenas'],
+                bloqueos_fallidos=data['bloqueos_fallidos'],
+                bloqueos_buenos=data['bloqueos_buenos'],
+                saques_fallidos=data['saques_fallidos'],
+                saques_buenos=data['saques_buenos'],
+                recepciones_buenas=data['recepciones_buenas'],
+                recepciones_fallidas=data['recepciones_fallidas'],
+                fecha_carga=data['fecha_carga'],
+                id_partido=partido,
+                id_asistente=asistente,
+                id_jugador=jugador,
+            )
 
-            estadistica = EstadisticasData.crear_estadisticas(data)
+            print(data)
+            estadistica = EstadisticasData.crear_estadisticas(estad_data)
             return estadistica
         except Partido.DoesNotExist:
             raise ValueError('Partido no encontrado')
@@ -461,3 +569,48 @@ class EstadisticasController:
             raise ValueError('Asistente no encontrado')
         except Jugador.DoesNotExist:
             raise ValueError('Jugador no encontrado')
+
+    @staticmethod
+    def obtener_estadisticas_por_jugador(id):
+        try:
+            jug = UsuarioData.obtener_jug_por_id(id)
+            estadisticas = EstadisticasData.obtener_estadisticas_por_jugador(jug.id)
+            for key in estadisticas.keys():
+                if estadisticas[key] is None:
+                    estadisticas[key] = 0
+
+            if estadisticas:
+                total_remates = estadisticas['remates_buenos'] + estadisticas['remates_fallidos']
+                total_defensas = estadisticas['defensas_buenas'] + estadisticas['defensas_fallidas']
+                total_bloqueos = estadisticas['bloqueos_buenos'] + estadisticas['bloqueos_fallidos']
+                total_saques = estadisticas['saques_buenos'] + estadisticas['saques_fallidos']
+                total_recepciones = estadisticas['recepciones_buenas'] + estadisticas['recepciones_fallidas']
+
+                return {
+                    "remates_buenos": estadisticas['remates_buenos'],
+                    "remates_fallidos": estadisticas['remates_fallidos'],
+                    "defensas_buenas": estadisticas['defensas_buenas'],
+                    "defensas_fallidas": estadisticas['defensas_fallidas'],
+                    "bloqueos_buenos": estadisticas['bloqueos_buenos'],
+                    "bloqueos_fallidos": estadisticas['bloqueos_fallidos'],
+                    "saques_buenos": estadisticas['saques_buenos'],
+                    "saques_fallidos": estadisticas['saques_fallidos'],
+                    "recepciones_buenas": estadisticas['recepciones_buenas'],
+                    "recepciones_fallidas": estadisticas['recepciones_fallidas'],
+
+                    # Cálculo de porcentajes
+                    "porcentaje_aciertos_remates": (estadisticas[
+                                                        'remates_buenos'] / total_remates) * 100 if total_remates > 0 else 0,
+                    "porcentaje_aciertos_defensas": (estadisticas[
+                                                         'defensas_buenas'] / total_defensas) * 100 if total_defensas > 0 else 0,
+                    "porcentaje_aciertos_bloqueos": (estadisticas[
+                                                         'bloqueos_buenos'] / total_bloqueos) * 100 if total_bloqueos > 0 else 0,
+                    "porcentaje_aciertos_saques": (estadisticas[
+                                                       'saques_buenos'] / total_saques) * 100 if total_saques > 0 else 0,
+                    "porcentaje_aciertos_recepciones": (estadisticas[
+                                                            'recepciones_buenas'] / total_recepciones) * 100 if total_recepciones > 0 else 0,
+                }
+            else:
+                return None
+        except Exception as e:
+            raise e

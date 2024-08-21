@@ -11,6 +11,10 @@ class RegisterView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
+            # Verificar si ya existe un usuario con el mismo usuario o email
+            if UsuarioController.usuario_existe(data):
+                return JsonResponse({'error': 'El nombre de usuario o email ya está en uso'}, status=400)
+
             usuario = UsuarioController.registrar_usuario(data)
             return JsonResponse({'message': 'Usuario registrado con éxito', 'id': usuario.id}, status=201)
         except Exception as e:
@@ -36,9 +40,11 @@ class LoginView(View):
             return JsonResponse({'error': str(e)}, status=400)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UsuarioPerfilView(View):
     def get(self, request, usuario_id):
         usuario = UsuarioController.obtener_usuario_por_id(usuario_id)
+        adic = UsuarioController.obtiene_datos_completos(usuario_id)
         if usuario:
             return JsonResponse({
                 'id': usuario.id,
@@ -49,20 +55,33 @@ class UsuarioPerfilView(View):
                 'sexo': usuario.sexo,
                 'fecha_nacimiento': usuario.fecha_nacimiento,
                 'ciudad_nacimiento': usuario.ciudad_nacimiento,
-                'provincia_nacimiento': usuario.provincia_nacimiento
+                'provincia_nacimiento': usuario.provincia_nacimiento,
+                'peso': adic.get('peso'),
+                'altura': adic.get('altura'),
+                'telefono': adic.get('telefono')
             })
+        return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
+
+    def put(self, request, usuario_id):
+        data = json.loads(request.body)
+        usuario_actualizado = UsuarioController.actualizar_usuario(usuario_id, data)
+
+        if usuario_actualizado:
+            tipo_usuario = UsuarioController.obtener_tipo_usuario(usuario_id)
+
+            if tipo_usuario == 'D':
+                UsuarioController.actualizar_dt(usuario_id, data)
+            elif tipo_usuario == 'J':
+                UsuarioController.actualizar_jugador(usuario_id, data)
+
+            return JsonResponse({'mensaje': 'Usuario actualizado correctamente'})
+
         return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
 
 
 class UsuariosView(View):
     def get(self, request):
-        usuarios = UsuarioController.obtener_todos_usuarios()
-        usuarios_list = [{
-            'id': usuario.id,
-            'usuario': usuario.usuario,
-            'nombre': usuario.nombre,
-            'apellido': usuario.apellido
-        } for usuario in usuarios]
+        usuarios_list = UsuarioController.obtener_todos_usuarios()
         return JsonResponse(usuarios_list, safe=False)
 
 
@@ -86,6 +105,7 @@ class EquiposView(View):
             for equipo in equipos
         ]
         return JsonResponse(equipos_data, safe=False)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CrearEquipoView(View):
@@ -183,18 +203,19 @@ class LigaView(View):
         try:
             liga = LigaController.obtener_liga_por_id(liga_id)
             liga_data = {
-                            'id': liga.id,
-                            'categoria': liga.categoria,
-                            'ptos_x_victoria': liga.ptos_x_victoria,
-                            'ptos_x_32_vict': liga.ptos_x_32_vict,
-                            'ptos_x_32_derrota': liga.ptos_x_32_derrota
-                         }
+                'id': liga.id,
+                'categoria': liga.categoria,
+                'ptos_x_victoria': liga.ptos_x_victoria,
+                'ptos_x_32_vict': liga.ptos_x_32_vict,
+                'ptos_x_32_derrota': liga.ptos_x_32_derrota
+            }
             if liga:
                 return JsonResponse(liga_data, safe=False)
             else:
                 return JsonResponse({'error': 'Liga no encontrada'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
 
 class TemporadasPorLigaView(View):
     def get(self, request, liga_id):
@@ -272,7 +293,6 @@ class PosicionesView(View):
             return JsonResponse(posicion_data, safe=False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-
 
 
 class TemporadaDetailView(View):
@@ -448,7 +468,6 @@ class ObtenerFormacionesView(View):
         return JsonResponse({"error": "No se pudieron obtener los sets"}, status=400)
 
 
-
 class ObtenerSetsPorPartidoView(View):
     def get(self, request, id_partido):
         sets = SetController.obtener_sets_por_partido(id_partido)
@@ -513,8 +532,20 @@ class EstadisticasView(View):
             return JsonResponse({'error': str(e)}, status=404)
         except Exception as e:
             return JsonResponse({'error': 'Error al registrar las estadísticas'}, status=500)
-        
-    
+
+    def get(self, request, jugador_id):
+        try:
+            print(jugador_id)
+            estadisticas = EstadisticasController.obtener_estadisticas_por_jugador(jugador_id)
+            if estadisticas:
+                return JsonResponse(estadisticas, safe=False)
+            else:
+                return JsonResponse({"error": "Estadísticas no encontradas"}, status=404)
+        except Exception as e:
+            print(f"Error: {str(e)}")  # Se agrega un print para verificar el error
+            return JsonResponse({"error": str(e)}, status=500)
+
+
 class CompruebaUsuario(View):
     def get(self, request, usuario_id):
         tipo_usuario = UsuarioController.obtener_tipo_usuario(usuario_id)

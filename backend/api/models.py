@@ -11,7 +11,7 @@ class Usuario(models.Model):
     email = models.EmailField(unique=True)
     usuario = models.CharField(max_length=150, unique=True)
     contrasenia = models.CharField(max_length=150)
-    sexo = models.CharField(max_length=10) 
+    sexo = models.CharField(max_length=10)
 
     class Meta:
         db_table = 'Usuario'  # nombre de la tabla en MySQL
@@ -173,7 +173,7 @@ class Estadisticas(models.Model):
     recepciones_buenas = models.IntegerField()
     recepciones_fallidas = models.IntegerField()
     fecha_carga = models.DateField()
-    id_partido = models.ForeignKey(Partido, on_delete=models.CASCADE, db_column='id_partido')
+    id_partido = models.ForeignKey(Partido, on_delete=models.CASCADE, db_column='id_partido', null=True, blank=True)
     id_asistente = models.ForeignKey(Asistente, on_delete=models.CASCADE, db_column='id_asistente')
     id_jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE, db_column='id_jugador')
 

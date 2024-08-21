@@ -78,15 +78,43 @@ class UsuarioData:
 
     @staticmethod
     def obtener_dt_por_id(id_dt):
-        return DT.objects.get(id_usuario=id_dt)
+        try:
+            return DT.objects.get(id_usuario=id_dt)
+        except DT.DoesNotExist:
+            return None
 
     @staticmethod
-    def obtener_asist_por_id(id_asist):
-        return Asistente.objects.get(id_usuario=id_asist)
+    def obtener_asist_por_id(id_as):
+        try:
+            return Asistente.objects.get(id_usuario=id_as)
+        except DT.DoesNotExist:
+            return None
 
     @staticmethod
     def obtener_jug_por_id(id_jug):
-        return Jugador.objects.get(id_usuario=id_jug)
+        try:
+            return Jugador.objects.get(id_usuario=id_jug)
+        except Jugador.DoesNotExist:
+            return None
+
+    @staticmethod
+    def usuario_existe(usuario, email):
+        return Usuario.objects.filter(usuario=usuario).exists() or Usuario.objects.filter(email=email).exists()
+
+    @staticmethod
+    def actualizar_usuario(usuario):
+        usuario.save()
+        return usuario
+
+    @staticmethod
+    def actualizar_dt(dt):
+        dt.save()
+        return dt
+
+    @staticmethod
+    def actualizar_jugador(jugador):
+        jugador.save()
+        return jugador
 
 
 class EquipoData:
@@ -113,12 +141,26 @@ class EquipoAsistenteData:
         equipo_asistente.save()
         return equipo_asistente
 
+    @staticmethod
+    def obtener_equipo_actual_por_asistente(id_asistente):
+        try:
+            return EquipoAsistente.objects.filter(id_asistente=id_asistente, fecha_hasta__isnull=True).first()
+        except EquipoAsistente.DoesNotExist:
+            return None
+
 
 class EquipoDtData:
     @staticmethod
     def crear_equipodt(equipo_dt: EquipoDt):
         equipo_dt.save()
         return equipo_dt
+
+    @staticmethod
+    def obtener_equipo_actual_por_dt(id_dt):
+        try:
+            return EquipoDt.objects.filter(id_dt=id_dt, fecha_hasta__isnull=True).first()
+        except EquipoDt.DoesNotExist:
+            return None
 
 
 class EquipoJugadorData:
@@ -129,7 +171,17 @@ class EquipoJugadorData:
 
     @staticmethod
     def obtener_jugadores_por_equipo(equipo_id):
-        return EquipoJugador.objects.filter(id_equipo=equipo_id).all()
+        try:
+            return EquipoJugador.objects.filter(id_equipo=equipo_id).all()
+        except EquipoJugador.DoesNotExist:
+            return None
+
+    @staticmethod
+    def obtener_equipo_actual_por_jugador(id_jugador):
+        try:
+            return EquipoJugador.objects.filter(id_jugador=id_jugador, fecha_salida__isnull=True).first()
+        except EquipoJugador.DoesNotExist:
+            return None
 
 
 class LigaData:
@@ -272,5 +324,30 @@ class CambioData:
 class EstadisticasData:
     @staticmethod
     def crear_estadisticas(estadistica: Estadisticas):
+        print(estadistica)
         estadistica.save()
         return estadistica
+
+    @staticmethod
+    def obtener_estadisticas_por_jugador(id_jugador):
+        try:
+            from django.db.models import Sum
+
+            estadisticas = Estadisticas.objects.filter(id_jugador=id_jugador).aggregate(
+                remates_buenos=Sum('remates_buenos'),
+                remates_fallidos=Sum('remates_fallidos'),
+                defensas_buenas=Sum('defensas_buenas'),
+                defensas_fallidas=Sum('defensas_fallidas'),
+                bloqueos_buenos=Sum('bloqueos_buenos'),
+                bloqueos_fallidos=Sum('bloqueos_fallidos'),
+                saques_buenos=Sum('saques_buenos'),
+                saques_fallidos=Sum('saques_fallidos'),
+                recepciones_buenas=Sum('recepciones_buenas'),
+                recepciones_fallidas=Sum('recepciones_fallidas')
+            )
+
+            return estadisticas
+        except Estadisticas.DoesNotExist:
+            return None
+        except Exception as e:
+            raise e

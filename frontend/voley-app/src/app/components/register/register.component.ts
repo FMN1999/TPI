@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, NgForm} from "@angular/forms";
 import {NgIf} from "@angular/common";
 
 @Component({
@@ -22,15 +22,34 @@ export class RegisterComponent {
     nombre: '',
     apellido: '',
     sexo: '',
+    fecha_nacimiento: '',
+    ciudad_nacimiento: '',
+    provincia_nacimiento: '',
     tipo_usuario: '',
     telefono: '',  // Solo para DT
     altura: null,  // Solo para Jugador
     peso: null     // Solo para Jugador
   };
+  errorMessage: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  onSubmit() {
+  ngOnInit(): void {
+    // Verificar si el usuario ya está autenticado
+    const userId = sessionStorage.getItem('user_id')
+
+    if (userId) {
+      // Redirigir al usuario al home si ya está autenticado
+      this.router.navigate(['/']).then(r => {});
+    }
+  }
+
+  onSubmit(form: NgForm) {
+    if (form.invalid) {
+      this.errorMessage = 'Por favor complete todos los campos requeridos.';
+      return;
+    }
+
     const userData = {
       ...this.registroData,
       telefono: this.registroData.tipo_usuario === 'DT' ? this.registroData.telefono : null,
@@ -41,10 +60,11 @@ export class RegisterComponent {
     this.http.post('http://127.0.0.1:8000/api/register/', userData).subscribe(
       (response: any) => {
         console.log('Registro exitoso', response);
-        this.router.navigate(['/login']).then(r =>{} );
+        this.router.navigate(['/login']).then(r => {} );
       },
       (error) => {
         console.error('Error en el registro', error);
+        this.errorMessage = error.error?.error || 'El usuario o email ya existe. Intente nuevamente con uno nuevo.';
       }
     );
   }

@@ -57,9 +57,7 @@ export class LoginComponent {
         }
       },
       error => {
-        if (error.status === 401) {
           this.errorMessage = 'Nombre de usuario o contraseña incorrectos';
-        }
         console.error('Login error', error);
       }
     );
@@ -67,6 +65,10 @@ export class LoginComponent {
 
   cerrarFormulario(): void {
     this.router.navigate(['/']).then(r => {});
+  }
+
+  irARegistro(): void {
+    this.router.navigate(['/register']).then(r => {});
   }
 }
 

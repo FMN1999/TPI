@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
-import {FormsModule} from "@angular/forms";
-import {NgForOf} from "@angular/common";
-import {RouterLink} from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { NgForOf } from "@angular/common";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-usuarios',
@@ -17,6 +17,7 @@ import {RouterLink} from "@angular/router";
 })
 export class UsuariosComponent implements OnInit {
   usuarios: any[] = [];
+  todosLosUsuarios: any[] = [];
   query: string = '';
 
   constructor(private usuariosService: UsuariosService) {}
@@ -29,6 +30,7 @@ export class UsuariosComponent implements OnInit {
     this.usuariosService.obtenerUsuarios().subscribe(
       (data: any[]) => {
         this.usuarios = data;
+        this.todosLosUsuarios = data; // Guardar la lista completa
       },
       error => {
         console.error('Error al cargar usuarios:', error);
@@ -38,12 +40,18 @@ export class UsuariosComponent implements OnInit {
 
   buscarUsuarios(): void {
     const term = this.query.toLowerCase();
-    this.usuarios = this.usuarios.filter(usuario =>
-      usuario.nombre.toLowerCase().includes(term) ||
-      usuario.apellido.toLowerCase().includes(term)
-    );
-  }
 
+    if (term) {
+      // Filtrar usuarios cuando hay un término de búsqueda
+      this.usuarios = this.todosLosUsuarios.filter(usuario =>
+        usuario.nombre.toLowerCase().includes(term) ||
+        usuario.apellido.toLowerCase().includes(term)
+      );
+    } else {
+      // Si no hay término de búsqueda, mostrar todos los usuarios
+      this.usuarios = [...this.todosLosUsuarios];
+    }
+  }
 }
 
 

@@ -1,4 +1,6 @@
-<form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+<form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
   <div>
     <label for="usuario">Usuario</label>
     <input type="text" id="usuario" required [(ngModel)]="registroData.usuario" name="usuario">
@@ -31,6 +33,21 @@
       <option value="Femenino">Femenino</option>
       <option value="Otro">Otro</option>
     </select>
+  </div>
+
+  <div>
+    <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+    <input type="date" id="fecha_nacimiento" required [(ngModel)]="registroData.fecha_nacimiento" name="fecha_nacimiento">
+  </div>
+
+  <div>
+    <label for="ciudad_nacimiento">Ciudad de Nacimiento</label>
+    <input type="text" id="ciudad_nacimiento" required [(ngModel)]="registroData.ciudad_nacimiento" name="ciudad_nacimiento">
+  </div>
+
+  <div>
+    <label for="provincia_nacimiento">Provincia de Nacimiento</label>
+    <input type="text" id="provincia_nacimiento" required [(ngModel)]="registroData.provincia_nacimiento" name="provincia_nacimiento">
   </div>
 
   <div>

@@ -1,17 +1,88 @@
-<!-- perfil.component.html -->
 <div class="perfil">
   <h2>Mi Perfil</h2>
-  <p><strong>Nombre:</strong> {{ perfil.nombre }}</p>
-  <p><strong>Apellido:</strong> {{ perfil.apellido }}</p>
-  <p><strong>Email:</strong> {{ perfil.email }}</p>
-  <p><strong>Fecha de Nacimiento:</strong> {{ perfil.fecha_nacimiento }}</p>
-  <p><strong>Ciudad de Nacimiento:</strong> {{ perfil.ciudad_nacimiento }}</p>
-  <p><strong>Provincia de Nacimiento:</strong> {{ perfil.provincia_nacimiento }}</p>
-  <p><strong>Sexo:</strong> {{ perfil.sexo }}</p>
 
-  <div *ngIf="esAsistente">
-    <h3>Información de Asistente</h3>
-    <p>El usuario es un Asistente.</p>
+  <div *ngIf="!editMode">
+    <p><strong>Nombre:</strong> {{ perfil.nombre }}</p>
+    <p><strong>Apellido:</strong> {{ perfil.apellido }}</p>
+    <p><strong>Email:</strong> {{ perfil.email }}</p>
+    <p><strong>Fecha de Nacimiento:</strong> {{ perfil.fecha_nacimiento }}</p>
+    <p><strong>Ciudad de Nacimiento:</strong> {{ perfil.ciudad_nacimiento }}</p>
+    <p><strong>Provincia de Nacimiento:</strong> {{ perfil.provincia_nacimiento }}</p>
+    <p><strong>Sexo:</strong> {{ perfil.sexo }}</p>
+
+    <div *ngIf="esJugador">
+      <p><strong>Peso:</strong> {{ perfil.peso }}</p>
+      <p><strong>Altura:</strong> {{ perfil.altura }}</p>
+    </div>
+    <div *ngIf="esDt">
+      <p><strong>Teléfono:</strong> {{ perfil.telefono }}</p>
+    </div>
+    <div *ngIf="usuarioActual === perfil.id">
+      <button class="btn btn-primary" (click)="editProfile()">Editar Perfil</button>
+    </div>
+  </div>
+
+  <div *ngIf="editMode">
+    <form>
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" [(ngModel)]="perfilEditado.nombre" name="nombre" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" [(ngModel)]="perfilEditado.apellido" name="apellido" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" [(ngModel)]="perfilEditado.email" name="email" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+        <input type="date" id="fechaNacimiento" [(ngModel)]="perfilEditado.fecha_nacimiento" name="fechaNacimiento" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="ciudadNacimiento">Ciudad de Nacimiento:</label>
+        <input type="text" id="ciudadNacimiento" [(ngModel)]="perfilEditado.ciudad_nacimiento" name="ciudadNacimiento" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="provinciaNacimiento">Provincia de Nacimiento:</label>
+        <input type="text" id="provinciaNacimiento" [(ngModel)]="perfilEditado.provincia_nacimiento" name="provinciaNacimiento" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" [(ngModel)]="perfilEditado.sexo" name="sexo" class="form-control">
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+          <option value="O">Otro</option>
+        </select>
+      </div>
+
+      <div *ngIf="esJugador">
+        <div class="form-group">
+          <label for="peso">Peso:</label>
+          <input type="number" id="peso" [(ngModel)]="perfilEditado.peso" name="peso" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="altura">Altura:</label>
+          <input type="number" id="altura" [(ngModel)]="perfilEditado.altura" name="altura" class="form-control">
+        </div>
+      </div>
+
+      <div *ngIf="esDt">
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="text" id="telefono" [(ngModel)]="perfilEditado.telefono" name="telefono" class="form-control">
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-success" (click)="saveProfile()">Guardar Cambios</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancelar</button>
+    </form>
+  </div>
+
+
+  <div *ngIf="esAsistente && esJugador">
+    <h3>Estadísticas</h3>
     <!-- Botón para agregar estadísticas -->
     <button class="btn btn-primary" (click)="mostrarFormulario = true">Agregar estadísticas</button>
 
@@ -63,7 +134,26 @@
       </form>
     </div>
   </div>
+
+  <div *ngIf="esJugador">
+    <h3>Estadísticas del Jugador</h3>
+    <ul>
+      <li><strong>Remates Buenos:</strong> {{ estadisticas.remates_buenos }}</li>
+      <li><strong>Remates Fallidos:</strong> {{ estadisticas.remates_fallidos }}</li>
+      <li><strong>Defensas Buenas:</strong> {{ estadisticas.defensas_buenas }}</li>
+      <li><strong>Defensas Fallidas:</strong> {{ estadisticas.defensas_fallidas }}</li>
+      <li><strong>Bloqueos Buenos:</strong> {{ estadisticas.bloqueos_buenos }}</li>
+      <li><strong>Bloqueos Fallidos:</strong> {{ estadisticas.bloqueos_fallidos }}</li>
+      <li><strong>Saques Buenos:</strong> {{ estadisticas.saques_buenos }}</li>
+      <li><strong>Saques Fallidos:</strong> {{ estadisticas.saques_fallidos }}</li>
+      <li><strong>Recepciones Buenas:</strong> {{ estadisticas.recepciones_buenas }}</li>
+      <li><strong>Recepciones Fallidas:</strong> {{ estadisticas.recepciones_fallidas }}</li>
+      <li><strong>Porcentaje de Remates Exitosos:</strong> {{ estadisticas.porcentaje_aciertos_remates | number: '1.0-2' }}%</li>
+      <li><strong>Porcentaje de Defensas Exitosas:</strong> {{ estadisticas.porcentaje_aciertos_defensas | number: '1.0-2' }}%</li>
+      <li><strong>Porcentaje de Bloqueos Exitosos:</strong> {{ estadisticas.porcentaje_aciertos_bloqueos | number: '1.0-2' }}%</li>
+      <li><strong>Porcentaje de Saques Exitosos:</strong> {{ estadisticas.porcentaje_aciertos_saques | number: '1.0-2' }}%</li>
+      <li><strong>Porcentaje de Recepciones Exitosas:</strong> {{ estadisticas.porcentaje_aciertos_recepciones | number: '1.0-2' }}%</li>
+
+    </ul>
+  </div>
 </div>
-
-
-
