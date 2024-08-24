@@ -16,7 +16,11 @@ export class FormacionService {
   }
 
   getFormacionesPorEquipo(id_equipo: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/equipos/${id_equipo}/formaciones/`);
+    return this.http.get<any[]>(`${this.baseUrl}/obtener-formaciones/${id_equipo}/`);
   }
+
+  eliminarFormacion(id: number): Observable<any> {
+      return this.http.delete(`${this.baseUrl}/formaciones/${id}/`);
+    }
 }
 

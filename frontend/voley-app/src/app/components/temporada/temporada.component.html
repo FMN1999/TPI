@@ -11,7 +11,8 @@
   <h3>Equipos en esta Temporada</h3>
   <ul class="list-group">
     <li *ngFor="let posicion of posiciones" class="list-group-item">
-      {{ posicion.id_equipo.nombre }} - Puntos: {{ posicion.puntaje }}
+      <a [routerLink]="['/equipo',posicion.id_equipo]">{{ posicion.nombre }} - Puntos: {{ posicion.puntaje }}</a>
+      <button *ngIf="posicion.puntaje === 0" class="btn btn-danger btn-sm float-end" (click)="eliminarPosicion(posicion.id)">Eliminar</button>
     </li>
   </ul>
 
@@ -27,7 +28,12 @@
   <h3>Partidos en esta Temporada</h3>
   <ul class="list-group">
     <li *ngFor="let partido of partidos" class="list-group-item">
-      {{ partido.fecha }} - {{ partido.hora }} | {{ partido.id_local }} vs {{ partido.id_visita }}
+      <a [routerLink]="['/partido',partido.id]">{{ partido.fecha }} - {{ partido.hora }} | {{ partido.local }} vs {{ partido.visita }}</a>
+      {{partido.set_ganados_local}} - {{partido.set_ganados_visita}}
+      <div *ngIf="partido.set_ganados_local > 0 || partido.set_ganados_visita > 0">
+        Finalizado
+      </div>
+      <button class="btn btn-danger btn-sm float-right" (click)="eliminarPartido(partido.id)">Eliminar</button>
     </li>
   </ul>
 
@@ -43,10 +49,10 @@
         <input type="date" class="form-control" [(ngModel)]="nuevoPartido.fecha" placeholder="Fecha">
         <input type="time" class="form-control" [(ngModel)]="nuevoPartido.hora" placeholder="Hora">
         <select class="form-control" [(ngModel)]="nuevoPartido.id_local">
-          <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
+          <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }}</option>
         </select>
         <select class="form-control" [(ngModel)]="nuevoPartido.id_visita">
-          <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
+          <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }}</option>
         </select>
         <button class="btn btn-primary mt-2" (click)="agregarPartido()">Agregar Partido</button>
       </div>

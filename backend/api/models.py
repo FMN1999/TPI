@@ -113,6 +113,7 @@ class Formacion(models.Model):
 
 class Liga(models.Model):
     id = models.AutoField(primary_key=True)
+    nombre= models.CharField(max_length=20)
     categoria = models.CharField(max_length=20)
     ptos_x_victoria = models.IntegerField()
     ptos_x_32_vict = models.IntegerField()

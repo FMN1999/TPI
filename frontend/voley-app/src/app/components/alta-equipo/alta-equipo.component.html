@@ -41,7 +41,7 @@
     <div class="form-group">
       <label for="dt">Seleccionar DT:</label>
       <select id="dt" name="dt" class="form-control" (change)="onDtChange($event)">
-        <option *ngFor="let dt of dts" [value]="dt.id">{{ dt.nombre }}</option>
+        <option *ngFor="let dt of dts" [value]="dt.id">{{ dt.nombre }} {{dt.apellido}}</option>
       </select>
       <div *ngIf="selectedDt">
         <label for="dt_fecha_desde">Fecha Desde:</label>
@@ -55,7 +55,7 @@
     <div class="form-group">
       <label for="asistentes">Seleccionar Asistentes:</label>
       <select id="asistentes" name="asistentes" class="form-control" multiple (change)="onAsistentesChange($event)">
-        <option *ngFor="let asistente of asistentes" [value]="asistente.id">{{ asistente.nombre }}</option>
+        <option *ngFor="let asistente of asistentes" [value]="asistente.id">{{ asistente.nombre }} {{asistente.apellido}}</option>
       </select>
       <div *ngFor="let asistente of selectedAsistentes">
         <label for="asistente_fecha_desde">Fecha Desde:</label>
@@ -69,7 +69,7 @@
     <div class="form-group">
       <label for="jugadores">Seleccionar Jugadores:</label>
       <select id="jugadores" name="jugadores" class="form-control" multiple (change)="onJugadoresChange($event)">
-        <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
+        <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }} {{jugador.apellido  }}</option>
       </select>
       <div *ngFor="let jugador of selectedJugadores">
         <label for="jugador_nro">Nro Jugador:</label>
@@ -89,6 +89,9 @@
       </div>
     </div>
 
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
     <button type="submit" class="btn btn-primary">Crear Equipo</button>
   </form>
 </div>

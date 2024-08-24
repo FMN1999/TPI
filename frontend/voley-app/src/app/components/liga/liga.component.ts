@@ -3,7 +3,7 @@ import {ActivatedRoute, RouterLink} from '@angular/router';
 import { LigaService } from '../../services/ligas/liga.service';
 import { TemporadaService } from '../../services/temporadas/temporadas.service';
 import {FormsModule} from "@angular/forms";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-liga-detail',
@@ -12,7 +12,8 @@ import {NgForOf} from "@angular/common";
   imports: [
     FormsModule,
     NgForOf,
-    RouterLink
+    RouterLink,
+    NgIf
   ],
   styleUrls: ['./liga.component.css']
 })
@@ -25,6 +26,8 @@ export class LigaComponent implements OnInit {
     estado: '',
     id_liga: null
   };
+  successMessage: string = '';
+  errorMessage: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +56,22 @@ export class LigaComponent implements OnInit {
       this.nuevaTemporada.anio_hasta = null;
       this.nuevaTemporada.estado = '';
     });
+  }
+
+  eliminarTemporada(id: number): void {
+    this.temporadaService.eliminarTemporada(id).subscribe(
+      response => {
+        this.successMessage = 'Temporada eliminada con éxito';
+        this.errorMessage = '';
+        // Actualizar la lista de temporadas
+        this.temporadas = this.temporadas.filter(temporada => temporada.id !== id);
+      },
+      error => {
+        this.errorMessage = error.error.error || 'Error al eliminar la temporada';
+        this.successMessage = '';
+        console.error('Error al eliminar la temporada:', error);
+      }
+    );
   }
 }
 

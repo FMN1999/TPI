@@ -1,5 +1,6 @@
 <div class="container">
   <h2>Detalles de la Liga</h2>
+  <p><strong>Nombre:</strong> {{ liga?.nombre }}</p>
   <p><strong>Categoría:</strong> {{ liga?.categoria }}</p>
   <p><strong>Puntos por Victoria:</strong> {{ liga?.ptos_x_victoria }}</p>
   <p><strong>Puntos por 32ª Victoria:</strong> {{ liga?.ptos_x_32_vict }}</p>
@@ -9,7 +10,15 @@
   <ul class="list-group">
     <li *ngFor="let temporada of temporadas" class="list-group-item">
       <a [routerLink]="['/temporada', temporada.id]">{{ temporada.anio_desde }} - {{ temporada.anio_hasta }}</a>
+      <button (click)="eliminarTemporada(temporada.id)" class="btn btn-danger btn-sm float-right">Eliminar</button>
     </li>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-2">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success mt-2">
+      {{ successMessage }}
+    </div>
   </ul>
 
   <h3>Agregar Temporada</h3>

@@ -17,5 +17,9 @@ export class PosicionesService {
   agregarEquipoAlaTemporada(posicion: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/posiciones/`, posicion);
   }
+
+  eliminarPosicion(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/posicion/${id}/eliminar/`);
+  }
 }
 

@@ -186,28 +186,35 @@ class UsuarioController:
             jugador.peso = data.get('peso', jugador.peso)
             return UsuarioData.actualizar_jugador(jugador)
         return None
-    
 
 
 class EquipoController:
     @staticmethod
+    def equipo_existe(data):
+        nombre_equipo = data.get('nombre')
+        equipo_existente = EquipoData.obtener_equipo_por_nombre(nombre_equipo)
+        return equipo_existente is not None
+    
+    @staticmethod
     def crear_equipo_con_miembros(data):
-        try:
-            equipo = Equipo(
-                logo=data.get('logo'),
-                nombre=data.get('nombre'),
-                direccion=data.get('direccion'),
-                ciudad=data.get('ciudad'),
-                provincia=data.get('provincia'),
-                cant_victorias_local=data.get('cant_victorias_local'),
-                cant_victorias_visit=data.get('cant_victorias_visit'),
-                campeonatos=data.get('campeonatos'),
-                campeones_actuales=data.get('campeones_actuales')
-            )
-            equipo_guardado = EquipoData.crear_equipo(equipo)
+        equipo = Equipo(
+            logo=data.get('logo'),
+            nombre=data.get('nombre'),
+            direccion=data.get('direccion'),
+            ciudad=data.get('ciudad'),
+            provincia=data.get('provincia'),
+            cant_victorias_local=data.get('cant_victorias_local'),
+            cant_victorias_visit=data.get('cant_victorias_visit'),
+            campeonatos=data.get('campeonatos'),
+            campeones_actuales=data.get('campeones_actuales')
+        )
+        equipo_guardado = EquipoData.crear_equipo(equipo)
 
-            dt_data = data.get('dt')
-            dt = UsuarioData.obtener_dt_por_id(dt_data.get('id'))
+        dt_data = data.get('dt')
+        if dt_data:
+            print(dt_data)
+            dt = UsuarioData.obtener_dt(dt_data.get('id'))
+            print(dt)
             eqp_dt = EquipoDt(
                 id_equipo=equipo_guardado,
                 id_dt=dt,
@@ -216,20 +223,22 @@ class EquipoController:
             )
             EquipoDtData.crear_equipodt(eqp_dt)
 
-            asistentes_data = data.get('asistentes', [])
+        asistentes_data = data.get('asistentes', [])
+        if asistentes_data:
             for asistente_data in asistentes_data:
-                asistente = UsuarioData.obtener_asist_por_id(asistente_data.get('id'))
+                asistente = UsuarioData.obtener_asist(asistente_data.get('id'))
                 eqp_asist = EquipoAsistente(
                     id_equipo=equipo_guardado,
                     id_asistente=asistente,
                     fecha_desde=convertir_fecha(asistente_data.get('fecha_desde')),
-                    decha_hasta=convertir_fecha(asistente_data.get('fecha_hasta'))
+                    fecha_hasta=convertir_fecha(asistente_data.get('fecha_hasta'))
                 )
                 EquipoAsistenteData.crear_equipo_asistente(eqp_asist)
 
-            jugadores_data = data.get('jugadores', [])
+        jugadores_data = data.get('jugadores', [])
+        if jugadores_data:
             for jugador_data in jugadores_data:
-                jugador = UsuarioData.obtener_jug_por_id(jugador_data.get('id'))
+                jugador = UsuarioData.obtener_jug(jugador_data.get('id'))
                 eqp_jug = EquipoJugador(
                     id_equipo=equipo_guardado,
                     id_jugador=jugador,
@@ -241,10 +250,7 @@ class EquipoController:
                 )
                 EquipoJugadorData.crear_equipo_jugador(eqp_jug)
 
-            return equipo
-        except Exception as e:
-            logger.error(f"Error al crear el equipo y miembros: {e}")
-            raise
+        return equipo_guardado
 
     @staticmethod
     def fetch_all_equipos():
@@ -254,11 +260,117 @@ class EquipoController:
     def fetch_equipo_by_id(equipo_id):
         return EquipoData.get_equipo_by_id(equipo_id)
 
+    @staticmethod
+    def obtener_dts_actuales_por_equipo(equipo_id):
+        return EquipoDtData.obtener_dts_actuales_por_equipo(equipo_id)
+
+    @staticmethod
+    def obtener_asistentes_actuales_por_equipo(equipo_id):
+        return EquipoAsistenteData.obtener_asistentes_actuales_por_equipo(equipo_id)
+
+    @staticmethod
+    def obtener_jugadores_actuales_por_equipo(equipo_id):
+        return EquipoJugadorData.obtener_jugadores_actuales_por_equipo(equipo_id)
+
+    @staticmethod
+    def obtener_equipo_completo(equipo_id):
+        equipo = EquipoData.get_equipo_by_id(equipo_id)
+        if not equipo:
+            return None
+
+        dts = EquipoController.obtener_dts_actuales_por_equipo(equipo_id)
+        asistentes = EquipoController.obtener_asistentes_actuales_por_equipo(equipo_id)
+        jugadores = EquipoController.obtener_jugadores_actuales_por_equipo(equipo_id)
+
+
+        return {
+            'equipo': equipo,
+            'dts': dts,
+            'asistentes': asistentes,
+            'jugadores': jugadores
+        }
+
+    @staticmethod
+    def dar_de_baja_miembro(equipo_id, tipo, miembro_id):
+        print(equipo_id)
+        fecha_actual = datetime.now().date()
+        if tipo == 'dt':
+            equipo_dt = EquipoDtData.obtener_equipo_actual_por_dt(miembro_id)
+            if equipo_dt:
+                equipo_dt.fecha_hasta = fecha_actual
+                equipo_dt.save()
+                return True
+        elif tipo == 'asistente':
+            equipo_asistente = EquipoAsistenteData.obtener_equipo_actual_por_asistente(miembro_id)
+            if equipo_asistente:
+                equipo_asistente.fecha_hasta = fecha_actual
+                equipo_asistente.save()
+                return True
+        elif tipo == 'jugador':
+            equipo_jugador = EquipoJugadorData.obtener_equipo_actual_por_jugador(miembro_id)
+            if equipo_jugador:
+                equipo_jugador.fecha_salida = fecha_actual
+                equipo_jugador.save()
+                return True
+        return False
+
+    @staticmethod
+    def agregar_asistente_a_equipo(id_equipo, id_asistente):
+        equipo = EquipoData.get_equipo_by_id(id_equipo)
+        asistente = UsuarioData.obtener_asist(id_asistente)
+        equipo_asistente = EquipoAsistente(
+            id_equipo=equipo,
+            id_asistente=asistente,
+            fecha_desde= datetime.now().date()
+        )
+        return EquipoAsistenteData.crear_equipo_asistente(equipo_asistente)
+
+    # Agregar DT a un equipo
+    @staticmethod
+    def agregar_dt_a_equipo(id_equipo, id_dt):
+        equipo = EquipoData.get_equipo_by_id(id_equipo)
+        dt = UsuarioData.obtener_dt(id_dt)
+        equipo_dt = EquipoDt(
+            id_equipo=equipo,
+            id_dt=dt,
+            fecha_desde=datetime.now().date()
+        )
+        return EquipoDtData.crear_equipodt(equipo_dt)
+
+    # Agregar Jugador a un equipo
+    @staticmethod
+    def agregar_jugador_a_equipo(id_equipo, id_jugador, nro_jugador, posicion_pcpal, posicion_secundaria):
+        equipo = EquipoData.get_equipo_by_id(id_equipo)
+        jugador = UsuarioData.obtener_jug(id_jugador)
+        equipo_jugador = EquipoJugador(
+            id_equipo=equipo,
+            id_jugador=jugador,
+            nro_jugador=nro_jugador,
+            posicion_pcpal=posicion_pcpal,
+            posicion_secundaria=posicion_secundaria,
+            fecha_ingreso=datetime.now().date()
+        )
+        return EquipoJugadorData.crear_equipo_jugador(equipo_jugador)
+
+    @staticmethod
+    def verificar_asistente_equipo(id_usuario, id_equipo):
+        return EquipoAsistenteData.es_asistente_equipo(id_usuario, id_equipo)
+
+    @staticmethod
+    def obtener_equipos_fuera_de_temporada(id_temporada):
+        return EquipoData.obtener_equipos_fuera_de_temporada(id_temporada)
+
 
 class LigaController:
     @staticmethod
+    def liga_existe(data):
+        nombre_liga = data.get('nombre')
+        liga_existente = LigaData.obtener_liga_por_nombre(nombre_liga)
+        return liga_existente is not None
+    @staticmethod
     def crear_liga(data):
         liga = Liga(
+            nombre=data.get('nombre'),
             categoria=data.get('categoria'),
             ptos_x_victoria=data.get('ptos_x_victoria'),
             ptos_x_32_vict=data.get('ptos_x_32_vict'),
@@ -295,6 +407,10 @@ class TemporadaController:
     def obtener_temporada(id):
         return TemporadaData.obtener_temporada_por_id(id)
 
+    @staticmethod
+    def eliminar_temporada(id):
+        return TemporadaData.eliminar_temporada(id)
+
 
 class PosicionesController:
     @staticmethod
@@ -315,11 +431,24 @@ class PosicionesController:
     def obtener_posiciones(id_temporada):
         return PosicionesData.obtener_posiciones_por_temporada(id_temporada)
 
+    @staticmethod
+    def eliminar_posicion(id):
+        return PosicionesData.eliminar_posicion(id)
+
 
 class PartidoController:
     @staticmethod
-    def agregar_partido(partido_data):
-        return PartidoData.agregar_partido(partido_data)
+    def agregar_partido(data):
+        partido = Partido(
+            fecha=data.get('fecha'),
+            hora=data.get('hora'),
+            id_local=EquipoData.get_equipo_by_id(int(data.get('id_local'))),
+            id_visita= EquipoData.get_equipo_by_id(int(data.get('id_visita'))),
+            set_ganados_local= data.get('set_ganados_local'),
+            set_ganados_visita= data.get('set_ganados_visita'),
+            id_temporada=TemporadaData.obtener_temporada_por_id(data.get('id_temporada'))
+        )
+        return PartidoData.agregar_partido(partido)
 
     @staticmethod
     def obtener_partidos_por_temporada(temporada_id):
@@ -328,8 +457,9 @@ class PartidoController:
     @staticmethod
     def ver_detalles_partido(id_partido):
         partido = PartidoData.obtener_partido_por_id(id_partido)
+        print(partido)
         sets = SetData.obtener_sets_por_partido(partido)
-        if partido and sets:
+        if partido:
             return {
                 "partido": {
                     "id": partido.id,
@@ -395,6 +525,10 @@ class PartidoController:
         except:
             return False
 
+    @staticmethod
+    def eliminar_partido_si_puntaje_cero(partido_id):
+        return PartidoData.eliminar_partido_si_puntaje_cero(partido_id)
+
 
 class FormacionController:
     @staticmethod
@@ -432,6 +566,10 @@ class FormacionController:
     @staticmethod
     def obtener_formaciones_por_equipo(id_equipo):
         return FormacionData.obtener_formaciones_por_equipo(id_equipo)
+
+    @staticmethod
+    def eliminar_formacion(id_formacion):
+        return FormacionData.eliminar_formacion(id_formacion    )
 
     @staticmethod
     def obtener_formaciones_equipo(id_equipo):

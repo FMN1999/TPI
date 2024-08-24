@@ -54,15 +54,33 @@ class UsuarioData:
 
     @staticmethod
     def obtener_dts():
-        return DT.objects.all()
+        final = []
+        dts = DT.objects.all()
+        for dt in dts:
+            # Verificar si el DT no está en ningún equipo con fecha_hasta nula
+            if not EquipoDt.objects.filter(id_dt=dt.id, fecha_hasta__isnull=True).exists():
+                final.append(dt)
+        return final
 
     @staticmethod
     def obtener_asistentes():
-        return Asistente.objects.all()
+        final = []
+        asistentes = Asistente.objects.all()
+        for asistente in asistentes:
+            # Verificar si el Asistente no está en ningún equipo con fecha_hasta nula
+            if not EquipoAsistente.objects.filter(id_asistente=asistente.id, fecha_hasta__isnull=True).exists():
+                final.append(asistente)
+        return final
 
     @staticmethod
     def obtener_jugadores():
-        return Jugador.objects.all()
+        final = []
+        jugadores = Jugador.objects.all()
+        for jugador in jugadores:
+            # Verificar si el Jugador no está en ningún equipo con fecha_salida nula
+            if not EquipoJugador.objects.filter(id_jugador=jugador.id, fecha_salida__isnull=True).exists():
+                final.append(jugador)
+        return final
 
     @staticmethod
     def existe_asistente(id_usuario):
@@ -98,6 +116,27 @@ class UsuarioData:
             return None
 
     @staticmethod
+    def obtener_dt(id_dt):
+        try:
+            return DT.objects.get(id=id_dt)
+        except DT.DoesNotExist:
+            return None
+
+    @staticmethod
+    def obtener_asist(id_as):
+        try:
+            return Asistente.objects.get(id=id_as)
+        except DT.DoesNotExist:
+            return None
+
+    @staticmethod
+    def obtener_jug(id_jug):
+        try:
+            return Jugador.objects.get(id=id_jug)
+        except Jugador.DoesNotExist:
+            return None
+
+    @staticmethod
     def usuario_existe(usuario, email):
         return Usuario.objects.filter(usuario=usuario).exists() or Usuario.objects.filter(email=email).exists()
 
@@ -124,6 +163,13 @@ class EquipoData:
         return equipo
 
     @staticmethod
+    def obtener_equipo_por_nombre(nombre: str):
+        try:
+            return Equipo.objects.filter(nombre=nombre).first()
+        except Equipo.DoesNotExist:
+            return None
+
+    @staticmethod
     def get_all_equipos():
         return Equipo.objects.all()
 
@@ -133,6 +179,12 @@ class EquipoData:
             return Equipo.objects.get(id=equipo_id)
         except Equipo.DoesNotExist:
             return None
+
+    @staticmethod
+    def obtener_equipos_fuera_de_temporada(id_temporada):
+        return Equipo.objects.exclude(
+            id__in=Posiciones.objects.filter(id_temporada=id_temporada).values_list('id_equipo', flat=True)
+        )
 
 
 class EquipoAsistenteData:
@@ -148,6 +200,21 @@ class EquipoAsistenteData:
         except EquipoAsistente.DoesNotExist:
             return None
 
+    @staticmethod
+    def obtener_asistentes_actuales_por_equipo(equipo_id):
+        return EquipoAsistente.objects.filter(id_equipo=equipo_id, fecha_hasta__isnull=True)
+
+    @staticmethod
+    def es_asistente_equipo(id_usuario, id_equipo):
+        try:
+            return EquipoAsistente.objects.filter(
+                id_asistente__id_usuario__id=id_usuario,
+                id_equipo=id_equipo,
+                fecha_hasta__isnull=True
+            ).exists()
+        except EquipoAsistente.DoesNotExist:
+            return False
+
 
 class EquipoDtData:
     @staticmethod
@@ -161,6 +228,10 @@ class EquipoDtData:
             return EquipoDt.objects.filter(id_dt=id_dt, fecha_hasta__isnull=True).first()
         except EquipoDt.DoesNotExist:
             return None
+
+    @staticmethod
+    def obtener_dts_actuales_por_equipo(equipo_id):
+        return EquipoDt.objects.filter(id_equipo=equipo_id,fecha_hasta__isnull=True)
 
 
 class EquipoJugadorData:
@@ -183,6 +254,10 @@ class EquipoJugadorData:
         except EquipoJugador.DoesNotExist:
             return None
 
+    @staticmethod
+    def obtener_jugadores_actuales_por_equipo(equipo_id):
+        return EquipoJugador.objects.filter(id_equipo=equipo_id, fecha_salida__isnull=True)
+
 
 class LigaData:
     @staticmethod
@@ -198,6 +273,13 @@ class LigaData:
     def obtener_liga_por_id(liga_id):
         return Liga.objects.get(id=liga_id)
 
+    @staticmethod
+    def obtener_liga_por_nombre(nombre):
+        try:
+            return Liga.objects.filter(nombre=nombre).first()
+        except Liga.DoesNotExist:
+            return None
+
 
 class TemporadaData:
     @staticmethod
@@ -212,6 +294,15 @@ class TemporadaData:
     @staticmethod
     def obtener_temporada_por_id(id):
         return Temporada.objects.get(id=id)
+
+    @staticmethod
+    def eliminar_temporada(id):
+        try:
+            temporada = Temporada.objects.get(id=id)
+            temporada.delete()
+            return True
+        except Temporada.DoesNotExist:
+            return False
 
 
 class PosicionesData:
@@ -236,6 +327,18 @@ class PosicionesData:
     def obtener_por_equipo_temp(equipo, temporada):
         return Posiciones.objects.filter(id_quipo=equipo, id_temporada=temporada)
 
+    @staticmethod
+    def eliminar_posicion(id):
+        try:
+            posicion = Posiciones.objects.get(id=id)
+            if posicion.puntaje != 0:
+                return {'error': 'No se puede eliminar la posición porque el puntaje no es 0'}
+            posicion.delete()
+            return {'success': True}
+        except Posiciones.DoesNotExist:
+            return {'error': 'Posición no encontrada'}
+
+
 
 class PartidoData:
     @staticmethod
@@ -254,6 +357,14 @@ class PartidoData:
     @staticmethod
     def actualizar_partido(partido):
         partido.save()
+
+    @staticmethod
+    def eliminar_partido_si_puntaje_cero(partido_id):
+        partido = Partido.objects.get(id=partido_id)
+        if partido.set_ganados_local == 0 and partido.set_ganados_visita == 0:
+            partido.delete()
+            return True
+        return False
 
 
 class FormacionData:
@@ -280,6 +391,11 @@ class FormacionData:
             return Formacion.objects.filter(id_equipo=id_equipo)
         except:
             return None
+
+    @staticmethod
+    def eliminar_formacion(id_formacion):
+        formacion = Formacion.objects.get(id=id_formacion)
+        formacion.delete()
 
 
 class JugadorData:

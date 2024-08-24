@@ -22,4 +22,8 @@ export class TemporadaService {
   getTemporada(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/temporada/${id}`);
   }
+
+  eliminarTemporada(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/temporada/${id}/eliminar/`);
+  }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EquiposService } from '../../services/equipos/equipos.service';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgForOf, NgIf } from "@angular/common";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-alta-equipo',
@@ -33,8 +34,9 @@ export class AltaEquipoComponent implements OnInit {
     campeonatos: 0,
     campeones_actuales: false
   };
+  errorMessage: string = '';
 
-  constructor(private equiposService: EquiposService) {}
+  constructor(private equiposService: EquiposService, private router: Router) {}
 
   ngOnInit(): void {
     this.getDts();
@@ -96,38 +98,47 @@ export class AltaEquipoComponent implements OnInit {
 
   onSubmit(): void {
     const equipoData = {
-      nombre: this.team.nombre,
-      logo: this.team.logo,
-      direccion: this.team.direccion,
-      ciudad: this.team.ciudad,
-      provincia: this.team.provincia,
-      cant_victorias_local: this.team.cant_victorias_local,
-      cant_victorias_visit: this.team.cant_victorias_visit,
-      campeonatos: this.team.campeonatos,
-      campeones_actuales: this.team.campeones_actuales,
-      dt: {
-        id: this.selectedDt.id,
-        fecha_desde: this.selectedDt.fecha_desde,
-        fecha_hasta: this.selectedDt.fecha_hasta
-      },
-      asistentes: this.selectedAsistentes.map(asistente => ({
-        id: asistente.id,
-        fecha_desde: asistente.fecha_desde,
-        fecha_hasta: asistente.fecha_hasta
-      })),
-      jugadores: this.selectedJugadores.map(jugador => ({
-        id: jugador.id,
-        fecha_ingreso: jugador.fecha_ingreso,
-        fecha_salida: jugador.fecha_salida,
-        nro_jugador: jugador.nro_jugador,
-        posicion_pcpal: jugador.posicion_pcpal,
-        posicion_secundaria: jugador.posicion_secundaria
-      }))
+        nombre: this.team.nombre,
+        logo: this.team.logo,
+        direccion: this.team.direccion,
+        ciudad: this.team.ciudad,
+        provincia: this.team.provincia,
+        cant_victorias_local: this.team.cant_victorias_local,
+        cant_victorias_visit: this.team.cant_victorias_visit,
+        campeonatos: this.team.campeonatos,
+        campeones_actuales: this.team.campeones_actuales,
+        dt: this.selectedDt ? {  // Verifica si selectedDt no es null
+            id: this.selectedDt.id,
+            fecha_desde: this.selectedDt.fecha_desde || null,
+            fecha_hasta: this.selectedDt.fecha_hasta || null
+        } : null,  // Si es null, asigna null
+        asistentes: this.selectedAsistentes.length > 0 ? this.selectedAsistentes.map(asistente => ({
+            id: asistente.id,
+            fecha_desde: asistente.fecha_desde || null,
+            fecha_hasta: asistente.fecha_hasta || null
+        })) : [],  // Si no hay asistentes, devuelve un array vacío
+        jugadores: this.selectedJugadores.length > 0 ? this.selectedJugadores.map(jugador => ({
+            id: jugador.id,
+            fecha_ingreso: jugador.fecha_ingreso || null,
+            fecha_salida: jugador.fecha_salida || null,
+            nro_jugador: jugador.nro_jugador || null,
+            posicion_pcpal: jugador.posicion_pcpal || null,
+            posicion_secundaria: jugador.posicion_secundaria || null
+        })) : []  // Si no hay jugadores, devuelve un array vacío
     };
 
-    this.equiposService.crearEquipo(equipoData).subscribe(response => {
-      console.log('Equipo creado:', response);
-    });
+    console.log('Objeto equipoData:', equipoData); // Log de depuración
+
+    this.equiposService.crearEquipo(equipoData).subscribe(
+        response => {
+            console.log('Equipo creado con éxito', response);
+            this.router.navigate(['/']);  // Redirige a la página principal o donde sea necesario
+        },
+        error => {
+            this.errorMessage = error.error.error || 'Error al crear el equipo';  // Captura y muestra el mensaje de error
+            console.error('Error al crear equipo', error);
+        }
+    );
   }
 }
 

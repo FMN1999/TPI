@@ -11,7 +11,7 @@
   </div>
   <ul class="list-group">
     <li *ngFor="let liga of ligas" class="list-group-item">
-      <a [routerLink]="['/liga', liga.id]">{{ liga.categoria }}</a>
+      <a [routerLink]="['/liga', liga.id]">{{liga.nombre}} - {{ liga.categoria }}</a>
     </li>
   </ul>
 </div>
