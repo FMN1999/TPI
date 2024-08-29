@@ -42,8 +42,11 @@ urlpatterns = [
     path('estadisticas/jugador/<int:jugador_id>/', views.EstadisticasView.as_view(), name='estadisticas_details'),
     path('formaciones/<int:id_formacion>/', views.ObtenerFormacionesView.as_view(), name='eliminar-formaciones'),
     path('equipos/<int:id_equipo>/verificar-asistente/<int:id_usuario>/', views.VerificarAsistenteView.as_view(), name='verificar_asistente'),
+    path('equipos/<int:id_equipo>/verificar-dt/<int:id_usuario>/', views.VerificarDtView.as_view(), name='verificar_dt'),
     path('temporada/<int:id>/eliminar/', views.TemporadasPorLigaView.as_view(), name='eliminar_temporada'),
     path('posicion/<int:id>/eliminar/', views.PosicionesView.as_view(), name='eliminar_posicion'),
     path('equipos-temporada/<int:temporada_id>/', views.EquiposFueraDeTemporadaView.as_view(), name='equipos-para-temporada'),
     path('eliminar-partido/<int:partido_id>/', views.PartidosView.as_view(), name='eliminar_partidos'),
+    path('sets/eliminar/<int:id_set>/', views.AgregarSetView.as_view(), name='eliminar_set'),
+    path('cambios/partido/<int:id_partido>/', views.RegistrarCambioView.as_view(), name='cambios_por_partido'),
 ]

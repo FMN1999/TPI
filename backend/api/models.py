@@ -136,8 +136,8 @@ class Temporada(models.Model):
 
 class Posiciones(models.Model):
     id = models.AutoField(primary_key=True)
-    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE,db_column='id_equipo')
-    id_temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE,db_column='id_temporada')
+    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE,db_column='id_equipo', related_name='id_equipo')
+    id_temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE,db_column='id_temporada', related_name='id_temporada')
     puntaje = models.IntegerField()
     set_ganados = models.IntegerField()
     set_en_contra = models.IntegerField()
@@ -156,6 +156,7 @@ class Partido(models.Model):
     id_temporada = models.ForeignKey(Temporada, on_delete=models.CASCADE, db_column='id_temporada')
     set_ganados_visita = models.IntegerField()
     id_visita = models.ForeignKey(Equipo, on_delete=models.CASCADE, db_column='id_visita', related_name='partidos_visita')
+    estado = models.CharField(max_length=15)
 
     class Meta:
         db_table = 'Partido'
@@ -189,9 +190,9 @@ class Set(models.Model):
     id_partido = models.ForeignKey(Partido, on_delete=models.CASCADE, db_column='id_partido')
     nro_set = models.IntegerField()
     id_formacion_local = models.ForeignKey(Formacion, on_delete=models.CASCADE, db_column='id_formacion_local',
-                                           related_name='id_formacion_local')
+                                           related_name='id_formacion_local', null=True, blank=True)
     id_formacion_visit = models.ForeignKey(Formacion, on_delete=models.CASCADE, db_column='id_formacion_visit',
-                                           related_name='id_formacion_visit')
+                                           related_name='id_formacion_visit', null=True, blank=True)
 
     class Meta:
         db_table = 'Set'
@@ -206,6 +207,7 @@ class Cambio(models.Model):
     id_formacion = models.ForeignKey(Formacion, on_delete=models.CASCADE, db_column='id_formacion')
     cerro = models.BooleanField()
     permanente = models.BooleanField()
+    id_partido = models.IntegerField()
 
     class Meta:
         db_table = 'Cambio'

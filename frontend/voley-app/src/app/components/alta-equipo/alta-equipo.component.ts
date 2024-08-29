@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EquiposService } from '../../services/equipos/equipos.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgForOf, NgIf } from "@angular/common";
 import { Router } from '@angular/router';
@@ -35,13 +36,19 @@ export class AltaEquipoComponent implements OnInit {
     campeones_actuales: false
   };
   errorMessage: string = '';
+  tipo: string | undefined;
 
-  constructor(private equiposService: EquiposService, private router: Router) {}
+  constructor(private equiposService: EquiposService, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.getDts();
     this.getAsistentes();
     this.getJugadores();
+    const idUsuario= this.authService.getUsuarioId();
+
+    this.authService.obtenerTipoUsuario(Number(idUsuario)).subscribe((data: { tipo: string; }) => {
+      this.tipo = data.tipo;
+    });
   }
 
   getDts(): void {

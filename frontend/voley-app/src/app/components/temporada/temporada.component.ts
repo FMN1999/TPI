@@ -3,6 +3,7 @@ import {ActivatedRoute, RouterLink} from '@angular/router';
 import { TemporadaService } from '../../services/temporadas/temporadas.service';
 import { PosicionesService } from '../../services/posiciones/posiciones.service';
 import { EquiposService } from '../../services/equipos/equipos.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { PartidoService } from '../../services/partidos/partidos.service';
 import { NgForOf, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -34,9 +35,11 @@ export class TemporadaComponent implements OnInit {
     set_ganados_local: 0,
     set_ganados_visita: 0
   };
+  tipo: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
+    private authService: AuthService,
     private temporadaService: TemporadaService,
     private posicionesService: PosicionesService,
     private equipoService: EquiposService,
@@ -51,6 +54,19 @@ export class TemporadaComponent implements OnInit {
       });
       this.posicionesService.getPosicionesPorTemporada(temporadaId).subscribe(data => {
         this.posiciones = data;
+        this.posiciones.sort((a, b) => {
+          if (b.puntaje !== a.puntaje) {
+            return b.puntaje - a.puntaje;
+          }
+          if (b.set_ganados !== a.set_ganados) {
+            return b.set_ganados - a.set_ganados;
+          }
+          if (a.set_en_contra !== b.set_en_contra) {
+            return a.set_en_contra - b.set_en_contra;
+          }
+          return b.diferencia_sets - a.diferencia_sets;
+        });
+
       });
       this.equipoService.getEquiposTemporada(Number(temporadaId)).subscribe(data => {
         this.equipos = data;
@@ -59,6 +75,12 @@ export class TemporadaComponent implements OnInit {
         this.partidos = data;
       });
     }
+
+    const idUsuario= this.authService.getUsuarioId();
+
+    this.authService.obtenerTipoUsuario(Number(idUsuario)).subscribe((data: { tipo: string; }) => {
+      this.tipo = data.tipo;
+    });
   }
 
   abrirModal(): void {

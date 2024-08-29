@@ -11,13 +11,15 @@
   <h3>Equipos en esta Temporada</h3>
   <ul class="list-group">
     <li *ngFor="let posicion of posiciones" class="list-group-item">
-      <a [routerLink]="['/equipo',posicion.id_equipo]">{{ posicion.nombre }} - Puntos: {{ posicion.puntaje }}</a>
-      <button *ngIf="posicion.puntaje === 0" class="btn btn-danger btn-sm float-end" (click)="eliminarPosicion(posicion.id)">Eliminar</button>
+      <a [routerLink]="['/equipo',posicion.id_equipo]">
+        {{ posicion.nombre }} - Puntos: {{ posicion.puntaje }} - {{posicion.set_ganados}} - {{posicion.set_en_contra}} - {{posicion.diferencia_sets}}
+      </a>
+      <button *ngIf="posicion.puntaje === 0 && (tipo==='A' || tipo==='D')" class="btn btn-danger btn-sm float-end" (click)="eliminarPosicion(posicion.id)">Eliminar</button>
     </li>
   </ul>
 
-  <h4>Agregar Equipo a la Temporada</h4>
-  <div class="form-group">
+  <h4 *ngIf="tipo==='A' || tipo==='D'">Agregar Equipo a la Temporada</h4>
+  <div *ngIf="tipo==='A' || tipo==='D'" class="form-group">
     <select class="form-control" [(ngModel)]="nuevoEquipoId">
       <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
     </select>
@@ -31,14 +33,14 @@
       <a [routerLink]="['/partido',partido.id]">{{ partido.fecha }} - {{ partido.hora }} | {{ partido.local }} vs {{ partido.visita }}</a>
       {{partido.set_ganados_local}} - {{partido.set_ganados_visita}}
       <div *ngIf="partido.set_ganados_local > 0 || partido.set_ganados_visita > 0">
-        Finalizado
+        {{partido.estado}}
       </div>
-      <button class="btn btn-danger btn-sm float-right" (click)="eliminarPartido(partido.id)">Eliminar</button>
+      <button *ngIf="partido.estado !== 'Finalizado' && (tipo==='A' || tipo==='D')" class="btn btn-danger btn-sm float-right" (click)="eliminarPartido(partido.id)">Eliminar</button>
     </li>
   </ul>
 
   <!-- Botón para abrir el modal de agregar partido -->
-  <button class="btn btn-primary mt-4" (click)="abrirModal()">Agregar Partido</button>
+  <button *ngIf="tipo==='A' || tipo==='D'" class="btn btn-primary mt-4" (click)="abrirModal()">Agregar Partido</button>
 
   <!-- Modal para agregar partido -->
   <div *ngIf="modalAbierto" class="modal">
@@ -52,7 +54,7 @@
           <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }}</option>
         </select>
         <select class="form-control" [(ngModel)]="nuevoPartido.id_visita">
-          <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }}</option>
+          <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }} </option>
         </select>
         <button class="btn btn-primary mt-2" (click)="agregarPartido()">Agregar Partido</button>
       </div>

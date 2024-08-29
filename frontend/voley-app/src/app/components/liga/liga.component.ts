@@ -4,6 +4,7 @@ import { LigaService } from '../../services/ligas/liga.service';
 import { TemporadaService } from '../../services/temporadas/temporadas.service';
 import {FormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-liga-detail',
@@ -28,11 +29,13 @@ export class LigaComponent implements OnInit {
   };
   successMessage: string = '';
   errorMessage: string = '';
+  tipo: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
     private ligaService: LigaService,
-    private temporadaService: TemporadaService
+    private temporadaService: TemporadaService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -47,6 +50,12 @@ export class LigaComponent implements OnInit {
         this.temporadas = data;
       });
     }
+
+    const idUsuario= this.authService.getUsuarioId();
+
+    this.authService.obtenerTipoUsuario(Number(idUsuario)).subscribe((data: { tipo: string; }) => {
+      this.tipo = data.tipo;
+    });
   }
 
   agregarTemporada(): void {

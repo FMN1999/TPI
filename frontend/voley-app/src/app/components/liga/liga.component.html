@@ -10,7 +10,7 @@
   <ul class="list-group">
     <li *ngFor="let temporada of temporadas" class="list-group-item">
       <a [routerLink]="['/temporada', temporada.id]">{{ temporada.anio_desde }} - {{ temporada.anio_hasta }}</a>
-      <button (click)="eliminarTemporada(temporada.id)" class="btn btn-danger btn-sm float-right">Eliminar</button>
+      <button *ngIf="tipo==='A' || tipo==='D'" (click)="eliminarTemporada(temporada.id)" class="btn btn-danger btn-sm float-right">Eliminar</button>
     </li>
     <div *ngIf="errorMessage" class="alert alert-danger mt-2">
       {{ errorMessage }}
@@ -21,8 +21,8 @@
     </div>
   </ul>
 
-  <h3>Agregar Temporada</h3>
-  <form (ngSubmit)="agregarTemporada()">
+  <h3 *ngIf="tipo==='A' || tipo==='D'">Agregar Temporada</h3>
+  <form *ngIf="tipo==='A' || tipo==='D'" (ngSubmit)="agregarTemporada()">
     <div class="form-group">
       <label for="anio_desde">Año Desde</label>
       <input type="number" id="anio_desde" [(ngModel)]="nuevaTemporada.anio_desde" name="anio_desde" class="form-control" required>

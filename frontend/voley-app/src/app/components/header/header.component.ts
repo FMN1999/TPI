@@ -20,10 +20,19 @@ export class HeaderComponent implements OnInit {
     ligas: false,
     partidos: false
   };
+  tipo: string | undefined;
 
   constructor(public authService: AuthService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.isAuthenticated){
+      const id = this.authService.getUsuarioId();
+      this.authService.obtenerTipoUsuario(Number(id)).subscribe(
+          response => {
+            this.tipo = response.tipo;
+          });
+    }
+  }
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();

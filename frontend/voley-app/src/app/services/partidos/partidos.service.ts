@@ -50,4 +50,8 @@ export class PartidoService {
   eliminarPartido(partidoId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/eliminar-partido/${partidoId}/`);
   }
+
+  eliminarSet(idSet: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/sets/eliminar/${idSet}/`);
+  }
 }

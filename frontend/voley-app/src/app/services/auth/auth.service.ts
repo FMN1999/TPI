@@ -62,11 +62,6 @@ export class AuthService {
     sessionStorage.setItem('tipoUsuario', tipo);
   }
 
-  getTipoUsuario(): string {
-    // Devuelve la inicial del tipo de usuario desde el local storage o variable global
-    return sessionStorage.getItem('tipoUsuario') || this.tipoUsuario;
-  }
-
   updateProfile(usuarioId: number, perfilEditado: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/usuarios/${usuarioId}/`, perfilEditado);
   }

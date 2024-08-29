@@ -357,6 +357,10 @@ class EquipoController:
         return EquipoAsistenteData.es_asistente_equipo(id_usuario, id_equipo)
 
     @staticmethod
+    def verificar_dt_equipo(id_usuario, id_equipo):
+        return EquipoDtData.es_dt_equipo(id_usuario, id_equipo)
+
+    @staticmethod
     def obtener_equipos_fuera_de_temporada(id_temporada):
         return EquipoData.obtener_equipos_fuera_de_temporada(id_temporada)
 
@@ -458,7 +462,7 @@ class PartidoController:
     def ver_detalles_partido(id_partido):
         partido = PartidoData.obtener_partido_por_id(id_partido)
         print(partido)
-        sets = SetData.obtener_sets_por_partido(partido)
+        sets = SetData.obtener_sets_por_partido(partido.id)
         if partido:
             return {
                 "partido": {
@@ -471,7 +475,8 @@ class PartidoController:
                     "set_ganados_visita": partido.set_ganados_visita,
                     "id_temporada": partido.id_temporada.id,
                     "id_local": partido.id_local.id,
-                    "id_visita": partido.id_visita.id
+                    "id_visita": partido.id_visita.id,
+                    "estado":partido.estado
                 },
                 "sets": [{
                     "nro_set": s.nro_set,
@@ -489,6 +494,10 @@ class PartidoController:
             liga = LigaData.obtener_liga_por_id(temporada.id_liga.id)
             puntos_local = 0
             puntos_visita = 0
+            if partido.set_ganados_local is None:
+                partido.set_ganados_local = 0
+            if partido.set_ganados_visita is None:
+                partido.set_ganados_visita = 0
 
             # Calcular puntos para el local
             if partido.set_ganados_local >= 3:
@@ -508,26 +517,37 @@ class PartidoController:
             else:
                 puntos_visita = liga.ptos_x_32_derrota if partido.set_ganados_visita == 2 else 0
 
-            pos_loc = PosicionesData.obtener_por_equipo_temp(partido.id_local, temporada)
+
+            pos_loc = PosicionesData.obtener_por_equipo_temp(partido.id_local.id, temporada.id)
             pos_loc.puntaje += puntos_local
-            pos_loc.set_ganados += partido.sets_ganados_local
-            pos_loc.set_en_contra += partido.sets_ganados_visita
+            pos_loc.set_ganados += partido.set_ganados_local
+            pos_loc.set_en_contra += partido.set_ganados_visita
             pos_loc.diferencia_sets = pos_loc.set_ganados - pos_loc.set_en_contra
             PosicionesData.actualizar_posicion(pos_loc)
-
-            pos_vis = PosicionesData.obtener_por_equipo_temp(partido.id_visit, temporada)
+            pos_vis = PosicionesData.obtener_por_equipo_temp(partido.id_visita.id, temporada.id)
+            print(pos_vis)
             pos_vis.puntaje += puntos_visita
-            pos_vis.set_ganados += partido.sets_ganados_visita
-            pos_vis.set_en_contra += partido.sets_ganados_local
+            pos_vis.set_ganados += partido.set_ganados_visita
+            pos_vis.set_en_contra += partido.set_ganados_local
             pos_vis.diferencia_sets = pos_vis.set_ganados - pos_vis.set_en_contra
             PosicionesData.actualizar_posicion(pos_vis)
+            print(pos_vis)
+
+            partido.estado = "Finalizado"
+            print(partido.estado)
+            PartidoData.actualizar_partido(partido)
             return True
-        except:
-            return False
+        except Exception as e:
+            print(f"Error al actualizar el partido: {e}")
+            raise
 
     @staticmethod
     def eliminar_partido_si_puntaje_cero(partido_id):
         return PartidoData.eliminar_partido_si_puntaje_cero(partido_id)
+
+    @staticmethod
+    def get_partidos_sin_sets():
+        return PartidoData.get_partidos_sin_sets()
 
 
 class FormacionController:
@@ -569,11 +589,11 @@ class FormacionController:
 
     @staticmethod
     def eliminar_formacion(id_formacion):
-        return FormacionData.eliminar_formacion(id_formacion    )
+        return FormacionData.eliminar_formacion(id_formacion)
 
     @staticmethod
     def obtener_formaciones_equipo(id_equipo):
-        return FormacionData.obtener_formaciones_equipo(id_equipo)
+        return FormacionData.obtener_formaciones(id_equipo)
 
 
 class EquipoJugadorController:
@@ -584,29 +604,9 @@ class EquipoJugadorController:
 
 class SetController:
     @staticmethod
-    def crear_set_controller(data):
-        partido = PartidoData.obtener_partido_por_id(data.get('id_partido'))
-        set_data = Set(
-            id_partido=partido,
-            puntos_local=data.get('puntos_local'),
-            puntos_visita=data.get('puntos_visita'),
-            nro_set=data.get('nro_set'),
-            id_formacion_local=FormacionData.obtener_formacion_por_id(data.get('id_formacion_local')),
-            id_formacion_visit=FormacionData.obtener_formacion_por_id(data.get('id_formacion_visit'))
-        )
-
-        SetData.crear_set(set_data)
-
-        if set_data.puntos_local > set_data.puntos_visita:
-            partido.set_ganados_local += 1
-        elif set_data.puntos_visita > set_data.puntos_local:
-            partido.set_ganados_visita += 1
-
-        PartidoData.actualizar_partido(partido)
-        return {'success': True, 'partido': partido}
-
-    @staticmethod
     def agregar_set(data):
+        form_local = None
+        form_vist = None
         nro_sets = SetData.cuenta_sets(data.get('id_partido'))
         partido = PartidoData.obtener_partido_por_id(data.get('id_partido'))
         nuevo_set = Set(
@@ -614,8 +614,8 @@ class SetController:
             puntos_local=data.get('puntos_local'),
             puntos_visita=data.get('puntos_visita'),
             nro_set=nro_sets,
-            id_formacion_local = FormacionData.obtener_formacion_por_id(data.get('id_formacion_local')),
-            id_formacion_visit=FormacionData.obtener_formacion_por_id(data.get('id_formacion_visit'))
+            id_formacion_local=form_local,
+            id_formacion_visit=form_vist
         )
         SetData.agregar_set(nuevo_set)
 
@@ -638,6 +638,29 @@ class SetController:
     def obtener_sets_por_partido(id_partido):
         return SetData.obtener_sets_por_partido(id_partido)
 
+    @staticmethod
+    def eliminar_set(id_set):
+        # Obtener el set a eliminar
+        set_a_eliminar = SetData.obtener_set_por_id(id_set)
+
+        if not set_a_eliminar:
+            return {"error": "Set no encontrado"}
+
+        # Revertir el contador de sets ganados en el partido correspondiente
+        partido = set_a_eliminar.id_partido
+        if set_a_eliminar.puntos_local > set_a_eliminar.puntos_visita:
+            partido.set_ganados_local -= 1
+        else:
+            partido.set_ganados_visita -= 1
+
+        # Actualizar el partido
+        PartidoData.actualizar_partido(partido)
+
+        # Eliminar el set
+        SetData.eliminar_set(set_a_eliminar)
+
+        return {"mensaje": "Set eliminado correctamente"}
+
 
 class CambioController:
     @staticmethod
@@ -647,6 +670,7 @@ class CambioController:
             id_jugador_sale=JugadorData.obtener_jugador_por_id(int(data['id_jugador_sale'])),
             id_jugador_entra=JugadorData.obtener_jugador_por_id(int(data['id_jugador_entra'])),
             id_formacion=FormacionData.obtener_formacion_por_id(int(data['id_formacion'])),
+            id_partido=int(data['id_partido']),
             cerro=data.get('cerro', False),
             permanente=data.get('permanente', False)
         )
@@ -664,11 +688,30 @@ class CambioController:
         }
         return response_data
 
+    @staticmethod
+    def obtener_cambios_por_partido(id_partido):
+        try:
+            print(id_partido)
+            cambios = CambioData.obtener_cambios_por_partido(id_partido)
+            cambios_info = []
+
+            for cambio in cambios:
+
+                cambios_info.append({
+                    'jugador_sale_nombre': cambio.id_jugador_sale.id_usuario.nombre,
+                    'jugador_sale_apellido': cambio.id_jugador_sale.id_usuario.apellido,
+                    'jugador_entra_nombre': cambio.id_jugador_entra.id_usuario.nombre,
+                    'jugador_entra_apellido': cambio.id_jugador_entra.id_usuario.apellido,
+                })
+            return cambios_info
+        except Exception as e:
+            print(f"Error al obtener los cambios: {str(e)}")
+            raise
+
 
 class EstadisticasController:
     @staticmethod
     def registrar_estadisticas_controller(data):
-        # Agregar validaciones adicionales si es necesario
         try:
             data['fecha_carga'] = datetime.now().date()
             if data['id_partido'] != 0:

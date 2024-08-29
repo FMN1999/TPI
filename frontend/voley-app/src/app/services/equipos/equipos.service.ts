@@ -77,6 +77,10 @@ export class EquiposService {
     return this.http.get<{ es_asistente: boolean }>(`${this.baseUrl}/equipos/${idEquipo}/verificar-asistente/${idUsuario}/`);
   }
 
+  verificarDt(idEquipo: number, idUsuario: number): Observable<{ es_dt: boolean }> {
+    return this.http.get<{ es_dt: boolean }>(`${this.baseUrl}/equipos/${idEquipo}/verificar-dt/${idUsuario}/`);
+  }
+
   getEquiposTemporada(idTemporada:number):Observable<Equipo[]>{
     return this.http.get<Equipo[]>(`${this.baseUrl}/equipos-temporada/${idTemporada}/`);
   }

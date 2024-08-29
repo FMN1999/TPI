@@ -39,6 +39,7 @@ export class EquipoDetalleComponent implements OnInit {
   formaciones: any[] = [];
   formErrorMessage: string | null = null;
   esAsistente = false;
+  esDt = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +61,10 @@ export class EquipoDetalleComponent implements OnInit {
 
       this.equiposService.verificarAsistente(id, idUsuario).subscribe(res => {
         this.esAsistente = res.es_asistente;
+      });
+
+      this.equiposService.verificarDt(id, idUsuario).subscribe(res => {
+        this.esDt = res.es_dt;
       });
 
       this.equiposService.getAsistentesLibres().subscribe(asistentes => {

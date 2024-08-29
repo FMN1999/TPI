@@ -480,29 +480,20 @@ class EquipoJugadorView(View):
         return JsonResponse({'error': 'No se encontraron jugadores para el equipo especificado'}, status=404)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class SetView(View):
-    def post(self, request):
-        try:
-            data = json.loads(request.body)
-            # Llama al controlador para manejar la lógica de creación del set
-            resultado = SetController.crear_set_controller(data)
-
-            if 'error' in resultado:
-                return JsonResponse({'error': resultado['error']}, status=400)
-
-            return JsonResponse({'success': True, 'partido': resultado['partido']}, status=201)
-
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-
 class PartidosSinSetsGanadosView(View):
     def get(self, request, *args, **kwargs):
-        partidos = Partido.objects.filter(set_ganados_local=0, set_ganados_visita=0)
-        data = list(partidos.values())
+        partidos = PartidoController.get_partidos_sin_sets()
+
+        data = [
+            {
+                'id': partido.id,
+                'local': partido.id_local.nombre,
+                'visita': partido.id_visita.nombre,
+                'fecha': partido.fecha
+            }
+            for partido in partidos
+        ]
+
         return JsonResponse(data, safe=False)
 
 
@@ -534,12 +525,23 @@ class AgregarSetView(View):
             print(f"Error inesperado: {e}")  # Añade este log para errores inesperados
             return JsonResponse({"error": "Error inesperado"}, status=500)
 
+    def delete(self, request, id_set):
+        try:
+            resultado = SetController.eliminar_set(id_set)
+            if "error" in resultado:
+                return JsonResponse({"error": resultado["error"]}, status=404)
+            return JsonResponse({"mensaje": resultado["mensaje"]}, status=200)
+        except Exception as e:
+            print(f"Error al eliminar set: {e}")
+            return JsonResponse({"error": "Error al eliminar el set"}, status=500)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TerminarPartidoView(View):
     def post(self, request):
         data = request.POST
         id_partido = data.get('id_partido')
+        print(id_partido)
         resultado = PartidoController.terminar_partido(id_partido)
         if resultado:
             return JsonResponse({"message": "Partido terminado con éxito"}, status=200)
@@ -549,20 +551,22 @@ class TerminarPartidoView(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class ObtenerFormacionesView(View):
     def get(self, request, id_equipo):
+        print(id_equipo)
         formaciones = FormacionController.obtener_formaciones_equipo(id_equipo)
+        print(formaciones)
         if formaciones is not None:
             # Construimos la lista de diccionarios en la vista
             form_list = [
                 {
                     "id": f.id,
                     "id_equipo": f.id_equipo.id,
-                    "jugador_1": f.jugador_1.id_usuario.nombre,
-                    "jugador_2": f.jugador_2.id_usuario.nombre,
-                    "jugador_3": f.jugador_3.id_usuario.nombre,
-                    "jugador_4": f.jugador_4.id_usuario.nombre,
-                    "jugador_5": f.jugador_5.id_usuario.nombre,
-                    "jugador_6": f.jugador_6.id_usuario.nombre,
-                    "libero": f.libero.id_usuario.nombre
+                    "jugador_1": str(f.jugador_1.id_usuario.nombre + ' ' + f.jugador_1.id_usuario.apellido),
+                    "jugador_2": str(f.jugador_2.id_usuario.nombre + ' ' + f.jugador_2.id_usuario.apellido),
+                    "jugador_3": str(f.jugador_3.id_usuario.nombre + ' ' + f.jugador_3.id_usuario.apellido),
+                    "jugador_4": str(f.jugador_4.id_usuario.nombre + ' ' + f.jugador_4.id_usuario.apellido),
+                    "jugador_5": str(f.jugador_5.id_usuario.nombre + ' ' + f.jugador_5.id_usuario.apellido),
+                    "jugador_6": str(f.jugador_6.id_usuario.nombre + ' ' + f.jugador_6.id_usuario.apellido),
+                    "libero": str(f.libero.id_usuario.nombre + ' ' + f.libero.id_usuario.apellido)
                 }
                 for f in formaciones
             ]
@@ -638,6 +642,14 @@ class RegistrarCambioView(View):
             print(f"Error: {str(e)}")
             return JsonResponse({"error": str(e)}, status=500)
 
+    def get(self, request, id_partido):
+        try:
+            cambios = CambioController.obtener_cambios_por_partido(id_partido)
+            return JsonResponse(cambios, safe = False)
+        except Exception as e:
+            print(f"Error: {str(e)}")  # Se agrega un print para verificar el error
+            return JsonResponse({'error': 'Error al registrar las estadísticas'}, status=500)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EstadisticasView(View):
@@ -674,3 +686,9 @@ class VerificarAsistenteView(View):
     def get(self, request, id_equipo, id_usuario):
         es_asistente = EquipoController.verificar_asistente_equipo(id_usuario, id_equipo)
         return JsonResponse({'es_asistente': es_asistente})
+
+
+class VerificarDtView(View):
+    def get(self, request, id_equipo, id_usuario):
+        es_dt = EquipoController.verificar_dt_equipo(id_usuario, id_equipo)
+        return JsonResponse({'es_dt': es_dt})

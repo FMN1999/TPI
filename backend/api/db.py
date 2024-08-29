@@ -233,6 +233,17 @@ class EquipoDtData:
     def obtener_dts_actuales_por_equipo(equipo_id):
         return EquipoDt.objects.filter(id_equipo=equipo_id,fecha_hasta__isnull=True)
 
+    @staticmethod
+    def es_dt_equipo(id_usuario, id_equipo):
+        try:
+            return EquipoDt.objects.filter(
+                id_dt__id_usuario__id=id_usuario,
+                id_equipo=id_equipo,
+                fecha_hasta__isnull=True
+            ).exists()
+        except EquipoDt.DoesNotExist:
+            return False
+
 
 class EquipoJugadorData:
     @staticmethod
@@ -325,7 +336,11 @@ class PosicionesData:
 
     @staticmethod
     def obtener_por_equipo_temp(equipo, temporada):
-        return Posiciones.objects.filter(id_quipo=equipo, id_temporada=temporada)
+        try:
+            return Posiciones.objects.get(id_equipo=equipo, id_temporada=temporada)
+        except Exception as e:
+            print(f"Error al crear la formación: {e}")
+            raise
 
     @staticmethod
     def eliminar_posicion(id):
@@ -337,7 +352,6 @@ class PosicionesData:
             return {'success': True}
         except Posiciones.DoesNotExist:
             return {'error': 'Posición no encontrada'}
-
 
 
 class PartidoData:
@@ -366,6 +380,10 @@ class PartidoData:
             return True
         return False
 
+    @staticmethod
+    def get_partidos_sin_sets():
+        return Partido.objects.filter(set_ganados_local=0, set_ganados_visita=0)
+
 
 class FormacionData:
     @staticmethod
@@ -386,11 +404,8 @@ class FormacionData:
         return Formacion.objects.get(id_equipo=equipo_id)
 
     @staticmethod
-    def obtener_formaciones_equipo(id_equipo):
-        try:
-            return Formacion.objects.filter(id_equipo=id_equipo)
-        except:
-            return None
+    def obtener_formaciones(equipo_id):
+        return Formacion.objects.filter(id_equipo=equipo_id)
 
     @staticmethod
     def eliminar_formacion(id_formacion):
@@ -416,18 +431,25 @@ class SetData:
 
     @staticmethod
     def agregar_set(set: Set):
-        try:
-            set.save()
-            return set
-        except :
-            return None
+        set.save()
+        print(set)
+        return set
 
     @staticmethod
     def obtener_sets_por_partido(id_partido):
+        return Set.objects.filter(id_partido=id_partido)
+        
+    @staticmethod
+    def obtener_set_por_id(id):
+        return Set.objects.get(id=id)
+
+    @staticmethod
+    def eliminar_set(set_obj):
         try:
-            return Set.objects.filter(id_partido=id_partido)
-        except:
-            return None
+            set_obj.delete()
+        except Exception as e:
+            print(f"Error al eliminar set: {e}")
+            raise
 
 
 class CambioData:
@@ -435,6 +457,13 @@ class CambioData:
     def guardar_cambio(cambio: Cambio):
         cambio.save()
         return cambio
+
+    @staticmethod
+    def obtener_cambios_por_partido(id_partido):
+        try:
+            return Cambio.objects.filter(id_partido=id_partido)
+        except Exception as e:
+            raise e
 
 
 class EstadisticasData:

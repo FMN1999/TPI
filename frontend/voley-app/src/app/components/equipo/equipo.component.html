@@ -12,7 +12,7 @@
   <ul>
     <li *ngFor="let dt of dts">
       {{ dt.nombre }} {{ dt.apellido }}
-      <button *ngIf="esAsistente" (click)="darDeBaja('dt', dt.id)">Dar de baja</button>
+      <button *ngIf="esAsistente || esDt" (click)="darDeBaja('dt', dt.id)">Dar de baja</button>
     </li>
     <!-- Botón para agregar DT -->
     <button *ngIf="esAsistente" (click)="toggleAgregarDtForm()">Agregar DT</button>
@@ -31,16 +31,16 @@
   <ul>
     <li *ngFor="let asistente of asistentes">
       {{ asistente.nombre }} {{ asistente.apellido }}
-      <button *ngIf="esAsistente" (click)="darDeBaja('asistente', asistente.id)">Dar de baja</button>
+      <button *ngIf="esAsistente || esDt" (click)="darDeBaja('asistente', asistente.id)">Dar de baja</button>
     </li>
-    <button *ngIf="esAsistente" (click)="toggleAgregarAsistenteForm()">Agregar Asistente</button>
+    <button *ngIf="esAsistente || esDt" (click)="toggleAgregarAsistenteForm()">Agregar Asistente</button>
     <div *ngIf="showAgregarAsistenteForm">
       <form (ngSubmit)="agregarAsistente()">
         <label for="asistente">Seleccionar Asistente:</label>
         <select id="asistente" [(ngModel)]="nuevoAsistenteId" name="asistente">
           <option *ngFor="let asistente of asistentesLibres" [value]="asistente.id">{{ asistente.nombre }} {{ asistente.apellido }}</option>
         </select>
-        <button *ngIf="esAsistente" type="submit">Agregar Asistente</button>
+        <button *ngIf="esAsistente || esDt" type="submit">Agregar Asistente</button>
       </form>
     </div>
   </ul>
@@ -49,9 +49,9 @@
   <ul>
     <li *ngFor="let jugador of jugadores">
       {{ jugador.nombre }} {{ jugador.apellido }} - Nro: {{ jugador.nro_jugador }}
-      <button *ngIf="esAsistente" (click)="darDeBaja('jugador', jugador.id)">Dar de baja</button>
+      <button *ngIf="esAsistente || esDt" (click)="darDeBaja('jugador', jugador.id)">Dar de baja</button>
     </li>
-    <button *ngIf="esAsistente" (click)="toggleAgregarJugadorForm()">Agregar Jugador</button>
+    <button *ngIf="esAsistente || esDt" (click)="toggleAgregarJugadorForm()">Agregar Jugador</button>
     <div *ngIf="showAgregarJugadorForm">
       <form (ngSubmit)="agregarJugador()">
         <label for="jugador">Seleccionar Jugador:</label>
@@ -64,7 +64,7 @@
         <input id="posicion_pcpal" [(ngModel)]="nuevoJugadorPosicionPcpal" name="posicion_pcpal">
         <label for="posicion_secundaria">Posición Secundaria:</label>
         <input id="posicion_secundaria" [(ngModel)]="nuevoJugadorPosicionSecundaria" name="posicion_secundaria">
-        <button *ngIf="esAsistente" type="submit">Agregar Jugador</button>
+        <button *ngIf="esAsistente || esDt" type="submit">Agregar Jugador</button>
       </form>
     </div>
   </ul>
@@ -76,11 +76,11 @@
         <p>Jugadores: {{ formacion.jugador_1 }}, {{ formacion.jugador_2 }}, {{ formacion.jugador_3 }},
            {{ formacion.jugador_4 }}, {{ formacion.jugador_5 }}, {{ formacion.jugador_6 }}</p>
         <p>Líbero: {{ formacion.libero }}</p>
-        <button *ngIf="esAsistente" (click)="eliminarFormacion(formacion.id)">Eliminar Formación</button>
+        <button *ngIf="esAsistente || esDt" (click)="eliminarFormacion(formacion.id)">Eliminar Formación</button>
       </li>
     </ul>
   </div>
-  <button *ngIf="esAsistente" (click)="toggleFormacionForm()">Agregar Formación</button>
+  <button *ngIf="esAsistente || esDt" (click)="toggleFormacionForm()">Agregar Formación</button>
 
   <div *ngIf="showFormacionForm">
     <form (ngSubmit)="crearFormacion()">
@@ -96,7 +96,7 @@
         <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
       </select>
 
-      <button *ngIf="esAsistente" type="submit">Crear Formación</button>
+      <button *ngIf="esAsistente || esDt" type="submit">Crear Formación</button>
       <div *ngIf="formErrorMessage" class="error-message">
         {{ formErrorMessage }}
       </div>

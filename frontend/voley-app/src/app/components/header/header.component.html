@@ -30,7 +30,7 @@
               Equipos
             </a>
             <div class="dropdown-menu" [class.show]="dropdownOpen.equipos" aria-labelledby="navbarDropdown2">
-              <a class="dropdown-item" routerLink="/alta-equipo">Alta de Equipo</a>
+              <a *ngIf="tipo === 'A' || tipo ==='D'" class="dropdown-item" routerLink="/alta-equipo">Alta de Equipo</a>
               <a class="dropdown-item" routerLink="/ver-equipos">Ver equipos</a>
             </div>
           </li>
@@ -39,7 +39,7 @@
               Ligas
             </a>
             <div class="dropdown-menu" [class.show]="dropdownOpen.ligas" aria-labelledby="navbarDropdown3">
-              <a class="dropdown-item" routerLink="/alta-liga">Alta de Ligas</a>
+              <a *ngIf="tipo === 'A' || tipo ==='D'" class="dropdown-item" routerLink="/alta-liga">Alta de Ligas</a>
               <a class="dropdown-item" routerLink="/ver-ligas">Ver ligas</a>
             </div>
           </li>
@@ -56,4 +56,3 @@
     </div>
   </nav>
 </header>
-

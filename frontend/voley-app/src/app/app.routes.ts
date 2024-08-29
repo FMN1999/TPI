@@ -12,6 +12,7 @@ import {LigaComponent} from "./components/liga/liga.component";
 import {TemporadaComponent} from "./components/temporada/temporada.component";
 import {VerPartidosComponent} from "./components/ver-partidos/ver-partidos.component";
 import {PartidoComponent} from "./components/partido/partido.component";
+import {AltaLigaComponent} from "./components/alta-liga/alta-liga.component";
 
 export const routes: Routes = [
   { path: '', component:HomeComponent },
@@ -29,5 +30,6 @@ export const routes: Routes = [
   { path: 'temporada/:id', component: TemporadaComponent },
   { path: 'ver-partidos', component: VerPartidosComponent },
   { path: 'partido/:id', component: PartidoComponent },
+  { path: 'alta-liga', component: AltaLigaComponent },
 ];
 
