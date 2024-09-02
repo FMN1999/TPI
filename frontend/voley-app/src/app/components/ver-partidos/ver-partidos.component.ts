@@ -3,6 +3,7 @@ import { PartidoService } from '../../services/partidos/partidos.service';
 import { Partido } from '../../models/partido.model';
 import {DatePipe, NgForOf} from "@angular/common";
 import { Router } from '@angular/router';
+import {HeaderComponent} from "../header/header.component";
 
 
 @Component({
@@ -11,7 +12,8 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [
     NgForOf,
-    DatePipe
+    DatePipe,
+    HeaderComponent
   ],
   styleUrls: ['./ver-partidos.component.css']
 })

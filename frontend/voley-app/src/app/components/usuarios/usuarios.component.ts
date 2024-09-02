@@ -3,6 +3,7 @@ import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { FormsModule } from "@angular/forms";
 import { NgForOf } from "@angular/common";
 import { RouterLink } from "@angular/router";
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-usuarios',
@@ -11,7 +12,8 @@ import { RouterLink } from "@angular/router";
   imports: [
     FormsModule,
     NgForOf,
-    RouterLink
+    RouterLink,
+    HeaderComponent
   ],
   styleUrls: ['./usuarios.component.css']
 })

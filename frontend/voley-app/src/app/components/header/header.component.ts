@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router  } from "@angular/router";
 import { NgIf } from "@angular/common";
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -21,8 +22,9 @@ export class HeaderComponent implements OnInit {
     partidos: false
   };
   tipo: string | undefined;
+  sidebarOpen = false;
 
-  constructor(public authService: AuthService) { }
+  constructor(public authService: AuthService, private location: Location, private router: Router) { }
 
   ngOnInit(): void {
     if (this.isAuthenticated){
@@ -38,6 +40,15 @@ export class HeaderComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
+  goBack() {
+    const currentUrl = this.router.url;
+    if (currentUrl === '/login' || currentUrl === '/register') {
+      this.router.navigate(['/']);
+    } else {
+      this.location.back();
+    }
+  }
+
   getUsuarioId(): string | null {
     return this.authService.getUsuarioId();
   }
@@ -45,6 +56,10 @@ export class HeaderComponent implements OnInit {
   toggleDropdown(event: Event, dropdown: 'usuario' | 'equipos' | 'ligas' | 'partidos'): void {
     event.preventDefault();
     this.dropdownOpen[dropdown] = !this.dropdownOpen[dropdown];
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 
   logout(): void {

@@ -4,6 +4,7 @@ import { EquiposService } from '../../services/equipos/equipos.service';
 import { FormacionService } from '../../services/formaciones/formaciones.service';
 import { NgForOf, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-equipo-detalle',
@@ -12,7 +13,8 @@ import { FormsModule } from "@angular/forms";
   imports: [
     NgIf,
     NgForOf,
-    FormsModule
+    FormsModule,
+    HeaderComponent
   ],
   styleUrls: ['./equipo.component.css']
 })

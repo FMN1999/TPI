@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import {NgIf} from "@angular/common";
 import { AuthService } from '../../services/auth/auth.service';
 import {Router} from "@angular/router";
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-alta-liga',
@@ -11,7 +12,8 @@ import {Router} from "@angular/router";
   standalone: true,
   imports: [
     FormsModule,
-    NgIf
+    NgIf,
+    HeaderComponent
   ],
   styleUrls: ['./alta-liga.component.css']
 })

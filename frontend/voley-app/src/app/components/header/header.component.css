@@ -1,21 +1,154 @@
-/* header.component.css */
-
+/* Estilos para el navbar */
 .navbar {
-  background-color: #563d7c; /* Cambiar el color de fondo según sea necesario */
+  background-color: #1e90ff; /* Azul brillante */
+  position: relative;
+  display: flex;
+  justify-content: space-between; /* Distribuye el espacio entre los elementos del navbar */
+  align-items: center; /* Centra los elementos verticalmente */
+  padding: 10px 20px; /* Añade espacio interno */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
 }
 
-.nav-link {
-  color: #ffffff; /* Color del texto de los enlaces de navegación */
+.navbar-toggler {
+  background-color: #ffcc00; /* Amarillo vibrante */
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  display: block; /* Asegura que el botón se vea en todas las pantallas */
 }
 
-.nav-link:hover {
-  color: #dddddd; /* Color del texto de los enlaces de navegación al pasar el mouse */
+.navbar-toggler-icon {
+  width: 30px;
+  height: 3px;
+  background-color: #fff; /* Color blanco para las líneas */
+  display: block;
+  margin: 6px 0; /* Espacio entre las líneas */
+  border-radius: 2px;
 }
 
-.dropdown-menu {
-  position: absolute; /* Asegura que el menú desplegable esté correctamente posicionado */
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 3px;
+  background-color: #fff;
+  margin: 6px 0; /* Espacio entre las líneas */
+  border-radius: 2px;
 }
 
-.dropdown-menu.show {
-  display: block; /* Asegura que el menú desplegable se muestre cuando está activo */
+.navbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff; /* Blanco para que resalte sobre el fondo azul */
+  text-transform: uppercase; /* Letras mayúsculas */
+  letter-spacing: 1px; /* Espaciado entre letras */
 }
+
+.back-button {
+  position: absolute;
+  right: 10px;
+  top: 50%; /* Centra verticalmente */
+  transform: translateY(-50%); /* Ajusta la posición para centrar */
+  background-color: transparent;
+  border: none;
+  color: #ffcc00; /* Amarillo vibrante */
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1010; /* Asegura que el botón esté por encima del contenido */
+}
+
+.back-button:hover {
+  opacity: 0.7; /* Efecto al pasar el mouse */
+}
+
+/* Estilos para el sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px; /* Ancho del sidebar */
+  background-color: #1e90ff; /* Azul brillante */
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  padding-top: 60px; /* Espacio en la parte superior */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra para diferenciar el sidebar */
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.navbar-nav .nav-item .nav-link {
+  color: #fff;
+  font-size: 18px;
+  padding: 12px 20px; /* Espaciado interno */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+  background-color: #ffcc00; /* Fondo amarillo al pasar el mouse */
+  border-bottom: 2px solid #fff; /* Subrayado blanco */
+}
+
+.navbar-nav .nav-item .dropdown-menu {
+  background-color: #1e90ff; /* Fondo azul */
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.navbar-nav .nav-item .dropdown-menu .dropdown-item {
+  color: #fff;
+  padding: 10px 20px; /* Espaciado interno */
+  transition: background-color 0.2s ease;
+}
+
+.navbar-nav .nav-item .dropdown-menu .dropdown-item:hover {
+  background-color: #ffcc00; /* Fondo amarillo al pasar el mouse */
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: #fff; /* Blanco para que contraste con el fondo azul */
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  opacity: 0.7; /* Efecto de hover */
+}
+
+
+/* Ajuste para pantallas grandes */
+@media (min-width: 992px) {
+  .sidebar {
+    width: 300px; /* Ajusta el ancho del panel lateral si es necesario */
+  }
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 991px) {
+  .sidebar {
+    width: 250px; /* Ajusta el ancho del panel lateral si es necesario */
+  }
+
+  .navbar-toggler {
+    display: block; /* Asegura que el botón se vea en pantallas pequeñas */
+  }
+}
+
+
+

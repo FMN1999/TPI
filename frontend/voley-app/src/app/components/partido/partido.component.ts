@@ -8,6 +8,7 @@ import { NgForOf, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import {CambioService} from "../../services/cambios/cambios.service";
 import {EquiposService} from "../../services/equipos/equipos.service";
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-partido',
@@ -16,7 +17,8 @@ import {EquiposService} from "../../services/equipos/equipos.service";
   imports: [
     NgIf,
     FormsModule,
-    NgForOf
+    NgForOf,
+    HeaderComponent
   ],
   styleUrls: ['./partido.component.css']
 })

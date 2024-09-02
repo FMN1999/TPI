@@ -1,58 +1,50 @@
 <header>
   <nav class="navbar navbar-expand-lg navbar-light bg-violet">
-    <a class="navbar-brand" href="#">Mi Aplicación</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <ng-container *ngIf="!isAuthenticated; else loggedInTemplate">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/login">Iniciar Sesión</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/register">Registrar</a>
-          </li>
-        </ng-container>
-        <ng-template #loggedInTemplate>
-          <li class="nav-item dropdown" [class.show]="dropdownOpen.usuario">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" (click)="toggleDropdown($event, 'usuario')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.usuario">
-              Usuario
-            </a>
-            <div class="dropdown-menu" [class.show]="dropdownOpen.usuario" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/perfil', getUsuarioId()]">Mi perfil</a>
-              <a class="dropdown-item" routerLink="/usuarios">Usuarios</a>
-              <a class="dropdown-item" (click)="logout()">Cerrar Sesión</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown" [class.show]="dropdownOpen.equipos">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" (click)="toggleDropdown($event, 'equipos')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.equipos">
-              Equipos
-            </a>
-            <div class="dropdown-menu" [class.show]="dropdownOpen.equipos" aria-labelledby="navbarDropdown2">
-              <a *ngIf="tipo === 'A' || tipo ==='D'" class="dropdown-item" routerLink="/alta-equipo">Alta de Equipo</a>
-              <a class="dropdown-item" routerLink="/ver-equipos">Ver equipos</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown" [class.show]="dropdownOpen.ligas">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" (click)="toggleDropdown($event, 'ligas')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.ligas">
-              Ligas
-            </a>
-            <div class="dropdown-menu" [class.show]="dropdownOpen.ligas" aria-labelledby="navbarDropdown3">
-              <a *ngIf="tipo === 'A' || tipo ==='D'" class="dropdown-item" routerLink="/alta-liga">Alta de Ligas</a>
-              <a class="dropdown-item" routerLink="/ver-ligas">Ver ligas</a>
-            </div>
-          </li>
-           <li class="nav-item dropdown" [class.show]="dropdownOpen.partidos">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown4" role="button" (click)="toggleDropdown($event, 'partidos')" aria-haspopup="true" [attr.aria-expanded]="dropdownOpen.partidos">
-              Partidos
-            </a>
-            <div class="dropdown-menu" [class.show]="dropdownOpen.partidos" aria-labelledby="navbarDropdown4">
-              <a class="dropdown-item" routerLink="/ver-partidos">Ver Partidos</a>
-            </div>
-          </li>
-        </ng-template>
-      </ul>
-    </div>
+    <a class="navbar-brand mx-auto" href="#">Voley App</a>
+    <button class="back-button" (click)="goBack()">&#8592;</button>
   </nav>
+
+  <div class="sidebar" [class.open]="sidebarOpen">
+    <button class="close-btn" (click)="toggleSidebar()">×</button>
+    <ul class="navbar-nav">
+      <ng-container *ngIf="!isAuthenticated; else loggedInTemplate">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login">Iniciar Sesión</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/register">Registrar</a>
+        </li>
+      </ng-container>
+      <ng-template #loggedInTemplate>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/perfil">Mi perfil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/usuarios">Usuarios</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/ver-equipos">Equipos</a>
+        </li>
+        <li *ngIf="tipo === 'A' || tipo ==='D'"  class="nav-item">
+          <a class="nav-link" routerLink="/alta-equipo">Alta de Equipo</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/ver-ligas">Ligas</a>
+        </li>
+        <li *ngIf="tipo === 'A' || tipo ==='D'" class="nav-item">
+          <a class="nav-link" routerLink="/alta-liga">Alta de Liga</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/ver-partidos">Partidos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()">Cerrar Sesión</a>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
 </header>
+

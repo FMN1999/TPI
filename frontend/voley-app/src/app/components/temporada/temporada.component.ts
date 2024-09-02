@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { PartidoService } from '../../services/partidos/partidos.service';
 import { NgForOf, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-temporada-detail',
@@ -16,7 +17,8 @@ import { FormsModule } from "@angular/forms";
     NgIf,
     NgForOf,
     FormsModule,
-    RouterLink
+    RouterLink,
+    HeaderComponent
   ],
   styleUrls: ['./temporada.component.css']
 })

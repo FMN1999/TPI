@@ -4,6 +4,7 @@ import { EstadisticasService } from '../../services/estadisticas/estadisticas.se
 import {DecimalPipe, NgIf} from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-perfil',
@@ -12,7 +13,8 @@ import { ActivatedRoute } from '@angular/router';
   imports: [
     NgIf,
     FormsModule,
-    DecimalPipe
+    DecimalPipe,
+    HeaderComponent
   ],
   styleUrls: ['./perfil.component.css']
 })

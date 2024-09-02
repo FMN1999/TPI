@@ -3,6 +3,7 @@ import { LigaService } from '../../services/ligas/liga.service';
 import {FormsModule} from "@angular/forms";
 import {RouterLink} from "@angular/router";
 import {NgForOf} from "@angular/common";
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-ver-ligas',
@@ -11,7 +12,8 @@ import {NgForOf} from "@angular/common";
   imports: [
     FormsModule,
     RouterLink,
-    NgForOf
+    NgForOf,
+    HeaderComponent
   ],
   styleUrls: ['./ver-ligas.component.css']
 })

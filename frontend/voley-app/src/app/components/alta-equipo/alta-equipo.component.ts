@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgForOf, NgIf } from "@angular/common";
 import { Router } from '@angular/router';
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
   selector: 'app-alta-equipo',
@@ -13,7 +14,8 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     NgForOf,
     NgIf,
-    FormsModule
+    FormsModule,
+    HeaderComponent
   ],
   styleUrls: ['./alta-equipo.component.css']
 })
@@ -104,6 +106,57 @@ export class AltaEquipoComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Validaciones de campos obligatorios
+    if (!this.team.nombre) {
+        this.errorMessage = 'El nombre del equipo es obligatorio.';
+        return;
+    }
+    if (!this.team.logo) {
+        this.errorMessage = 'El logo URL es obligatorio.';
+        return;
+    }
+    if (!this.team.direccion) {
+        this.errorMessage = 'La dirección es obligatoria.';
+        return;
+    }
+    if (!this.team.ciudad) {
+        this.errorMessage = 'La ciudad es obligatoria.';
+        return;
+    }
+    if (!this.team.provincia) {
+        this.errorMessage = 'La provincia es obligatoria.';
+        return;
+    }
+    if (this.selectedDt) {
+        if (!this.selectedDt.fecha_desde) {
+            this.errorMessage = 'La fecha desde del DT es obligatoria.';
+            return;
+        }
+    }
+    if (this.selectedAsistentes.length > 0) {
+        for (let asistente of this.selectedAsistentes) {
+            if (!asistente.fecha_desde) {
+                this.errorMessage = `La fecha desde del asistente ${asistente.nombre} ${asistente.apellido} es obligatoria.`;
+                return;
+            }
+        }
+    }
+    if (this.selectedJugadores.length > 0) {
+        for (let jugador of this.selectedJugadores) {
+            if (!jugador.nro_jugador) {
+                this.errorMessage = `El número del jugador ${jugador.nombre} ${jugador.apellido} es obligatorio.`;
+                return;
+            }
+            if (!jugador.posicion_pcpal) {
+                this.errorMessage = `La posición principal del jugador ${jugador.nombre} ${jugador.apellido} es obligatoria.`;
+                return;
+            }
+            if (!jugador.fecha_ingreso) {
+                this.errorMessage = `La fecha de ingreso del jugador ${jugador.nombre} ${jugador.apellido} es obligatoria.`;
+                return;
+            }
+        }
+    }
     const equipoData = {
         nombre: this.team.nombre,
         logo: this.team.logo,

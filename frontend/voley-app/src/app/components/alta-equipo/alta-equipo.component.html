@@ -1,3 +1,4 @@
+<app-header></app-header>
 <div *ngIf="tipo==='A' || tipo==='D'">
   <div class="container">
     <h2>Alta de Equipo</h2>
@@ -8,7 +9,7 @@
       </div>
       <div class="form-group">
         <label for="logo">Logo URL</label>
-        <input type="text" class="form-control" id="logo" name="logo" [(ngModel)]="team.logo" />
+        <input type="text" class="form-control" id="logo" name="logo" [(ngModel)]="team.logo" required />
       </div>
       <div class="form-group">
         <label for="direccion">Dirección</label>
@@ -22,23 +23,8 @@
         <label for="provincia">Provincia</label>
         <input type="text" class="form-control" id="provincia" name="provincia" [(ngModel)]="team.provincia" required />
       </div>
-      <div class="form-group">
-        <label for="cant_victorias_local">Victorias como Local</label>
-        <input type="number" class="form-control" id="cant_victorias_local" name="cant_victorias_local" [(ngModel)]="team.cant_victorias_local" required />
-      </div>
-      <div class="form-group">
-        <label for="cant_victorias_visit">Victorias como Visitante</label>
-        <input type="number" class="form-control" id="cant_victorias_visit" name="cant_victorias_visit" [(ngModel)]="team.cant_victorias_visit" required />
-      </div>
-      <div class="form-group">
-        <label for="campeonatos">Campeonatos Ganados</label>
-        <input type="number" class="form-control" id="campeonatos" name="campeonatos" [(ngModel)]="team.campeonatos" required />
-      </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="campeones_actuales" name="campeones_actuales" [(ngModel)]="team.campeones_actuales" />
-        <label class="form-check-label" for="campeones_actuales">Campeones Actuales</label>
-      </div>
 
+      <!-- Campos de DT -->
       <div class="form-group">
         <label for="dt">Seleccionar DT:</label>
         <select id="dt" name="dt" class="form-control" (change)="onDtChange($event)">
@@ -53,6 +39,7 @@
         </div>
       </div>
 
+      <!-- Campos de Asistentes -->
       <div class="form-group">
         <label for="asistentes">Seleccionar Asistentes:</label>
         <select id="asistentes" name="asistentes" class="form-control" multiple (change)="onAsistentesChange($event)">
@@ -67,10 +54,11 @@
         </div>
       </div>
 
+      <!-- Campos de Jugadores -->
       <div class="form-group">
         <label for="jugadores">Seleccionar Jugadores:</label>
         <select id="jugadores" name="jugadores" class="form-control" multiple (change)="onJugadoresChange($event)">
-          <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }} {{jugador.apellido  }}</option>
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }} {{jugador.apellido }}</option>
         </select>
         <div *ngFor="let jugador of selectedJugadores">
           <label for="jugador_nro">Nro Jugador:</label>
@@ -97,3 +85,5 @@
     </form>
   </div>
 </div>
+
+
