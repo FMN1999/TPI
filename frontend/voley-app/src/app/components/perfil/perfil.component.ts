@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { EstadisticasService } from '../../services/estadisticas/estadisticas.service';
-import {DecimalPipe, NgIf} from "@angular/common";
+import { DecimalPipe, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
-import {HeaderComponent} from "../header/header.component";
+import { HeaderComponent } from "../header/header.component";
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-perfil',
@@ -18,8 +21,7 @@ import {HeaderComponent} from "../header/header.component";
   ],
   styleUrls: ['./perfil.component.css']
 })
-
-export class PerfilComponent implements OnInit {
+export class PerfilComponent implements AfterViewInit {
   perfil: any = {};
   esAsistente: boolean = false;
   mostrarFormulario: boolean = false;
@@ -57,6 +59,12 @@ export class PerfilComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    if (this.esJugador) {
+      this.createRadarChart();
+    }
+  }
+
   loadProfile(): void {
     this.authService.getProfileData(this.usuarioId).subscribe(
       data => {
@@ -70,7 +78,6 @@ export class PerfilComponent implements OnInit {
             if (this.usuarioId !== Number(this.authService.getUsuarioId())) {
               this.perfil.id_asistente = Number(this.authService.getUsuarioId());
             }
-            console.log(this.esJugador);
 
             if (this.esJugador) {
               this.loadEstadisticas();
@@ -96,6 +103,7 @@ export class PerfilComponent implements OnInit {
     this.estadisticasService.obtenerEstadisticasPorJugador(this.usuarioId).subscribe(
       data => {
         this.estadisticas = data;
+        this.createRadarChart(); // Mueve la llamada aquí
       },
       error => {
         console.error('Error al cargar las estadísticas:', error);
@@ -104,12 +112,11 @@ export class PerfilComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.estadisticas.id_asistente = this.perfil.id_asistente;  // Asume que el perfil tiene este valor
-    this.estadisticas.id_partido = this.selectedPartidoId;  // Debes tener una forma de seleccionar o asignar el partido
-    this.estadisticas.id_jugador = this.perfil.id;  // Asume que el perfil tiene este valor
+    this.estadisticas.id_asistente = this.perfil.id_asistente;
+    this.estadisticas.id_partido = this.selectedPartidoId;
+    this.estadisticas.id_jugador = this.perfil.id;
     this.estadisticasService.registrarEstadisticas(this.estadisticas).subscribe(
       response => {
-        console.log('Estadísticas guardadas:', response);
         this.mostrarFormulario = false;
         this.estadisticas = {};
       },
@@ -117,21 +124,19 @@ export class PerfilComponent implements OnInit {
         console.error('Error al guardar las estadísticas:', error);
       }
     );
-    this.loadEstadisticas()
+    this.loadEstadisticas();
   }
 
-   // Habilitar modo de edición
   editProfile(): void {
     this.editMode = true;
   }
 
-  // Guardar los cambios
   saveProfile(): void {
     this.authService.updateProfile(this.perfil.id, this.perfilEditado).subscribe(
       response => {
         console.log('Perfil actualizado:', response);
-        this.perfil = { ...this.perfilEditado }; // Actualiza el perfil con los cambios guardados
-        this.editMode = false; // Salir del modo de edición
+        this.perfil = { ...this.perfilEditado };
+        this.editMode = false;
       },
       error => {
         console.error('Error al actualizar el perfil:', error);
@@ -140,8 +145,63 @@ export class PerfilComponent implements OnInit {
   }
 
   cancelEdit(): void {
-    this.perfilEditado = { ...this.perfil }; // Revertir cambios
-    this.editMode = false; // Salir del modo de edición
+    this.perfilEditado = { ...this.perfil };
+    this.editMode = false;
+  }
+
+  createRadarChart() {
+    const ctx = document.getElementById('estadisticasRadar') as HTMLCanvasElement;
+
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: [
+            'Remates',
+            'Bloqueos',
+            'Saques',
+            'Defensas',
+            'Recepciones'
+          ],
+          datasets: [{
+            label: 'Porcentaje de Aciertos',
+            data: [
+              this.estadisticas.porcentaje_aciertos_remates,
+              this.estadisticas.porcentaje_aciertos_bloqueos,
+              this.estadisticas.porcentaje_aciertos_saques,
+              this.estadisticas.porcentaje_aciertos_defensas,
+              this.estadisticas.porcentaje_aciertos_recepciones
+            ],
+            fill: true,
+            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+            borderColor: 'rgba(0, 123, 255, 1)',
+            pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              angleLines: {
+                display: true
+              },
+              suggestedMin: 0,
+              suggestedMax: 100
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    } else {
+      console.error('Canvas element not found');
+    }
   }
 }
+
 

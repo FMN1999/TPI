@@ -42,6 +42,7 @@ export class EquipoDetalleComponent implements OnInit {
   formErrorMessage: string | null = null;
   esAsistente = false;
   esDt = false;
+  private errorMessage: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -89,6 +90,11 @@ export class EquipoDetalleComponent implements OnInit {
   }
 
   crearFormacion(): void {
+    if (this.formacion.jugadores.some(jugador => !jugador) || !this.formacion.libero) {
+        this.formErrorMessage = 'Por favor, seleccione todos los jugadores y el líbero.';
+        return;
+    }
+    this.formErrorMessage = ''; // Limpia el mensaje de error si todo está bien.
     if (this.formacion.jugadores.length < 6) {
       this.formErrorMessage = 'Por favor, selecciona todos los jugadores.';
       return;
@@ -147,6 +153,11 @@ export class EquipoDetalleComponent implements OnInit {
   }
 
   agregarDt(): void {
+    if (!this.nuevoDtId) {
+        this.errorMessage = 'Por favor, seleccione un DT.';
+        return;
+    }
+    this.errorMessage = '';
     if (this.nuevoDtId) {
       this.equiposService.agregarDt(this.equipo!.id, this.nuevoDtId).subscribe(response => {
         alert('DT agregado con éxito');
@@ -158,6 +169,11 @@ export class EquipoDetalleComponent implements OnInit {
   }
 
   agregarAsistente(): void {
+    if (!this.nuevoAsistenteId) {
+        this.errorMessage = 'Por favor, seleccione un Asistente.';
+        return;
+    }
+    this.errorMessage = ''; // Limpia el mensaje de error si todo está bien.
     if (this.nuevoAsistenteId) {
       this.equiposService.agregarAsistente(this.equipo!.id, this.nuevoAsistenteId).subscribe(response => {
         alert('Asistente agregado con éxito');
@@ -169,6 +185,11 @@ export class EquipoDetalleComponent implements OnInit {
   }
 
   agregarJugador(): void {
+    if (!this.nuevoJugadorId || !this.nuevoJugadorNro || !this.nuevoJugadorPosicionPcpal) {
+        this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
+        return;
+    }
+    this.errorMessage = ''; // Limpia el mensaje de error si todo está bien.
     if (this.nuevoJugadorId && this.nuevoJugadorNro && this.nuevoJugadorPosicionPcpal) {
       const nuevoJugador = {
         nro_jugador: this.nuevoJugadorNro,

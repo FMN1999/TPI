@@ -1,29 +1,31 @@
 <app-header></app-header>
 <div class="perfil">
-  <h2>Mi Perfil</h2>
+  <h2>{{perfil.nombre}} {{perfil.apellido}}</h2>
 
-  <div *ngIf="!editMode">
-    <p><strong>Nombre:</strong> {{ perfil.nombre }}</p>
-    <p><strong>Apellido:</strong> {{ perfil.apellido }}</p>
-    <p><strong>Email:</strong> {{ perfil.email }}</p>
-    <p><strong>Fecha de Nacimiento:</strong> {{ perfil.fecha_nacimiento }}</p>
-    <p><strong>Ciudad de Nacimiento:</strong> {{ perfil.ciudad_nacimiento }}</p>
-    <p><strong>Provincia de Nacimiento:</strong> {{ perfil.provincia_nacimiento }}</p>
-    <p><strong>Sexo:</strong> {{ perfil.sexo }}</p>
+  <div class="perfil-card" *ngIf="!editMode">
+    <!-- Imagen de perfil basada en el sexo -->
+    <img [src]="perfil.sexo === 'Masculino' ? '../../../assets/male-avatar.png' : '../../../assets/female-avatar.png'" alt="Avatar" class="avatar">
 
-    <div *ngIf="esJugador">
-      <p><strong>Peso:</strong> {{ perfil.peso }}</p>
-      <p><strong>Altura:</strong> {{ perfil.altura }}</p>
+    <!-- Información básica del perfil -->
+    <div class="perfil-info">
+      <p><strong>Email:</strong> {{ perfil.email }}</p>
+      <p><strong>Fecha de Nacimiento:</strong> {{ perfil.fecha_nacimiento }}</p>
+      <p><strong>Ciudad de Nacimiento:</strong> {{ perfil.ciudad_nacimiento }}</p>
+      <p><strong>Provincia de Nacimiento:</strong> {{ perfil.provincia_nacimiento }}</p>
+      <p><strong>Sexo:</strong> {{ perfil.sexo }}</p>
+      <p *ngIf="esJugador"><strong>Peso:</strong> {{ perfil.peso }} kg</p>
+      <p *ngIf="esJugador"><strong>Altura:</strong> {{ perfil.altura }} cm</p>
+      <p *ngIf="esDt"><strong>Teléfono:</strong> {{ perfil.telefono }}</p>
     </div>
-    <div *ngIf="esDt">
-      <p><strong>Teléfono:</strong> {{ perfil.telefono }}</p>
-    </div>
+
+    <!-- Botón de edición si es el perfil del usuario actual -->
     <div *ngIf="usuarioActual === perfil.id">
       <button class="btn btn-primary" (click)="editProfile()">Editar Perfil</button>
     </div>
   </div>
 
-  <div *ngIf="editMode">
+  <!-- Modo de edición del perfil -->
+  <div *ngIf="editMode" class="perfil-edit">
     <form>
       <div class="form-group">
         <label for="nombre">Nombre:</label>
@@ -81,7 +83,21 @@
     </form>
   </div>
 
-
+ <div class="estadisticas-container">
+  <h2>Estadísticas del Jugador</h2>
+  <div class="radar-chart-wrapper">
+    <canvas id="estadisticasRadar"></canvas>
+  </div>
+  <div class="estadisticas-leyenda">
+    <ul>
+      <li><span class="color-box"></span>Remates: {{ estadisticas.porcentaje_aciertos_remates }}%</li>
+      <li><span class="color-box"></span>Bloqueos: {{ estadisticas.porcentaje_aciertos_bloqueos }}%</li>
+      <li><span class="color-box"></span>Saques: {{ estadisticas.porcentaje_aciertos_saques }}%</li>
+      <li><span class="color-box"></span>Defensas: {{ estadisticas.porcentaje_aciertos_defensas }}%</li>
+      <li><span class="color-box"></span>Recepciones: {{ estadisticas.porcentaje_aciertos_recepciones }}%</li>
+    </ul>
+  </div>
+ </div>
   <div *ngIf="esAsistente && esJugador">
     <h3>Estadísticas</h3>
     <!-- Botón para agregar estadísticas -->
@@ -135,26 +151,5 @@
       </form>
     </div>
   </div>
-
-  <div *ngIf="esJugador">
-    <h3>Estadísticas del Jugador</h3>
-    <ul>
-      <li><strong>Remates Buenos:</strong> {{ estadisticas.remates_buenos }}</li>
-      <li><strong>Remates Fallidos:</strong> {{ estadisticas.remates_fallidos }}</li>
-      <li><strong>Defensas Buenas:</strong> {{ estadisticas.defensas_buenas }}</li>
-      <li><strong>Defensas Fallidas:</strong> {{ estadisticas.defensas_fallidas }}</li>
-      <li><strong>Bloqueos Buenos:</strong> {{ estadisticas.bloqueos_buenos }}</li>
-      <li><strong>Bloqueos Fallidos:</strong> {{ estadisticas.bloqueos_fallidos }}</li>
-      <li><strong>Saques Buenos:</strong> {{ estadisticas.saques_buenos }}</li>
-      <li><strong>Saques Fallidos:</strong> {{ estadisticas.saques_fallidos }}</li>
-      <li><strong>Recepciones Buenas:</strong> {{ estadisticas.recepciones_buenas }}</li>
-      <li><strong>Recepciones Fallidas:</strong> {{ estadisticas.recepciones_fallidas }}</li>
-      <li><strong>Porcentaje de Remates Exitosos:</strong> {{ estadisticas.porcentaje_aciertos_remates | number: '1.0-2' }}%</li>
-      <li><strong>Porcentaje de Defensas Exitosas:</strong> {{ estadisticas.porcentaje_aciertos_defensas | number: '1.0-2' }}%</li>
-      <li><strong>Porcentaje de Bloqueos Exitosos:</strong> {{ estadisticas.porcentaje_aciertos_bloqueos | number: '1.0-2' }}%</li>
-      <li><strong>Porcentaje de Saques Exitosos:</strong> {{ estadisticas.porcentaje_aciertos_saques | number: '1.0-2' }}%</li>
-      <li><strong>Porcentaje de Recepciones Exitosas:</strong> {{ estadisticas.porcentaje_aciertos_recepciones | number: '1.0-2' }}%</li>
-
-    </ul>
-  </div>
 </div>
+

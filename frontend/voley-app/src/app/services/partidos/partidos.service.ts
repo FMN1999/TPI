@@ -20,7 +20,7 @@ export class PartidoService {
     return this.http.get(`${this.baseUrl}/partido/${temporadaId}/`);
   }
 
-  getPartidosSinSetsGanados(): Observable<Partido[]> {
+  getPartidosSinSetsGanados(): Observable<any[]> {
     return this.http.get<Partido[]>(`${this.baseUrl}/partidos-sin-sets-ganados/`);
   }
 

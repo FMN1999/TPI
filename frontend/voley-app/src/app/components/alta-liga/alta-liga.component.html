@@ -1,44 +1,23 @@
 <app-header></app-header>
 
-<div *ngIf="tipo==='A' || tipo==='D'">
-  <div class="container">
-    <h2>Alta de Liga</h2>
-    <form (ngSubmit)="onSubmit()" #ligaForm="ngForm">
+<div *ngIf="tipo === 'A' || tipo === 'D'" class="alta-liga-container">
+  <div class="form-wrapper">
+    <h2 class="form-title">Alta de Liga</h2>
+    <form (ngSubmit)="onSubmit()" #ligaForm="ngForm" class="liga-form">
       <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input
-          type="text"
-          class="form-control"
-          id="nombre"
-          name="nombre"
-          [(ngModel)]="liga.nombre"
-          required
-        />
+        <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="liga.nombre" required />
       </div>
       <div class="form-group">
         <label for="categoria">Categoría</label>
-        <input
-          type="text"
-          class="form-control"
-          id="categoria"
-          name="categoria"
-          [(ngModel)]="liga.categoria"
-          required
-        />
+        <input type="text" class="form-control" id="categoria" name="categoria" [(ngModel)]="liga.categoria" required />
       </div>
       <div class="form-group">
         <label for="ptos_x_victoria">Puntos por Victoria</label>
-        <input
-          type="number"
-          class="form-control"
-          id="ptos_x_victoria"
-          name="ptos_x_victoria"
-          [(ngModel)]="liga.ptos_x_victoria"
-          required
-        />
+        <input type="number" class="form-control" id="ptos_x_victoria" name="ptos_x_victoria" [(ngModel)]="liga.ptos_x_victoria" required />
       </div>
       <div class="form-group">
-        <label for="ptos_x_32_vict">Puntos por 32 Victoria</label>
+        <label for="ptos_x_32_vict">Puntos por 3-2 Victoria</label>
         <input
           type="number"
           class="form-control"
@@ -49,15 +28,8 @@
         />
       </div>
       <div class="form-group">
-        <label for="ptos_x_32_derrota">Puntos por 32 Derrota</label>
-        <input
-          type="number"
-          class="form-control"
-          id="ptos_x_32_derrota"
-          name="ptos_x_32_derrota"
-          [(ngModel)]="liga.ptos_x_32_derrota"
-          required
-        />
+        <label for="ptos_x_32_derrota">Puntos por 3-2 Derrota</label>
+        <input type="number" class="form-control" id="ptos_x_32_derrota" name="ptos_x_32_derrota" [(ngModel)]="liga.ptos_x_32_derrota" required />
       </div>
       <button type="submit" class="btn btn-primary">Crear Liga</button>
 
@@ -71,3 +43,4 @@
     </form>
   </div>
 </div>
+

@@ -1,75 +1,103 @@
 <app-header></app-header>
 <div class="container" *ngIf="equipo">
-  <h2>{{ equipo.nombre }}</h2>
-  <p><strong>Dirección:</strong> {{ equipo.direccion }}</p>
-  <p><strong>Ciudad:</strong> {{ equipo.ciudad }}</p>
-  <p><strong>Provincia:</strong> {{ equipo.provincia }}</p>
-  <p><strong>Victorias como Local:</strong> {{ equipo.cant_victorias_local }}</p>
-  <p><strong>Victorias como Visitante:</strong> {{ equipo.cant_victorias_visit }}</p>
-  <p><strong>Campeonatos Ganados:</strong> {{ equipo.campeonatos }}</p>
-  <p><strong>Campeones Actuales:</strong> {{ equipo.campeones_actuales ? 'Sí' : 'No' }}</p>
+  <div class="team-logo">
+    <img [src]="equipo.logo" alt="{{ equipo.nombre }} Logo">
+  </div>
+  <div class="team-header">
+    <h2>{{ equipo.nombre }}</h2>
+    <p>{{ equipo.ciudad }}, {{ equipo.provincia }}</p>
+  </div>
 
-  <h3>DTs Actuales</h3>
-  <ul>
-    <li *ngFor="let dt of dts">
-      {{ dt.nombre }} {{ dt.apellido }}
-      <button *ngIf="esAsistente || esDt" (click)="darDeBaja('dt', dt.id)">Dar de baja</button>
-    </li>
-    <!-- Botón para agregar DT -->
+  <div class="card team-details">
+    <h3>Detalles del Equipo</h3>
+    <div class="details-row">
+      <p><i class="fas fa-map-marker-alt"></i> <strong>Dirección:</strong> {{ equipo.direccion }}</p>
+      <p><i class="fas fa-trophy"></i> <strong>Campeonatos Ganados:</strong> {{ equipo.campeonatos }}</p>
+    </div>
+    <div class="details-row">
+      <p><i class="fas fa-home"></i> <strong>Victorias como Local:</strong> {{ equipo.cant_victorias_local }}</p>
+      <p><i class="fas fa-plane"></i> <strong>Victorias como Visitante:</strong> {{ equipo.cant_victorias_visit }}</p>
+    </div>
+    <p><i class="fas fa-medal"></i> <strong>Campeones Actuales:</strong> {{ equipo.campeones_actuales ? 'Sí' : 'No' }}</p>
+  </div>
+
+  <div class="card">
+    <h3>DTs Actuales</h3>
+    <ul>
+      <li *ngFor="let dt of dts">
+        {{ dt.nombre }} {{ dt.apellido }}
+        <button *ngIf="esAsistente || esDt" (click)="darDeBaja('dt', dt.id)">Dar de baja</button>
+      </li>
+    </ul>
     <button *ngIf="esAsistente" (click)="toggleAgregarDtForm()">Agregar DT</button>
     <div *ngIf="showAgregarDtForm">
-      <form (ngSubmit)="agregarDt()">
-        <label for="dt">Seleccionar DT:</label>
-        <select id="dt" [(ngModel)]="nuevoDtId" name="dt">
-          <option *ngFor="let dt of dtsLibres" [value]="dt.id">{{ dt.nombre }} {{ dt.apellido }}</option>
-        </select>
-        <button *ngIf="esAsistente" type="submit">Agregar DT</button>
-      </form>
+      <div class="form-popup">
+        <button class="close-btn" (click)="toggleAgregarDtForm()">&times;</button>
+        <form (ngSubmit)="agregarDt()">
+          <label for="dt">Seleccionar DT:</label>
+          <select id="dt" [(ngModel)]="nuevoDtId" name="dt">
+            <option *ngFor="let dt of dtsLibres" [value]="dt.id">{{ dt.nombre }} {{ dt.apellido }}</option>
+          </select>
+          <button type="submit">Agregar DT</button>
+        </form>
+      </div>
     </div>
-  </ul>
+  </div>
 
-  <h3>Asistentes Actuales</h3>
-  <ul>
-    <li *ngFor="let asistente of asistentes">
-      {{ asistente.nombre }} {{ asistente.apellido }}
-      <button *ngIf="esAsistente || esDt" (click)="darDeBaja('asistente', asistente.id)">Dar de baja</button>
-    </li>
-    <button *ngIf="esAsistente || esDt" (click)="toggleAgregarAsistenteForm()">Agregar Asistente</button>
+  <div class="card">
+    <h3>Asistentes Actuales</h3>
+    <ul>
+      <li *ngFor="let asistente of asistentes">
+        {{ asistente.nombre }} {{ asistente.apellido }}
+        <button *ngIf="esAsistente || esDt" (click)="darDeBaja('asistente', asistente.id)">Dar de baja</button>
+      </li>
+    </ul>
+    <button *ngIf="esAsistente" (click)="toggleAgregarAsistenteForm()">Agregar Asistente</button>
     <div *ngIf="showAgregarAsistenteForm">
-      <form (ngSubmit)="agregarAsistente()">
-        <label for="asistente">Seleccionar Asistente:</label>
-        <select id="asistente" [(ngModel)]="nuevoAsistenteId" name="asistente">
-          <option *ngFor="let asistente of asistentesLibres" [value]="asistente.id">{{ asistente.nombre }} {{ asistente.apellido }}</option>
-        </select>
-        <button *ngIf="esAsistente || esDt" type="submit">Agregar Asistente</button>
-      </form>
+      <div class="form-popup">
+        <button class="close-btn" (click)="toggleAgregarAsistenteForm()">&times;</button>
+        <form (ngSubmit)="agregarAsistente()">
+          <label for="asistente">Seleccionar Asistente:</label>
+          <select id="asistente" [(ngModel)]="nuevoAsistenteId" name="asistente">
+            <option *ngFor="let asistente of asistentesLibres" [value]="asistente.id">{{ asistente.nombre }} {{ asistente.apellido }}</option>
+          </select>
+          <button type="submit">Agregar Asistente</button>
+        </form>
+      </div>
     </div>
-  </ul>
+  </div>
 
-  <h3>Jugadores Actuales</h3>
-  <ul>
-    <li *ngFor="let jugador of jugadores">
-      {{ jugador.nombre }} {{ jugador.apellido }} - Nro: {{ jugador.nro_jugador }}
-      <button *ngIf="esAsistente || esDt" (click)="darDeBaja('jugador', jugador.id)">Dar de baja</button>
-    </li>
-    <button *ngIf="esAsistente || esDt" (click)="toggleAgregarJugadorForm()">Agregar Jugador</button>
+  <div class="card">
+    <h3>Jugadores Actuales</h3>
+    <ul>
+      <li *ngFor="let jugador of jugadores">
+        {{ jugador.nombre }} {{ jugador.apellido }} - Nro: {{ jugador.nro_jugador }}
+        <button *ngIf="esAsistente || esDt" (click)="darDeBaja('jugador', jugador.id)">Dar de baja</button>
+      </li>
+    </ul>
+    <button *ngIf="esAsistente" (click)="toggleAgregarJugadorForm()">Agregar Jugador</button>
     <div *ngIf="showAgregarJugadorForm">
-      <form (ngSubmit)="agregarJugador()">
-        <label for="jugador">Seleccionar Jugador:</label>
-        <select id="jugador" [(ngModel)]="nuevoJugadorId" name="jugador">
-          <option *ngFor="let jugador of jugadoresLibres" [value]="jugador.id">{{ jugador.nombre }} {{ jugador.apellido }}</option>
-        </select>
-        <label for="nro_jugador">Número:</label>
-        <input id="nro_jugador" [(ngModel)]="nuevoJugadorNro" name="nro_jugador" type="number">
-        <label for="posicion_pcpal">Posición Principal:</label>
-        <input id="posicion_pcpal" [(ngModel)]="nuevoJugadorPosicionPcpal" name="posicion_pcpal">
-        <label for="posicion_secundaria">Posición Secundaria:</label>
-        <input id="posicion_secundaria" [(ngModel)]="nuevoJugadorPosicionSecundaria" name="posicion_secundaria">
-        <button *ngIf="esAsistente || esDt" type="submit">Agregar Jugador</button>
-      </form>
+      <div class="form-popup">
+        <button class="close-btn" (click)="toggleAgregarJugadorForm()">&times;</button>
+        <form (ngSubmit)="agregarJugador()">
+          <label for="jugador">Seleccionar Jugador:</label>
+          <select id="jugador" [(ngModel)]="nuevoJugadorId" name="jugador">
+            <option *ngFor="let jugador of jugadoresLibres" [value]="jugador.id">{{ jugador.nombre }} {{ jugador.apellido }}</option>
+          </select>
+          <label for="nro_jugador">Número:</label>
+          <input id="nro_jugador" [(ngModel)]="nuevoJugadorNro" name="nro_jugador" type="number">
+          <label for="posicion_pcpal">Posición Principal:</label>
+          <input id="posicion_pcpal" [(ngModel)]="nuevoJugadorPosicionPcpal" name="posicion_pcpal">
+          <label for="posicion_secundaria">Posición Secundaria:</label>
+          <input id="posicion_secundaria" [(ngModel)]="nuevoJugadorPosicionSecundaria" name="posicion_secundaria">
+          <button type="submit">Agregar Jugador</button>
+        </form>
+      </div>
     </div>
-  </ul>
-  <div *ngIf="formaciones.length > 0">
+  </div>
+  <button *ngIf="esAsistente || esDt" (click)="toggleFormacionForm()">Agregar Formación</button>
+
+  <div class="card" *ngIf="formaciones.length > 0">
     <h3>Formaciones</h3>
     <ul>
       <li *ngFor="let formacion of formaciones">
@@ -80,29 +108,32 @@
         <button *ngIf="esAsistente || esDt" (click)="eliminarFormacion(formacion.id)">Eliminar Formación</button>
       </li>
     </ul>
-  </div>
-  <button *ngIf="esAsistente || esDt" (click)="toggleFormacionForm()">Agregar Formación</button>
 
-  <div *ngIf="showFormacionForm">
-    <form (ngSubmit)="crearFormacion()">
-      <div *ngFor="let i of arrayDeIndices; let index = index">
-        <label for="jugador_{{index + 1}}">Jugador {{index + 1}}:</label>
-        <select id="jugador_{{index + 1}}" [(ngModel)]="formacion.jugadores[index]" name="jugador_{{index + 1}}">
-          <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
-        </select>
+    <div *ngIf="showFormacionForm">
+      <div class="form-popup">
+        <button class="close-btn" (click)="toggleFormacionForm()">&times;</button>
+        <form (ngSubmit)="crearFormacion()">
+          <div *ngFor="let i of arrayDeIndices; let index = index">
+            <label for="jugador_{{index + 1}}">Jugador {{index + 1}}:</label>
+            <select id="jugador_{{index + 1}}" [(ngModel)]="formacion.jugadores[index]" name="jugador_{{index + 1}}">
+              <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
+            </select>
+          </div>
+
+          <label for="libero">Líbero:</label>
+          <select id="libero" [(ngModel)]="formacion.libero" name="libero">
+            <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
+          </select>
+
+          <button type="submit">Crear Formación</button>
+          <div *ngIf="formErrorMessage" class="error-message">
+            {{ formErrorMessage }}
+          </div>
+        </form>
       </div>
-
-      <label for="libero">Líbero:</label>
-      <select id="libero" [(ngModel)]="formacion.libero" name="libero">
-        <option *ngFor="let jugador of jugadores" [value]="jugador.id">{{ jugador.nombre }}</option>
-      </select>
-
-      <button *ngIf="esAsistente || esDt" type="submit">Crear Formación</button>
-      <div *ngIf="formErrorMessage" class="error-message">
-        {{ formErrorMessage }}
-      </div>
-    </form>
+    </div>
   </div>
 </div>
+
 
 

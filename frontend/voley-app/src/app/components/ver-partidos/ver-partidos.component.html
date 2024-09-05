@@ -1,15 +1,27 @@
 <app-header></app-header>
-<div class="container">
-  <h2>Partidos</h2>
-
-  <ul class="list-group">
-    <li *ngFor="let partido of partidos" class="list-group-item d-flex justify-content-between align-items-center">
-      <div>
-        <strong>{{ partido.local }}</strong> vs <strong>{{ partido.visita }}</strong>
-        <span class="badge badge-secondary ml-2">Fecha: {{ partido.fecha | date }}</span>
+<div class="container partidos-container">
+  <h2 class="titulo-principal">Partidos</h2>
+  <ul class="list-group partidos-lista">
+    <li *ngFor="let partido of partidos" class="list-group-item partido-item">
+      <div class="partido-info">
+        <div class="equipo-info">
+          <img [src]="partido.logo_local" alt="{{ partido.local }} logo" class="logo-equipo">
+          <strong>{{ partido.local }}</strong>
+        </div>
+        <span class="vs-text">vs</span>
+        <div class="equipo-info">
+          <img [src]="partido.logo_visita" alt="{{ partido.visita }} logo" class="logo-equipo">
+          <strong>{{ partido.visita }}</strong>
+        </div>
       </div>
-      <button class="btn btn-primary btn-sm" (click)="verDetalles(partido.id)">Ver Detalles</button>
+      <div class="partido-detalles">
+        <span class="badge badge-secondary">Fecha: {{ partido.fecha | date }} Hora: {{ partido.hora }}</span>
+        <span class="liga-info">{{ partido.nombre_liga }} - {{ partido.categoria }}</span>
+      </div>
+      <button class="btn btn-primary btn-sm ver-detalles-btn" (click)="verDetalles(partido.id)">Ver Detalles</button>
     </li>
   </ul>
 </div>
+
+
 

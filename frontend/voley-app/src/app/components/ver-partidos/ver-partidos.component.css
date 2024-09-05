@@ -1,0 +1,120 @@
+/* Contenedor principal */
+.partidos-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Estilo para el título principal */
+.titulo-principal {
+  border-bottom: 2px solid #007bff; /* Línea azul debajo */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  text-align: center;
+  color: #007bff;
+}
+
+/* Estilo para la lista de partidos */
+.partidos-lista {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Estilo para cada partido en la lista */
+.partido-item {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+  display: flex;
+  flex-direction: column; /* Permite la distribución vertical en pantallas móviles */
+  align-items: flex-start;
+}
+
+/* Efecto hover para cada item */
+.partido-item:hover {
+  background-color: #f0f8ff; /* Color de fondo al hacer hover */
+}
+
+/* Estilo para la información del partido */
+.partido-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Estilo para la información de cada equipo */
+.equipo-info {
+  display: flex;
+  align-items: center;
+}
+
+/* Estilo para el texto "vs" */
+.vs-text {
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+/* Estilo para los logos de los equipos */
+.logo-equipo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* Estilo para los detalles del partido */
+.partido-detalles {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+/* Estilo para la información de la liga */
+.liga-info {
+  font-size: 0.9rem;
+  color: #666;
+  margin-left: 20px;
+}
+
+/* Estilo para el botón de ver detalles */
+.ver-detalles-btn {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-end; /* Alinea el botón a la derecha */
+}
+
+.ver-detalles-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 600px) {
+  .partido-info, .partido-detalles {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vs-text {
+    margin: 10px 0;
+  }
+
+  .partido-detalles {
+    margin-bottom: 10px;
+  }
+
+  .ver-detalles-btn {
+    align-self: center; /* Centra el botón en dispositivos móviles */
+    width: 100%; /* Botón ocupa el 100% del ancho en móviles */
+  }
+}

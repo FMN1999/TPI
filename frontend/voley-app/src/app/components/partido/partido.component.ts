@@ -4,7 +4,7 @@ import { PartidoService } from '../../services/partidos/partidos.service';
 import { Partido } from '../../models/partido.model';
 import { Set } from '../../models/set.model';
 import { Formacion } from '../../models/formacion.model';
-import { NgForOf, NgIf } from "@angular/common";
+import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import {CambioService} from "../../services/cambios/cambios.service";
 import {EquiposService} from "../../services/equipos/equipos.service";
@@ -18,7 +18,8 @@ import {HeaderComponent} from "../header/header.component";
     NgIf,
     FormsModule,
     NgForOf,
-    HeaderComponent
+    HeaderComponent,
+    NgOptimizedImage
   ],
   styleUrls: ['./partido.component.css']
 })
@@ -33,7 +34,10 @@ export class PartidoComponent implements OnInit {
     fecha: '',
     id_local: 0,
     id_visita: 0,
-    estado:''
+    estado:'',
+    logo_local: '',
+    logo_visita:'',
+    hora: ''
   };
   nuevoSet: Set = {
     id: 0,
@@ -57,6 +61,10 @@ export class PartidoComponent implements OnInit {
   cambios: any[] = [];
   res1: boolean | undefined;
   res2: boolean | undefined;
+  errorMessage: string='';
+  errorMessage2: string='';
+  errorMessage3: string='';
+  mostrarFormularioCambio: boolean = false; // Controla la visibilidad del formulario
 
 
   constructor(
@@ -137,49 +145,58 @@ export class PartidoComponent implements OnInit {
   }
 
   agregarSet(): void {
+    this.errorMessage='';
     if (this.partido) {
-      if (this.partido.set_ganados_local === 3|| this.partido.set_ganados_visita === 3) {
-        alert('No se puede agregar más sets, uno de los equipos ya ha ganado 3 sets.');
+      console.log(this.partido)
+      if (this.nuevoSet.puntos_local < 15 && this.nuevoSet.puntos_visita < 15) {
+        this.errorMessage='Los sets deben ser mayor a 15. ';
         return;
       }
-      else{
-        this.partidoService.agregarSet(this.nuevoSet).subscribe(
-        data => {
-          if (this.partido?.sets) {
-            this.partido.sets.push(data);
-          }
-          window.location.reload();
-        },
-        error => {
-          console.error('Error al agregar set:', error);
-        });
+      if (this.partido.set_ganados_local === 3|| this.partido.set_ganados_visita === 3) {
+        this.errorMessage='No se puede agregar más sets, uno de los equipos ya ha ganado 3 sets.';
+        return;
       }
+      if (this.nuevoSet.puntos_local === this.nuevoSet.puntos_visita) {
+        this.errorMessage='No se puede empatar en puntos.';
+        return;
+      }
+      this.partidoService.agregarSet(this.nuevoSet).subscribe(
+      data => {
+        if (this.partido?.sets) {
+          this.partido.sets.push(data);
+        }
+        window.location.reload();
+      },
+      error => {
+        console.error('Error al agregar set:', error);
+      });
     }
   }
 
   terminarPartido(): void {
-      if (this.partido.set_ganados_local && this.partido.set_ganados_visita) {
-        if (this.partido.set_ganados_local === this.partido.set_ganados_visita) {
-          alert('No se puede terminar el partido con un empate en sets.');
-          return;
-        }
-        if (Math.max(this.partido.set_ganados_local, this.partido.set_ganados_visita) === 1) {
-          alert('No se puede terminar el partido si el mayor de los sets ganados es igual a 1.');
-          return;
-        }
-        const id_partido = this.partido.id
-        console.log(id_partido)
-        this.partidoService.terminarPartido(id_partido).subscribe(
-          response => {
-            console.log('Partido terminado con éxito:', response);
-            window.location.reload();
-          },
-          error => {
-            console.error('Error al terminar el partido:', error);
-          }
-        );
+    this.errorMessage3='';
+    if (this.partido.set_ganados_local && this.partido.set_ganados_visita) {
+      if (this.partido.set_ganados_local === this.partido.set_ganados_visita) {
+        this.errorMessage3='No se puede terminar el partido con un empate en sets.';
+        return;
       }
+      if (Math.max(this.partido.set_ganados_local, this.partido.set_ganados_visita) === 1) {
+        this.errorMessage3='No se puede terminar el partido si el mayor de los sets ganados es igual a 1.';
+        return;
+      }
+      const id_partido = this.partido.id
+      console.log(id_partido)
+      this.partidoService.terminarPartido(id_partido).subscribe(
+        response => {
+          console.log('Partido terminado con éxito:', response);
+          window.location.reload();
+        },
+        error => {
+          console.error('Error al terminar el partido:', error);
+        }
+      );
     }
+  }
 
   onFormacionChange(): void {
     console.log('ID de la formación seleccionada:', this.nuevoCambio.id_formacion);
@@ -228,13 +245,21 @@ export class PartidoComponent implements OnInit {
       id_equipo: 0,
       id_partido:0
     };
+    this.mostrarFormularioCambio = true;
   }
 
   registrarCambio(): void {
+    this.errorMessage2='';
+    if (!this.nuevoCambio.id_formacion || !this.nuevoCambio.id_jugador_sale || !this.nuevoCambio.id_jugador_entra) {
+      this.errorMessage2='Por favor, complete todos los campos requeridos antes de registrar el cambio.';
+      return;
+    }
+
     this.nuevoCambio.id_partido = this.partido.id
     this.cambioService.registrarCambio(this.nuevoCambio).subscribe(
       response => {
-        console.log('Cambio registrado con éxito', response);
+        this.mostrarFormularioCambio = false;
+        this.nuevoCambio = {};
         window.location.reload();
       },
       error => {
@@ -257,5 +282,10 @@ export class PartidoComponent implements OnInit {
         }
       );
     }
+  }
+
+
+  cancelarCambio(): void {
+    this.mostrarFormularioCambio = false;
   }
 }

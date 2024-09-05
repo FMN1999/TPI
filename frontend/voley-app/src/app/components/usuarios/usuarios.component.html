@@ -1,11 +1,14 @@
 <app-header></app-header>
-<div>
-  <h1>Lista de Usuarios</h1>
-  <input type="text" [(ngModel)]="query" (input)="buscarUsuarios()" placeholder="Buscar por nombre o apellido">
-  <ul>
-    <li *ngFor="let usuario of usuarios">
-      <a [routerLink]="['/perfil', usuario.id]">
-        {{ usuario.apellido }}, {{ usuario.nombre }} - {{ usuario.tipo_usuario }} - {{ usuario.equipo_actual || 'Sin equipo' }}
+<div class="container usuarios-container">
+  <h1 class="titulo-principal">Lista de Usuarios</h1>
+  <input type="text" class="form-control buscar-input" [(ngModel)]="query" (input)="buscarUsuarios()" placeholder="Buscar por nombre o apellido">
+  <ul class="list-group usuarios-lista">
+    <li *ngFor="let usuario of usuarios" class="list-group-item usuario-item">
+      <a [routerLink]="['/perfil', usuario.id]" class="usuario-enlace">
+        <span class="usuario-nombre">{{ usuario.apellido }}, {{ usuario.nombre }}</span>
+        <span class="usuario-detalles">
+          {{ usuario.tipo_usuario }} - {{ usuario.equipo_actual }}
+        </span>
       </a>
     </li>
   </ul>

@@ -31,6 +31,7 @@ export class LigaComponent implements OnInit {
   };
   successMessage: string = '';
   errorMessage: string = '';
+  errorMessage2: string = '';
   tipo: string | undefined;
 
   constructor(
@@ -61,13 +62,22 @@ export class LigaComponent implements OnInit {
   }
 
   agregarTemporada(): void {
-    this.temporadaService.crearTemporada(this.nuevaTemporada).subscribe(data => {
-      this.temporadas.push(data);
-      this.nuevaTemporada.anio_desde = null;
-      this.nuevaTemporada.anio_hasta = null;
-      this.nuevaTemporada.estado = '';
-    });
+    if (this.nuevaTemporada.anio_desde && this.nuevaTemporada.anio_hasta && this.nuevaTemporada.estado) {
+      this.temporadaService.crearTemporada(this.nuevaTemporada).subscribe({
+        next: (data) => {
+          this.temporadas.push(data);
+          this.nuevaTemporada = { anio_desde: null, anio_hasta: null, estado: '', id_liga: null }; // Reiniciar el objeto
+          this.successMessage = 'Temporada agregada exitosamente!';
+        },
+        error: (error) => {
+          this.errorMessage2 = 'Hubo un problema al agregar la temporada. Inténtalo de nuevo.';
+        }
+      });
+    } else {
+      this.errorMessage2 = 'Por favor, completa todos los campos correctamente.';
+    }
   }
+
 
   eliminarTemporada(id: number): void {
     this.temporadaService.eliminarTemporada(id).subscribe(

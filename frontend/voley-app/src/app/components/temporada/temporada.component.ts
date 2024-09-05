@@ -38,6 +38,7 @@ export class TemporadaComponent implements OnInit {
     set_ganados_visita: 0
   };
   tipo: string | undefined;
+  errorMessage: string='';
 
   constructor(
     private route: ActivatedRoute,
@@ -94,6 +95,11 @@ export class TemporadaComponent implements OnInit {
   }
 
   agregarPartido(): void {
+    this.errorMessage='';
+    if(!this.nuevoPartido.fecha || !this.nuevoPartido.id_local || !this.nuevoPartido.id_visita || !this.nuevoPartido.hora){
+      this.errorMessage = 'Por favor, complete todos los campos.';
+      return;
+    }
     const partido = {
       ...this.nuevoPartido,
       id_temporada: this.temporada.id
@@ -102,6 +108,7 @@ export class TemporadaComponent implements OnInit {
       this.partidos.push(data);
       this.nuevoPartido = { fecha: '', hora: '', id_local: '', id_visita: '', set_ganados_local: 0, set_ganados_visita: 0 };
       this.cerrarModal();
+      window.location.reload();
     });
   }
 

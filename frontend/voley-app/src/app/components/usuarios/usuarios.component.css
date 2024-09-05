@@ -1,0 +1,72 @@
+/* Contenedor principal */
+.usuarios-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Estilo para el título principal */
+.titulo-principal {
+  border-bottom: 2px solid #007bff; /* Línea azul debajo */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  text-align: center;
+  color: #007bff;
+}
+
+/* Estilo para el campo de búsqueda */
+.buscar-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Estilo para la lista de usuarios */
+.usuarios-lista {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Estilo para cada usuario en la lista */
+.usuario-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+/* Efecto hover para cada item */
+.usuario-item:hover {
+  background-color: #f0f8ff; /* Color de fondo al hacer hover */
+}
+
+/* Estilo para el enlace de usuario */
+.usuario-enlace {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Estilo para el nombre del usuario */
+.usuario-nombre {
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
+/* Estilo para los detalles del usuario */
+.usuario-detalles {
+  font-size: 1rem;
+  color: #777;
+  margin-left: 10px;
+}

@@ -476,7 +476,9 @@ class PartidoController:
                     "id_temporada": partido.id_temporada.id,
                     "id_local": partido.id_local.id,
                     "id_visita": partido.id_visita.id,
-                    "estado":partido.estado
+                    "estado":partido.estado,
+                    'logo_local': partido.id_local.logo,
+                    'logo_visita': partido.id_visita.logo
                 },
                 "sets": [{
                     "nro_set": s.nro_set,

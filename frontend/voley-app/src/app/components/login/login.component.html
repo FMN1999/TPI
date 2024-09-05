@@ -1,15 +1,15 @@
-<div class="container mt-5">
-  <h2>Iniciar Sesión</h2>
-  <form (submit)="onSubmit()">
-    <div class="mb-3">
+<div class="login-container">
+  <h2 class="login-title">Iniciar Sesión</h2>
+  <form (submit)="onSubmit()" class="login-form">
+    <div class="form-group">
       <label for="username" class="form-label">Nombre de usuario</label>
       <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required>
     </div>
-    <div class="mb-3">
+    <div class="form-group">
       <label for="password" class="form-label">Contraseña</label>
       <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required>
     </div>
-    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+    <button type="submit" class="btn btn-primary login-btn">Iniciar Sesión</button>
   </form>
 
   <div *ngIf="errorMessage" class="alert alert-danger mt-3">
@@ -17,8 +17,10 @@
   </div>
 
   <!-- Botón para ir a la página de registro -->
-  <div class="mt-3">
+  <div class="register-link">
     <button class="btn btn-secondary" (click)="irARegistro()">Registrarse</button>
   </div>
 </div>
+
+
 

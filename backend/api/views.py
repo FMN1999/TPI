@@ -425,7 +425,9 @@ class PartidosView(View):
                     'hora': partido.hora,
                     'set_ganados_local': partido.set_ganados_local,
                     'set_ganados_visita': partido.set_ganados_visita,
-                    'id_temporada': partido.id_temporada_id
+                    'id_temporada': partido.id_temporada_id,
+                    'logo_local': partido.id_local.logo,
+                    'logo_visita': partido.id_visita.logo
                 }
                 for partido in partidos
             ]
@@ -489,7 +491,12 @@ class PartidosSinSetsGanadosView(View):
                 'id': partido.id,
                 'local': partido.id_local.nombre,
                 'visita': partido.id_visita.nombre,
-                'fecha': partido.fecha
+                'fecha': partido.fecha,
+                'hora': partido.hora,
+                'logo_local': partido.id_local.logo,
+                'logo_visita': partido.id_visita.logo,
+                'nombre_liga': partido.id_temporada.id_liga.nombre,
+                'categoria': partido.id_temporada.id_liga.categoria
             }
             for partido in partidos
         ]
@@ -499,7 +506,6 @@ class PartidosSinSetsGanadosView(View):
 
 class DetallePartidoView(View):
     def get(self, request, id_partido):
-        print(id_partido)
         detalles = PartidoController.ver_detalles_partido(id_partido)
         if detalles:
             return JsonResponse(detalles, safe=False, status=200)

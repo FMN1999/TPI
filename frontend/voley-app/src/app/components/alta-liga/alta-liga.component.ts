@@ -41,6 +41,15 @@ export class AltaLigaComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (!this.liga.nombre || !this.liga.categoria ||
+        this.liga.ptos_x_victoria === undefined || this.liga.ptos_x_victoria === null ||
+        this.liga.ptos_x_32_vict === undefined || this.liga.ptos_x_32_vict === null ||
+        this.liga.ptos_x_32_derrota === undefined || this.liga.ptos_x_32_derrota === null) {
+        this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
+        this.successMessage = '';
+        return;
+    }
+
     this.ligaService.crearLiga(this.liga).subscribe(
       response => {
         this.successMessage = 'Liga creada con éxito';

@@ -1,47 +1,60 @@
 <app-header></app-header>
-<div class="container">
+<div class="container temporada-container">
   <!-- Detalles de la Temporada -->
-  <h2>Detalles de la Temporada</h2>
-  <div *ngIf="temporada">
-    <p><strong>Año Desde:</strong> {{ temporada.anio_desde }}</p>
-    <p><strong>Año Hasta:</strong> {{ temporada.anio_hasta }}</p>
-    <p><strong>Estado:</strong> {{ temporada.estado }}</p>
-  </div>
+  <section class="temporada-details">
+    <h2 class="titulo-principal">Detalles de la Temporada</h2>
+    <div *ngIf="temporada" class="temporada-info">
+      <p><strong>Año Desde:</strong> {{ temporada.anio_desde }}</p>
+      <p><strong>Año Hasta:</strong> {{ temporada.anio_hasta }}</p>
+      <p><strong>Estado:</strong> {{ temporada.estado }}</p>
+    </div>
+  </section>
 
   <!-- Equipos en esta Temporada -->
-  <h3>Equipos en esta Temporada</h3>
-  <ul class="list-group">
-    <li *ngFor="let posicion of posiciones" class="list-group-item">
-      <a [routerLink]="['/equipo',posicion.id_equipo]">
-        {{ posicion.nombre }} - Puntos: {{ posicion.puntaje }} - {{posicion.set_ganados}} - {{posicion.set_en_contra}} - {{posicion.diferencia_sets}}
-      </a>
-      <button *ngIf="posicion.puntaje === 0 && (tipo==='A' || tipo==='D')" class="btn btn-danger btn-sm float-end" (click)="eliminarPosicion(posicion.id)">Eliminar</button>
-    </li>
-  </ul>
-
-  <h4 *ngIf="tipo==='A' || tipo==='D'">Agregar Equipo a la Temporada</h4>
-  <div *ngIf="tipo==='A' || tipo==='D'" class="form-group">
-    <select class="form-control" [(ngModel)]="nuevoEquipoId">
-      <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
-    </select>
-    <button class="btn btn-primary mt-2" (click)="agregarEquipo()">Agregar Equipo</button>
-  </div>
+  <section class="temporada-equipos">
+    <h3 class="titulo-secundario">Equipos en esta Temporada</h3>
+    <ul class="list-group equipos-lista">
+      <li *ngFor="let posicion of posiciones" class="list-group-item equipo-item">
+        <div class="equipo-info">
+          <a [routerLink]="['/equipo',posicion.id_equipo]" class="equipo-enlace">
+            <span class="equipo-nombre">{{ posicion.nombre }}</span>
+            <span class="equipo-detalles">
+              Puntos: {{ posicion.puntaje }} | Sets: {{posicion.set_ganados}} - {{posicion.set_en_contra}} | Diferencia: {{posicion.diferencia_sets}}
+            </span>
+          </a>
+          <button *ngIf="posicion.puntaje === 0 && (tipo==='A' || tipo==='D')" class="eliminar-btn" (click)="eliminarPosicion(posicion.id)">Eliminar</button>
+        </div>
+      </li>
+    </ul>
+    <div *ngIf="tipo==='A' || tipo==='D'" class="agregar-equipo-form">
+      <h3 class="titulo-secundario">Agregar Equipo a la Temporada</h3>
+      <select class="form-control" [(ngModel)]="nuevoEquipoId">
+        <option *ngFor="let equipo of equipos" [value]="equipo.id">{{ equipo.nombre }}</option>
+      </select>
+      <button class="btn btn-primary mt-2" (click)="agregarEquipo()">Agregar Equipo</button>
+    </div>
+  </section>
 
   <!-- Partidos en esta Temporada -->
-  <h3>Partidos en esta Temporada</h3>
-  <ul class="list-group">
-    <li *ngFor="let partido of partidos" class="list-group-item">
-      <a [routerLink]="['/partido',partido.id]">{{ partido.fecha }} - {{ partido.hora }} | {{ partido.local }} vs {{ partido.visita }}</a>
-      {{partido.set_ganados_local}} - {{partido.set_ganados_visita}}
-      <div *ngIf="partido.set_ganados_local > 0 || partido.set_ganados_visita > 0">
-        {{partido.estado}}
-      </div>
-      <button *ngIf="partido.estado !== 'Finalizado' && (tipo==='A' || tipo==='D')" class="btn btn-danger btn-sm float-right" (click)="eliminarPartido(partido.id)">Eliminar</button>
-    </li>
-  </ul>
-
-  <!-- Botón para abrir el modal de agregar partido -->
-  <button *ngIf="tipo==='A' || tipo==='D'" class="btn btn-primary mt-4" (click)="abrirModal()">Agregar Partido</button>
+  <section class="temporada-partidos">
+    <h3 class="titulo-secundario">Partidos en esta Temporada</h3>
+    <ul class="list-group partidos-lista">
+      <li *ngFor="let partido of partidos" class="list-group-item partido-item">
+        <div class="partido-info">
+          <a [routerLink]="['/partido',partido.id]" class="partido-enlace">
+            <span class="partido-fecha">{{ partido.fecha }} - {{ partido.hora }}</span>
+            <span class="partido-detalles">{{ partido.local }} vs {{ partido.visita }}</span>
+            <span class="partido-resultado">{{partido.set_ganados_local}} - {{partido.set_ganados_visita}}</span>
+          </a>
+          <div *ngIf="partido.set_ganados_local > 0 || partido.set_ganados_visita > 0" class="partido-estado">
+            {{partido.estado}}
+          </div>
+          <button *ngIf="partido.estado !== 'Finalizado' && (tipo==='A' || tipo==='D')" class="eliminar-btn" (click)="eliminarPartido(partido.id)">Eliminar</button>
+        </div>
+      </li>
+    </ul>
+    <button *ngIf="tipo==='A' || tipo==='D'" class="btn btn-primary mt-4 agregar-partido-btn" (click)="abrirModal()">Agregar Partido</button>
+  </section>
 
   <!-- Modal para agregar partido -->
   <div *ngIf="modalAbierto" class="modal">
@@ -55,10 +68,15 @@
           <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }}</option>
         </select>
         <select class="form-control" [(ngModel)]="nuevoPartido.id_visita">
-          <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }} </option>
+          <option *ngFor="let posicion of posiciones" [value]="posicion.id_equipo">{{ posicion.nombre }}</option>
         </select>
         <button class="btn btn-primary mt-2" (click)="agregarPartido()">Agregar Partido</button>
+        <div *ngIf="errorMessage" class="alert alert-danger mt-2">
+          {{ errorMessage }}
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+

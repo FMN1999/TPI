@@ -1,101 +1,125 @@
 <app-header></app-header>
-<h2>Detalles del Partido</h2>
-<p>{{ partido.local }} vs {{ partido.visita }}</p>
-
-<form (submit)="agregarSet()" *ngIf="(res1 || res2) && partido.set_ganados_local <= 2 && partido.set_ganados_visita <= 2 && partido.estado !== 'Finalizado'">
-  <h3>Agregar Set</h3>
-  <div>
-    <label for="puntosLocal">Puntos Local:</label>
-    <input type="number" id="puntosLocal" [(ngModel)]="nuevoSet.puntos_local" name="puntosLocal" required>
-  </div>
-  <div>
-    <label for="puntosVisita">Puntos Visita:</label>
-    <input type="number" id="puntosVisita" [(ngModel)]="nuevoSet.puntos_visita" name="puntosVisita" required>
-  </div>
-  <div>
-    <label for="formacionLocal">Formación Local:</label>
-    <select id="formacionLocal" [(ngModel)]="nuevoSet.id_formacion_local" name="formacionLocal" required>
-      <option *ngFor="let formacion of formacionesLocal" [value]="formacion.id">
-        {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
-      </option>
-    </select>
-  </div>
-  <div>
-    <label for="formacionVisit">Formación Visit:</label>
-    <select id="formacionVisit" [(ngModel)]="nuevoSet.id_formacion_visit" name="formacionVisit" required>
-      <option *ngFor="let formacion of formacionesVisit" [value]="formacion.id">
-        {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
-      </option>
-    </select>
-  </div>
-  <div>
-    <button type="submit">Agregar Set</button>
-  </div>
-</form>
-
-<h3>Sets</h3>
-<li *ngFor="let set of partido.sets">
-  Local: {{ set.puntos_local }} - Visita: {{ set.puntos_visita }}
-  <button *ngIf="(res1 || res2) && partido.estado!=='Finalizado'" (click)="abrirFormularioCambio()">Cambio</button>
-  <button *ngIf="(res1 || res2) && partido.estado!=='Finalizado'" (click)="eliminarSet(set.id)">Eliminar</button> <!-- Botón para eliminar el set -->
-</li>
-
-<!-- Formulario de cambio -->
-<div *ngIf="(res1 || res2) && nuevoCambio && partido.estado !=='Finalizado'">
-  <h4>Registrar Cambio</h4>
-  <form (ngSubmit)="registrarCambio()">
-    <div>
-      <label for="id_formacion">Formación:</label>
-      <select id="id_formacion" [(ngModel)]="nuevoCambio.id_formacion" name="id_formacion" (change)="onFormacionChange()" required>
-        <optgroup label="Formaciones Local">
-          <option *ngFor="let formacion of formacionesLocal" [value]="formacion.id">
-            {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
-          </option>
-        </optgroup>
-        <optgroup label="Formaciones Visit">
-          <option *ngFor="let formacion of formacionesVisit" [value]="formacion.id">
-            {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
-          </option>
-        </optgroup>
-      </select>
+<div class="match-details-container">
+  <h2 class="match-title">Detalles del Partido</h2>
+  <div class="match-info text-center">
+    <div class="team-vs">
+      <img [src]="partido.logo_local" alt="{{ partido.local }}" class="team-logo">
+      <span>{{ partido.local }} vs {{ partido.visita }}</span>
+      <img [src]="partido.logo_visita" alt="{{ partido.visita }}" class="team-logo">
     </div>
-    <div>
-      <label for="id_jugador_sale">Jugador que sale:</label>
-      <select id="id_jugador_sale" [(ngModel)]="nuevoCambio.id_jugador_sale" name="id_jugador_sale" required>
-        <option *ngFor="let jugador of jugadores" [value]="jugador.id">
-          {{ jugador.nombre }} {{ jugador.apellido }}
+     <p class="match-details mt-3" style="color: #333;">
+      <span>{{ partido.fecha }} - {{ partido.hora }}</span><br>
+      <span style="font-weight: bold;">Sets:</span> {{ partido.set_ganados_local }} - {{ partido.set_ganados_visita }}<br>
+      <span *ngIf="partido.estado" style="font-weight: bold;"> {{ partido.estado }} </span>
+    </p>
+  </div>
+
+  <form (submit)="agregarSet()" *ngIf="(res1 || res2) && partido.set_ganados_local <= 2 && partido.set_ganados_visita <= 2 && partido.estado !== 'Finalizado'" class="set-form">
+    <h3 class="section-title">Agregar Set</h3>
+    <div class="form-group">
+      <label for="puntosLocal" class="form-label">Puntos Local:</label>
+      <input type="number" id="puntosLocal" [(ngModel)]="nuevoSet.puntos_local" name="puntosLocal" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="puntosVisita" class="form-label">Puntos Visita:</label>
+      <input type="number" id="puntosVisita" [(ngModel)]="nuevoSet.puntos_visita" name="puntosVisita" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="formacionLocal" class="form-label">Formación Local:</label>
+      <select id="formacionLocal" [(ngModel)]="nuevoSet.id_formacion_local" name="formacionLocal" class="form-select" required>
+        <option *ngFor="let formacion of formacionesLocal" [value]="formacion.id">
+          {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
         </option>
       </select>
     </div>
-    <div>
-      <label for="id_jugador_entra">Jugador que entra:</label>
-      <select id="id_jugador_entra" [(ngModel)]="nuevoCambio.id_jugador_entra" name="id_jugador_entra" required>
-        <option *ngFor="let jugador of jugadores" [value]="jugador.id">
-          {{ jugador.nombre }} {{ jugador.apellido }}
+    <div class="form-group">
+      <label for="formacionVisit" class="form-label">Formación Visita:</label>
+      <select id="formacionVisit" [(ngModel)]="nuevoSet.id_formacion_visit" name="formacionVisit" class="form-select" required>
+        <option *ngFor="let formacion of formacionesVisit" [value]="formacion.id">
+          {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
         </option>
       </select>
     </div>
-    <div>
-      <label for="cerro">¿Cerró el punto?</label>
-      <input id="cerro" type="checkbox" [(ngModel)]="nuevoCambio.cerro" name="cerro">
+    <button type="submit" class="btn btn-primary submit-btn">Agregar Set</button>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
     </div>
-    <div>
-      <label for="permanente">¿Es un cambio permanente?</label>
-      <input id="permanente" type="checkbox" [(ngModel)]="nuevoCambio.permanente" name="permanente">
-    </div>
-    <button type="submit">Registrar Cambio</button>
+
   </form>
-</div>
-<div *ngIf="cambios.length > 0">
-  <h3>Cambios del Partido</h3>
-  <ul>
-    <li *ngFor="let cambio of cambios">
-      {{cambio.jugador_sale_nombre}} {{cambio.jugador_sale_apellido}}
-      fue reemplazado por
-      {{cambio.jugador_entra_nombre}} {{cambio.jugador_entra_apellido}}
-      {{cambio.cerro ? '(el cambio cerró)' : ''}} {{cambio.permanente ? '(permanente)' : ''}}
+
+  <h3 *ngIf="partido.sets !== []" class="section-title">Sets</h3>
+  <ul class="sets-list">
+    <li *ngFor="let set of partido.sets" class="set-item">
+      Local: {{ set.puntos_local }} - Visita: {{ set.puntos_visita }}
+      <button *ngIf="(res1 || res2) && partido.estado !== 'Finalizado'" (click)="abrirFormularioCambio()"  class="btn btn-warning set-btn">Cambio</button>
+      <button *ngIf="(res1 || res2) && partido.estado !== 'Finalizado'" (click)="eliminarSet(set.id)" class="btn btn-danger set-btn">Eliminar</button>
     </li>
   </ul>
-</div>
 
-<button (click)="terminarPartido()" *ngIf="(res1 || res2) && partido.estado !== 'Finalizado' && (partido.set_ganados_local >= 2 || partido.set_ganados_visita >= 2) && partido.set_ganados_local !== partido.set_ganados_visita">Terminar Partido</button>
+  <!-- Formulario de cambio -->
+  <div *ngIf="mostrarFormularioCambio && (res1 || res2) && nuevoCambio && partido.estado !== 'Finalizado'" class="cambio-form">
+    <h4 class="section-title">Registrar Cambio</h4>
+    <form (ngSubmit)="registrarCambio()">
+      <div class="form-group">
+        <label for="id_formacion" class="form-label">Formación:</label>
+        <select id="id_formacion" [(ngModel)]="nuevoCambio.id_formacion" name="id_formacion" class="form-select" (change)="onFormacionChange()" required>
+          <optgroup label="Formaciones Local">
+            <option *ngFor="let formacion of formacionesLocal" [value]="formacion.id">
+              {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
+            </option>
+          </optgroup>
+          <optgroup label="Formaciones Visita">
+            <option *ngFor="let formacion of formacionesVisit" [value]="formacion.id">
+              {{ formacion.jugador_1 }} - {{ formacion.jugador_2 }} - ...
+            </option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="id_jugador_sale" class="form-label">Jugador que sale:</label>
+        <select id="id_jugador_sale" [(ngModel)]="nuevoCambio.id_jugador_sale" name="id_jugador_sale" class="form-select" required>
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">
+            {{ jugador.nombre }} {{ jugador.apellido }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="id_jugador_entra" class="form-label">Jugador que entra:</label>
+        <select id="id_jugador_entra" [(ngModel)]="nuevoCambio.id_jugador_entra" name="id_jugador_entra" class="form-select" required>
+          <option *ngFor="let jugador of jugadores" [value]="jugador.id">
+            {{ jugador.nombre }} {{ jugador.apellido }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="cerro" class="form-label">¿Cerró el punto?</label>
+        <input id="cerro" type="checkbox" [(ngModel)]="nuevoCambio.cerro" name="cerro" class="form-check-input">
+      </div>
+      <div class="form-group">
+        <label for="permanente" class="form-label">¿Es un cambio permanente?</label>
+        <input id="permanente" type="checkbox" [(ngModel)]="nuevoCambio.permanente" name="permanente" class="form-check-input">
+      </div>
+      <button type="submit" class="btn btn-primary submit-btn">Registrar Cambio</button>
+      <button type="button" (click)="cancelarCambio()" class="btn btn-danger set-btn">Cancelar</button>
+      <div *ngIf="errorMessage2" class="alert alert-danger mt-3">
+        {{ errorMessage2 }}
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="cambios.length > 0" class="cambios-list">
+    <h3 class="section-title">Cambios del Partido</h3>
+    <ul>
+      <li *ngFor="let cambio of cambios" class="cambio-item">
+        {{cambio.jugador_sale_nombre}} {{cambio.jugador_sale_apellido}} fue reemplazado por
+        {{cambio.jugador_entra_nombre}} {{cambio.jugador_entra_apellido}}
+        {{cambio.cerro ? '(el cambio cerró)' : ''}} {{cambio.permanente ? '(permanente)' : ''}}
+      </li>
+    </ul>
+  </div>
+
+  <button (click)="terminarPartido()" *ngIf="(res1 || res2) && partido.estado !== 'Finalizado' && (partido.set_ganados_local >= 2 || partido.set_ganados_visita >= 2) && partido.set_ganados_local !== partido.set_ganados_visita" class="btn btn-success end-match-btn">Terminar Partido</button>
+  <div *ngIf="errorMessage3" class="alert alert-danger mt-3">
+        {{ errorMessage3 }}
+  </div>
+</div>

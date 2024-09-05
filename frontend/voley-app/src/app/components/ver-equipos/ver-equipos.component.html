@@ -1,21 +1,13 @@
 <app-header></app-header>
-<div class="container">
-  <h2>Lista de Equipos</h2>
-  <input
-    type="text"
-    class="form-control"
-    placeholder="Buscar equipos"
-    [(ngModel)]="searchQuery"
-    (input)="onSearchChange(searchQuery)"
-  />
-  <ul class="list-group mt-3">
-    <li
-      class="list-group-item"
-      *ngFor="let equipo of filteredEquipos"
-      [routerLink]="['/equipo', equipo.id]"
-    >
-      {{ equipo.nombre }}
+<div class="container equipos-container">
+  <h2 class="titulo-principal">Lista de Equipos</h2>
+  <input type="text" class="form-control buscar-input" placeholder="Buscar equipos" [(ngModel)]="searchQuery" (input)="onSearchChange(searchQuery)" />
+  <ul class="list-group mt-3 equipos-lista">
+    <li class="list-group-item equipo-item" *ngFor="let equipo of filteredEquipos" [routerLink]="['/equipo', equipo.id]">
+      <img [src]="equipo.logo" alt="{{ equipo.nombre }} logo" class="equipo-logo">
+      <span class="equipo-nombre">{{ equipo.nombre }}</span>
     </li>
   </ul>
 </div>
+
 

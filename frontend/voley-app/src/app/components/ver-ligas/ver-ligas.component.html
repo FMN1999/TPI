@@ -1,18 +1,20 @@
 <app-header></app-header>
-<div class="container">
-  <h2>Listado de Ligas</h2>
+<div class="container ligas-container">
+  <h2 class="titulo-principal">Listado de Ligas</h2>
   <div class="form-group">
     <input
       type="text"
-      class="form-control"
+      class="form-control buscar-input"
       placeholder="Buscar por categoría..."
       [(ngModel)]="searchTerm"
       (input)="onSearch()"
     />
   </div>
-  <ul class="list-group">
-    <li *ngFor="let liga of ligas" class="list-group-item">
-      <a [routerLink]="['/liga', liga.id]">{{liga.nombre}} - {{ liga.categoria }}</a>
+  <ul class="list-group ligas-lista">
+    <li *ngFor="let liga of ligas" class="list-group-item liga-item">
+      <a [routerLink]="['/liga', liga.id]" class="liga-enlace">
+        {{ liga.nombre }} - {{ liga.categoria }}
+      </a>
     </li>
   </ul>
 </div>

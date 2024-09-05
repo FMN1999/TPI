@@ -1,0 +1,122 @@
+.container {
+  margin: 20px auto;
+  max-width: 900px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.league-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.league-header h2 {
+  font-size: 28px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.league-info {
+  font-size: 18px;
+  color: #555;
+}
+
+.league-info p {
+  margin-bottom: 10px;
+}
+
+.seasons-section {
+  margin-bottom: 20px;
+}
+
+.seasons-section h3 {
+  font-size: 22px;
+  color: #007bff;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+.list-group {
+  list-style-type: none;
+  padding: 0;
+}
+
+.list-group-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.list-group-item a:hover {
+  text-decoration: underline;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.add-season-section {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-season-section h3 {
+  font-size: 22px;
+  color: #007bff;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+.add-season-section .form-group {
+  margin-bottom: 15px;
+}
+
+.add-season-section label {
+  font-weight: bold;
+}
+
+.add-season-section .form-control {
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.add-season-section .btn-primary {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.add-season-section .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: 5px;
+}

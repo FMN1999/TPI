@@ -1,0 +1,153 @@
+.perfil {
+  margin: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+.perfil h2 {
+  font-size: 24px;
+  color: #007bff;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.perfil-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 3px solid #007bff;
+}
+
+.perfil-info {
+  margin-top: 10px;
+}
+
+.perfil-info p {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.perfil-info strong {
+  color: #007bff;
+}
+
+.perfil-edit {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.form-control {
+  border: 1px solid #007bff;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  margin-top: 15px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.estadisticas-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.estadisticas-container h2 {
+  color: #007bff;
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.radar-chart-wrapper {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+.estadisticas-leyenda {
+  margin-top: 20px;
+}
+
+.estadisticas-leyenda ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.estadisticas-leyenda li {
+  font-size: 16px;
+  color: #333;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.estadisticas-leyenda .color-box {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #007bff;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+

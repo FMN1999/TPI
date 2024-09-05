@@ -11,4 +11,7 @@ export interface Partido {
   id_local: number; // ID del equipo local
   id_visita: number; // ID del equipo visitante
   estado: string;
+  logo_local: string;
+  logo_visita: string;
+  hora:string;
 }

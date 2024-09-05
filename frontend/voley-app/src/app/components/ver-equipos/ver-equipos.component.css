@@ -1,0 +1,63 @@
+/* Contenedor principal */
+.equipos-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Estilo para el título principal */
+.titulo-principal {
+  border-bottom: 2px solid #007bff; /* Línea azul debajo */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  text-align: center;
+  color: #007bff;
+}
+
+/* Estilo para el campo de búsqueda */
+.buscar-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Estilo para la lista de equipos */
+.equipos-lista {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Estilo para cada equipo en la lista */
+.equipo-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+/* Efecto hover para cada item */
+.equipo-item:hover {
+  background-color: #f0f8ff; /* Color de fondo al hacer hover */
+}
+
+/* Estilo para el logo de cada equipo */
+.equipo-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+/* Estilo para el nombre del equipo */
+.equipo-nombre {
+  font-size: 1.2rem;
+  color: #007bff;
+  font-weight: bold;
+}

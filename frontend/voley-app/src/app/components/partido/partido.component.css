@@ -1,0 +1,126 @@
+.match-details-container {
+  margin: 30px auto;
+  max-width: 800px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.match-title {
+  font-size: 28px;
+  color: #007bff;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.team-vs {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.team-vs span {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.section-title {
+  color: #007bff;
+  font-weight: bold;
+  border-bottom: 2px solid #007bff; /* Línea azul */
+  padding-bottom: 10px; /* Espaciado debajo del texto */
+  margin-bottom: 20px; /* Espaciado debajo de la línea */
+}
+
+.set-form, .cambio-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.form-control, .form-select {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.sets-list, .cambios-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.set-item, .cambio-item {
+  padding: 10px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.set-item .set-btn, .cambio-item .cambio-btn {
+  margin-left: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.end-match-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.end-match-btn:hover {
+  background-color: #218838;
+}
+
+.team-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.team-vs p {
+  margin: 0 20px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.team-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}

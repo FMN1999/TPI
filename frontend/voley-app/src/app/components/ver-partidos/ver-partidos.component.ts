@@ -18,7 +18,7 @@ import {HeaderComponent} from "../header/header.component";
   styleUrls: ['./ver-partidos.component.css']
 })
 export class VerPartidosComponent implements OnInit {
-  partidos: Partido[] = [];
+  partidos: any[] = [];
 
   constructor(private partidosService: PartidoService, private router: Router) {}
 
