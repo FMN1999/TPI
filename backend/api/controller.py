@@ -212,9 +212,7 @@ class EquipoController:
 
         dt_data = data.get('dt')
         if dt_data:
-            print(dt_data)
             dt = UsuarioData.obtener_dt(dt_data.get('id'))
-            print(dt)
             eqp_dt = EquipoDt(
                 id_equipo=equipo_guardado,
                 id_dt=dt,
@@ -282,7 +280,6 @@ class EquipoController:
         asistentes = EquipoController.obtener_asistentes_actuales_por_equipo(equipo_id)
         jugadores = EquipoController.obtener_jugadores_actuales_por_equipo(equipo_id)
 
-
         return {
             'equipo': equipo,
             'dts': dts,
@@ -291,8 +288,7 @@ class EquipoController:
         }
 
     @staticmethod
-    def dar_de_baja_miembro(equipo_id, tipo, miembro_id):
-        print(equipo_id)
+    def dar_de_baja_miembro(tipo, miembro_id):
         fecha_actual = datetime.now().date()
         if tipo == 'dt':
             equipo_dt = EquipoDtData.obtener_equipo_actual_por_dt(miembro_id)
@@ -321,7 +317,7 @@ class EquipoController:
         equipo_asistente = EquipoAsistente(
             id_equipo=equipo,
             id_asistente=asistente,
-            fecha_desde= datetime.now().date()
+            fecha_desde=datetime.now().date()
         )
         return EquipoAsistenteData.crear_equipo_asistente(equipo_asistente)
 
@@ -371,6 +367,7 @@ class LigaController:
         nombre_liga = data.get('nombre')
         liga_existente = LigaData.obtener_liga_por_nombre(nombre_liga)
         return liga_existente is not None
+
     @staticmethod
     def crear_liga(data):
         liga = Liga(
@@ -408,12 +405,12 @@ class TemporadaController:
         return TemporadaData.crear_temporada(temp)
 
     @staticmethod
-    def obtener_temporada(id):
-        return TemporadaData.obtener_temporada_por_id(id)
+    def obtener_temporada(id_view):
+        return TemporadaData.obtener_temporada_por_id(id_view)
 
     @staticmethod
-    def eliminar_temporada(id):
-        return TemporadaData.eliminar_temporada(id)
+    def eliminar_temporada(id_view):
+        return TemporadaData.eliminar_temporada(id_view)
 
 
 class PosicionesController:
@@ -436,8 +433,8 @@ class PosicionesController:
         return PosicionesData.obtener_posiciones_por_temporada(id_temporada)
 
     @staticmethod
-    def eliminar_posicion(id):
-        return PosicionesData.eliminar_posicion(id)
+    def eliminar_posicion(id_view):
+        return PosicionesData.eliminar_posicion(id_view)
 
 
 class PartidoController:
@@ -447,9 +444,9 @@ class PartidoController:
             fecha=data.get('fecha'),
             hora=data.get('hora'),
             id_local=EquipoData.get_equipo_by_id(int(data.get('id_local'))),
-            id_visita= EquipoData.get_equipo_by_id(int(data.get('id_visita'))),
-            set_ganados_local= data.get('set_ganados_local'),
-            set_ganados_visita= data.get('set_ganados_visita'),
+            id_visita=EquipoData.get_equipo_by_id(int(data.get('id_visita'))),
+            set_ganados_local=data.get('set_ganados_local'),
+            set_ganados_visita=data.get('set_ganados_visita'),
             id_temporada=TemporadaData.obtener_temporada_por_id(data.get('id_temporada'))
         )
         return PartidoData.agregar_partido(partido)
@@ -461,7 +458,6 @@ class PartidoController:
     @staticmethod
     def ver_detalles_partido(id_partido):
         partido = PartidoData.obtener_partido_por_id(id_partido)
-        print(partido)
         sets = SetData.obtener_sets_por_partido(partido.id)
         if partido:
             return {
@@ -476,7 +472,7 @@ class PartidoController:
                     "id_temporada": partido.id_temporada.id,
                     "id_local": partido.id_local.id,
                     "id_visita": partido.id_visita.id,
-                    "estado":partido.estado,
+                    "estado": partido.estado,
                     'logo_local': partido.id_local.logo,
                     'logo_visita': partido.id_visita.logo
                 },
@@ -501,24 +497,29 @@ class PartidoController:
             if partido.set_ganados_visita is None:
                 partido.set_ganados_visita = 0
 
-            # Calcular puntos para el local
-            if partido.set_ganados_local >= 3:
+            if partido.set_ganados_local > partido.set_ganados_visita and partido.set_ganados_local == 2:
+                puntos_local = liga.ptos_x_victoria
+                puntos_visita = 0
+
+            if partido.set_ganados_visita > partido.set_ganados_local and partido.set_ganados_visita == 2:
+                puntos_visita = liga.ptos_x_victoria
+                puntos_local = 0
+
+            if partido.set_ganados_local == 3:
                 if partido.set_ganados_visita <= 1:
                     puntos_local = liga.ptos_x_victoria
+                    puntos_visita = 0
                 elif partido.set_ganados_visita == 2:
                     puntos_local = liga.ptos_x_32_vict
-            else:
-                puntos_local = liga.ptos_x_32_derrota if partido.set_ganados_local == 2 else 0
+                    puntos_visita = liga.ptos_x_32_derrota
 
-            # Calcular puntos para el visitante
-            if partido.set_ganados_visita >= 3:
+            if partido.set_ganados_visita == 3:
                 if partido.set_ganados_local <= 1:
                     puntos_visita = liga.ptos_x_victoria
+                    puntos_local = 0
                 elif partido.set_ganados_local == 2:
                     puntos_visita = liga.ptos_x_32_vict
-            else:
-                puntos_visita = liga.ptos_x_32_derrota if partido.set_ganados_visita == 2 else 0
-
+                    puntos_local = liga.ptos_x_32_derrota
 
             pos_loc = PosicionesData.obtener_por_equipo_temp(partido.id_local.id, temporada.id)
             pos_loc.puntaje += puntos_local
@@ -527,16 +528,13 @@ class PartidoController:
             pos_loc.diferencia_sets = pos_loc.set_ganados - pos_loc.set_en_contra
             PosicionesData.actualizar_posicion(pos_loc)
             pos_vis = PosicionesData.obtener_por_equipo_temp(partido.id_visita.id, temporada.id)
-            print(pos_vis)
             pos_vis.puntaje += puntos_visita
             pos_vis.set_ganados += partido.set_ganados_visita
             pos_vis.set_en_contra += partido.set_ganados_local
             pos_vis.diferencia_sets = pos_vis.set_ganados - pos_vis.set_en_contra
             PosicionesData.actualizar_posicion(pos_vis)
-            print(pos_vis)
 
             partido.estado = "Finalizado"
-            print(partido.estado)
             PartidoData.actualizar_partido(partido)
             return True
         except Exception as e:
@@ -555,7 +553,6 @@ class PartidoController:
 class FormacionController:
     @staticmethod
     def crear_formacion(data):
-        e = EquipoData.get_equipo_by_id(data['id_equipo'])
 
         # Extraer los jugadores del array
         jugadores = data['jugadores']
@@ -567,7 +564,7 @@ class FormacionController:
         j6 = JugadorData.obtener_jugador_por_id(jugadores[5])
 
         # Extraer el líbero
-        l = JugadorData.obtener_jugador_por_id(data['libero'])
+        libero = JugadorData.obtener_jugador_por_id(data['libero'])
 
         formacion = Formacion(
             jugador_1=j1,
@@ -576,7 +573,7 @@ class FormacionController:
             jugador_4=j4,
             jugador_5=j5,
             jugador_6=j6,
-            libero=l
+            libero=libero
         )
         # Crear la formación en la base de datos
         return FormacionData.crear_formacion(formacion)
@@ -693,7 +690,6 @@ class CambioController:
     @staticmethod
     def obtener_cambios_por_partido(id_partido):
         try:
-            print(id_partido)
             cambios = CambioData.obtener_cambios_por_partido(id_partido)
             cambios_info = []
 
@@ -743,7 +739,6 @@ class EstadisticasController:
                 id_jugador=jugador,
             )
 
-            print(data)
             estadistica = EstadisticasData.crear_estadisticas(estad_data)
             return estadistica
         except Partido.DoesNotExist:
@@ -754,9 +749,9 @@ class EstadisticasController:
             raise ValueError('Jugador no encontrado')
 
     @staticmethod
-    def obtener_estadisticas_por_jugador(id):
+    def obtener_estadisticas_por_jugador(id_view):
         try:
-            jug = UsuarioData.obtener_jug_por_id(id)
+            jug = UsuarioData.obtener_jug_por_id(id_view)
             estadisticas = EstadisticasData.obtener_estadisticas_por_jugador(jug.id)
             for key in estadisticas.keys():
                 if estadisticas[key] is None:

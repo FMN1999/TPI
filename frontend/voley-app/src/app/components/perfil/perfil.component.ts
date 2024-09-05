@@ -134,7 +134,6 @@ export class PerfilComponent implements AfterViewInit {
   saveProfile(): void {
     this.authService.updateProfile(this.perfil.id, this.perfilEditado).subscribe(
       response => {
-        console.log('Perfil actualizado:', response);
         this.perfil = { ...this.perfilEditado };
         this.editMode = false;
       },

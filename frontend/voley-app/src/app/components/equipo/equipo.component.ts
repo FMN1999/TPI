@@ -128,7 +128,7 @@ export class EquipoDetalleComponent implements OnInit {
 
   darDeBaja(tipo: string, miembroId: number): void {
     if (this.equipo) {
-      this.equiposService.darDeBajaMiembro(this.equipo.id, tipo, miembroId).subscribe(
+      this.equiposService.darDeBajaMiembro(tipo, miembroId).subscribe(
         response => {
           alert('Miembro dado de baja exitosamente');
           this.ngOnInit(); // Recargar la información del equipo

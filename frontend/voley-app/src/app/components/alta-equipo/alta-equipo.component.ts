@@ -187,16 +187,13 @@ export class AltaEquipoComponent implements OnInit {
         })) : []  // Si no hay jugadores, devuelve un array vacío
     };
 
-    console.log('Objeto equipoData:', equipoData); // Log de depuración
 
     this.equiposService.crearEquipo(equipoData).subscribe(
         response => {
-            console.log('Equipo creado con éxito', response);
             this.router.navigate(['/']);  // Redirige a la página principal o donde sea necesario
         },
         error => {
             this.errorMessage = error.error.error || 'Error al crear el equipo';  // Captura y muestra el mensaje de error
-            console.error('Error al crear equipo', error);
         }
     );
   }

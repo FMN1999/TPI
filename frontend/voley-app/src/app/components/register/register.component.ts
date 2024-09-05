@@ -59,11 +59,9 @@ export class RegisterComponent {
 
     this.http.post('http://127.0.0.1:8000/api/register/', userData).subscribe(
       (response: any) => {
-        console.log('Registro exitoso', response);
         this.router.navigate(['/login']).then(r => {} );
       },
       (error) => {
-        console.error('Error en el registro', error);
         this.errorMessage = error.error?.error || 'El usuario o email ya existe. Intente nuevamente con uno nuevo.';
       }
     );

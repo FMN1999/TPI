@@ -54,12 +54,10 @@ export class AltaLigaComponent implements OnInit {
       response => {
         this.successMessage = 'Liga creada con éxito';
         this.errorMessage = '';
-        console.log('Liga creada:', response);
       },
       error => {
         this.errorMessage = error.error.error || 'Error al crear la liga';
         this.successMessage = '';
-        console.error('Error al crear la liga:', error);
       }
     );
   }

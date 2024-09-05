@@ -139,7 +139,6 @@ export class TemporadaComponent implements OnInit {
     this.partidoService.eliminarPartido(partidoId).subscribe(() => {
       this.partidos = this.partidos.filter(partido => partido.id !== partidoId);
     }, error => {
-      console.error('Error al eliminar el partido:', error);
       alert('No se puede eliminar el partido porque los sets ganados no son cero.');
     });
   }

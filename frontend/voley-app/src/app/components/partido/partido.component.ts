@@ -147,7 +147,6 @@ export class PartidoComponent implements OnInit {
   agregarSet(): void {
     this.errorMessage='';
     if (this.partido) {
-      console.log(this.partido)
       if (this.nuevoSet.puntos_local < 15 && this.nuevoSet.puntos_visita < 15) {
         this.errorMessage='Los sets deben ser mayor a 15. ';
         return;
@@ -185,10 +184,8 @@ export class PartidoComponent implements OnInit {
         return;
       }
       const id_partido = this.partido.id
-      console.log(id_partido)
       this.partidoService.terminarPartido(id_partido).subscribe(
         response => {
-          console.log('Partido terminado con éxito:', response);
           window.location.reload();
         },
         error => {
@@ -199,33 +196,20 @@ export class PartidoComponent implements OnInit {
   }
 
   onFormacionChange(): void {
-    console.log('ID de la formación seleccionada:', this.nuevoCambio.id_formacion);
 
-    // Depuración de formaciones locales y visitantes
-    console.log('Formaciones Local:', this.formacionesLocal);
-    console.log('Formaciones Visit:', this.formacionesVisit);
-
-    // Combinar formaciones locales y visitantes
     const todasLasFormaciones = [...this.formacionesLocal, ...this.formacionesVisit];
-
-    // Mostrar todas las formaciones para verificar su estructura
-    console.log('Todas las formaciones:', todasLasFormaciones);
 
     // Convertir IDs a números para asegurar comparación correcta
     const formacionSeleccionada = todasLasFormaciones.find(f => {
       const formacionId = Number(f.id); // Convertir ID de la formación a número
       const cambioId = Number(this.nuevoCambio.id_formacion); // Convertir el ID del cambio a número
-      console.log('Comparando:', formacionId, 'con', cambioId); // Depuración de comparación
       return formacionId === cambioId;
     });
-
-    console.log('Formación seleccionada:', formacionSeleccionada);
 
     if (formacionSeleccionada) {
       this.equipoService.getJugadoresPorEquipo(formacionSeleccionada.id_equipo).subscribe(
         jugadores => {
           this.jugadores = jugadores;
-          console.log('Jugadores cargados:', this.jugadores);
         },
         error => console.error('Error al cargar jugadores del equipo', error)
       );
@@ -233,7 +217,6 @@ export class PartidoComponent implements OnInit {
       console.error('No se encontró la formación seleccionada.');
     }
   }
-
 
   abrirFormularioCambio(): void {
     this.nuevoCambio = {
@@ -274,7 +257,6 @@ export class PartidoComponent implements OnInit {
         () => {
           // Remueve el set de la lista en el frontend
           this.partido.sets = this.partido.sets.filter(set => set.id !== idSet);
-          console.log(`Set con ID ${idSet} eliminado`);
           window.location.reload();
         },
         error => {

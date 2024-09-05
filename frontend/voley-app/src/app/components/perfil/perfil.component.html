@@ -83,7 +83,7 @@
     </form>
   </div>
 
- <div class="estadisticas-container">
+ <div *ngIf="esJugador" class="estadisticas-container">
   <h2>Estadísticas del Jugador</h2>
   <div class="radar-chart-wrapper">
     <canvas id="estadisticasRadar"></canvas>

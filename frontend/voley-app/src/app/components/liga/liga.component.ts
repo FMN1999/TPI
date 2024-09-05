@@ -90,7 +90,6 @@ export class LigaComponent implements OnInit {
       error => {
         this.errorMessage = error.error.error || 'Error al eliminar la temporada';
         this.successMessage = '';
-        console.error('Error al eliminar la temporada:', error);
       }
     );
   }

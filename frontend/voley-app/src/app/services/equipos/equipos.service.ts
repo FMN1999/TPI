@@ -41,8 +41,8 @@ export class EquiposService {
     return this.http.get<any[]>(`${this.baseUrl}/equipos/${id_equipo}/jugadores/`);
   }
 
-  darDeBajaMiembro(equipoId: number, tipo: string, miembroId: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/equipos/${equipoId}/baja/${tipo}/${miembroId}/`, {});
+  darDeBajaMiembro(tipo: string, miembroId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/equipos/baja/${tipo}/${miembroId}/`, {});
   }
 
   getDtsLibres(): Observable<any[]> {

@@ -1,4 +1,5 @@
 from .models import *
+from django.db.models import Sum
 
 
 class UsuarioData:
@@ -231,7 +232,7 @@ class EquipoDtData:
 
     @staticmethod
     def obtener_dts_actuales_por_equipo(equipo_id):
-        return EquipoDt.objects.filter(id_equipo=equipo_id,fecha_hasta__isnull=True)
+        return EquipoDt.objects.filter(id_equipo=equipo_id, fecha_hasta__isnull=True)
 
     @staticmethod
     def es_dt_equipo(id_usuario, id_equipo):
@@ -303,13 +304,13 @@ class TemporadaData:
         return nueva_temporada
 
     @staticmethod
-    def obtener_temporada_por_id(id):
-        return Temporada.objects.get(id=id)
+    def obtener_temporada_por_id(id_controller):
+        return Temporada.objects.get(id=id_controller)
 
     @staticmethod
-    def eliminar_temporada(id):
+    def eliminar_temporada(id_controller):
         try:
-            temporada = Temporada.objects.get(id=id)
+            temporada = Temporada.objects.get(id=id_controller)
             temporada.delete()
             return True
         except Temporada.DoesNotExist:
@@ -328,11 +329,8 @@ class PosicionesData:
 
     @staticmethod
     def actualizar_posicion(posicion: Posiciones):
-        try:
-            posicion.save()
-            return True
-        except:
-            return False
+        posicion.save()
+        return True
 
     @staticmethod
     def obtener_por_equipo_temp(equipo, temporada):
@@ -343,9 +341,9 @@ class PosicionesData:
             raise
 
     @staticmethod
-    def eliminar_posicion(id):
+    def eliminar_posicion(id_controller):
         try:
-            posicion = Posiciones.objects.get(id=id)
+            posicion = Posiciones.objects.get(id=id_controller)
             if posicion.puntaje != 0:
                 return {'error': 'No se puede eliminar la posición porque el puntaje no es 0'}
             posicion.delete()
@@ -396,8 +394,8 @@ class FormacionData:
             raise
 
     @staticmethod
-    def obtener_formacion_por_id(id):
-        return Formacion.objects.get(id=id)
+    def obtener_formacion_por_id(id_controller):
+        return Formacion.objects.get(id=id_controller)
 
     @staticmethod
     def obtener_formaciones_por_equipo(equipo_id):
@@ -421,27 +419,26 @@ class JugadorData:
 
 class SetData:
     @staticmethod
-    def crear_set(set: Set):
-        set.save()
-        return set
+    def crear_set(set_controller: Set):
+        set_controller.save()
+        return set_controller
 
     @staticmethod
     def cuenta_sets(id_p):
         return Set.objects.filter(id_partido=id_p).count() + 1
 
     @staticmethod
-    def agregar_set(set: Set):
-        set.save()
-        print(set)
-        return set
+    def agregar_set(set_controller: Set):
+        set_controller.save()
+        return set_controller
 
     @staticmethod
     def obtener_sets_por_partido(id_partido):
         return Set.objects.filter(id_partido=id_partido)
-        
+
     @staticmethod
-    def obtener_set_por_id(id):
-        return Set.objects.get(id=id)
+    def obtener_set_por_id(id_controller):
+        return Set.objects.get(id=id_controller)
 
     @staticmethod
     def eliminar_set(set_obj):
@@ -469,15 +466,12 @@ class CambioData:
 class EstadisticasData:
     @staticmethod
     def crear_estadisticas(estadistica: Estadisticas):
-        print(estadistica)
         estadistica.save()
         return estadistica
 
     @staticmethod
     def obtener_estadisticas_por_jugador(id_jugador):
         try:
-            from django.db.models import Sum
-
             estadisticas = Estadisticas.objects.filter(id_jugador=id_jugador).aggregate(
                 remates_buenos=Sum('remates_buenos'),
                 remates_fallidos=Sum('remates_fallidos'),

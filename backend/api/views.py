@@ -142,8 +142,7 @@ class CrearEquipoView(View):
             'cant_victorias_visit': equipo.cant_victorias_visit,
             'campeonatos': equipo.campeonatos,
             'campeones_actuales': equipo.campeones_actuales,
-            'dts': [{'id': dt.id_dt.id, 'nombre': dt.id_dt.id_usuario.nombre, 'apellido': dt.id_dt.id_usuario.apellido} for dt
-                    in dts],
+            'dts': [{'id': dt.id_dt.id, 'nombre': dt.id_dt.id_usuario.nombre, 'apellido': dt.id_dt.id_usuario.apellido} for dt in dts],
             'asistentes': [{'id': asistente.id_asistente.id, 'nombre': asistente.id_asistente.id_usuario.nombre,
                             'apellido': asistente.id_asistente.id_usuario.apellido} for asistente in asistentes],
             'jugadores': [{'id': jugador.id_jugador.id, 'nombre': jugador.id_jugador.id_usuario.nombre,
@@ -189,9 +188,9 @@ class AgregarJugadorView(View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DarDeBajaView(View):
-    def post(self, request, equipo_id,tipo, miembro_id):
+    def post(self, request, tipo, miembro_id):
         try:
-            if EquipoController.dar_de_baja_miembro(equipo_id, tipo, miembro_id):
+            if EquipoController.dar_de_baja_miembro(tipo, miembro_id):
                 return JsonResponse({'message': 'Miembro dado de baja con éxito'}, status=200)
             else:
                 return JsonResponse({'error': 'Miembro no encontrado o tipo no válido'}, status=400)
@@ -303,9 +302,9 @@ class TemporadasPorLigaView(View):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
-    def delete(self, request, id):
+    def delete(self, request, id_front):
         try:
-            eliminado = TemporadaController.eliminar_temporada(id)
+            eliminado = TemporadaController.eliminar_temporada(id_front)
             if eliminado:
                 return JsonResponse({'message': 'Temporada eliminada con éxito'}, status=200)
             else:
@@ -373,9 +372,9 @@ class PosicionesView(View):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
-    def delete(self, request, id):
+    def delete(self, request, id_front):
         try:
-            resultado = PosicionesController.eliminar_posicion(id)
+            resultado = PosicionesController.eliminar_posicion(id_front)
             if 'error' in resultado:
                 return JsonResponse({'error': resultado['error']}, status=400)
             return JsonResponse({'message': 'Posición eliminada con éxito'}, status=200)
@@ -384,9 +383,9 @@ class PosicionesView(View):
 
 
 class TemporadaDetailView(View):
-    def get(self, request, id):
+    def get(self, request, id_front):
         try:
-            temporada = TemporadaController.obtener_temporada(id)
+            temporada = TemporadaController.obtener_temporada(id_front)
             temporada_data = {
                 'id': temporada.id,
                 'anio_desde': temporada.anio_desde,
@@ -547,7 +546,6 @@ class TerminarPartidoView(View):
     def post(self, request):
         data = request.POST
         id_partido = data.get('id_partido')
-        print(id_partido)
         resultado = PartidoController.terminar_partido(id_partido)
         if resultado:
             return JsonResponse({"message": "Partido terminado con éxito"}, status=200)
@@ -557,9 +555,7 @@ class TerminarPartidoView(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class ObtenerFormacionesView(View):
     def get(self, request, id_equipo):
-        print(id_equipo)
         formaciones = FormacionController.obtener_formaciones_equipo(id_equipo)
-        print(formaciones)
         if formaciones is not None:
             # Construimos la lista de diccionarios en la vista
             form_list = [
@@ -576,7 +572,6 @@ class ObtenerFormacionesView(View):
                 }
                 for f in formaciones
             ]
-            print(form_list)
             return JsonResponse(form_list, safe=False)
 
         return JsonResponse({"error": "No se pudieron obtener los sets"}, status=400)
@@ -651,7 +646,7 @@ class RegistrarCambioView(View):
     def get(self, request, id_partido):
         try:
             cambios = CambioController.obtener_cambios_por_partido(id_partido)
-            return JsonResponse(cambios, safe = False)
+            return JsonResponse(cambios, safe=False)
         except Exception as e:
             print(f"Error: {str(e)}")  # Se agrega un print para verificar el error
             return JsonResponse({'error': 'Error al registrar las estadísticas'}, status=500)
@@ -662,16 +657,13 @@ class EstadisticasView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            estadistica = EstadisticasController.registrar_estadisticas_controller(data)
+            EstadisticasController.registrar_estadisticas_controller(data)
             return JsonResponse({'mensaje': 'Estadísticas registradas exitosamente'})
         except ValueError as e:
             return JsonResponse({'error': str(e)}, status=404)
-        except Exception as e:
-            return JsonResponse({'error': 'Error al registrar las estadísticas'}, status=500)
 
     def get(self, request, jugador_id):
         try:
-            print(jugador_id)
             estadisticas = EstadisticasController.obtener_estadisticas_por_jugador(jugador_id)
             if estadisticas:
                 return JsonResponse(estadisticas, safe=False)
