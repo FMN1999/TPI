@@ -9,7 +9,7 @@ SECRET_KEY = 'your-secret-key'
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'tpi-voley-ff1849e1408c.herokuapp.com', 'tu-dominio-front.com']
 
 
 INSTALLED_APPS = [
@@ -96,7 +96,6 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
 ]
 
-ALLOWED_HOSTS = ['tpi-voley-ff1849e1408c.herokuapp.com', 'tu-dominio-front.com']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # Si sigues probando localmente
