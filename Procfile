@@ -1,0 +1,1 @@
+web: gunicorn voley-app.wsgi --log-file -
