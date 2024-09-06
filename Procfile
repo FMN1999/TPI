@@ -1,1 +1,1 @@
-web: gunicorn backend.api.wsgi --log-file -
+web: gunicorn TPI.backend.api.wsgi --log-file -
