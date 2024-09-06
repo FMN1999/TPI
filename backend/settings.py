@@ -96,8 +96,11 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
 ]
 
+ALLOWED_HOSTS = ['tpi-voley-ff1849e1408c.herokuapp.com', 'tu-dominio-front.com']
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
+    "http://localhost:4200",  # Si sigues probando localmente
+    "https://tu-dominio-front.com",  # Reemplaza con el dominio de tu frontend en producción
 ]
 
 LANGUAGE_CODE = 'en-us'
