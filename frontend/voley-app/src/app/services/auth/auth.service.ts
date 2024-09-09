@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   obtenerTipoUsuario(idUsuario: number): Observable<any> {
-    return this.http.get<any>(`http://127.0.0.1:8000/api/usuario/${idUsuario}/tipo/`);
+    return this.http.get<any>(`${this.apiUrl}/usuario/${idUsuario}/tipo/`);
   }
 
   guardarTipoUsuario(tipo: string): void {
