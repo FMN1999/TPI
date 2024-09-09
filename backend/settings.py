@@ -109,6 +109,6 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'backend/static/dist/voley-app/browser')]  # Ajusta la ruta aquí
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'backend/api/static/dist/voley-app/browser')]  # Ajusta la ruta aquí
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # La carpeta donde collectstatic coloca los archivos
 
