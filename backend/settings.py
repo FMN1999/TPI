@@ -1,16 +1,13 @@
 import os
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'your-secret-key'
+SECRET_KEY = 'secret-key'
 
 DEBUG = False
 
-
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'tpi-voley-ff1849e1408c.herokuapp.com', 'tu-dominio-front.com']
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,7 +43,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],  # No se necesitan plantillas en el proyecto de Django
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -96,7 +93,6 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
 ]
 
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # Si sigues probando localmente
     "https://tu-dominio-front.com",  # Reemplaza con el dominio de tu frontend en producción
@@ -113,7 +109,6 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dist/voley-app/browser')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'backend/static/dist/voley-app/browser')]  # Ajusta la ruta aquí
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # La carpeta donde collectstatic coloca los archivos
 
