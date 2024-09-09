@@ -9,7 +9,7 @@ import {Jugador} from "../../models/user.model";
 })
 export class EquiposService {
 
-  private baseUrl = 'http://127.0.0.1:8000/api';
+  private baseUrl = 'https://tpi-voley-ff1849e1408c.herokuapp.com/api';
 
   constructor(private http: HttpClient) {}
 

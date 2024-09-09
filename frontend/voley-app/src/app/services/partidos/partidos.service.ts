@@ -8,7 +8,7 @@ import {Partido} from "../../models/partido.model";
 })
 export class PartidoService {
 
-  private baseUrl = 'http://127.0.0.1:8000/api';
+  private baseUrl = 'https://tpi-voley-ff1849e1408c.herokuapp.com/api';
 
   constructor(private http: HttpClient) {}
 

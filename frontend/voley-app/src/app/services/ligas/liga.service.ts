@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LigaService {
-  private apiUrl = 'http://127.0.0.1:8000/api'; // Ajusta la URL según sea necesario
+  private apiUrl = 'https://tpi-voley-ff1849e1408c.herokuapp.com/api'; // Ajusta la URL según sea necesario
 
   constructor(private http: HttpClient) {}
 

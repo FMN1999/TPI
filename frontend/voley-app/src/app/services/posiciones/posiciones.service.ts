@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PosicionesService {
-    private apiUrl = 'http://127.0.0.1:8000/api';
+    private apiUrl = 'https://tpi-voley-ff1849e1408c.herokuapp.com/api';
 
   constructor(private http: HttpClient) {}
 
