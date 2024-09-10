@@ -1,4 +1,4 @@
-# Monitoreo de rendimientos de equipos de Voley
+# Sistema de ligas de equipos de Voley
 
 La idea del presente proyecto se basa en el surgimiento de ligas de voley de equipos más pequeños
 a los habituales en la región, donde muchos chicos y chicas concurren, y buscan mejorar sus
@@ -10,27 +10,22 @@ práctica
 
 El proyecto consiste en una aplicación web orientada a ligas de Voley que permita no solo
 cargar los partidos de las temporada si no, cargar estadísticas de jugadores y de equipos.
-Se crearán 4 tipos de usuarios: Administradores, Directores Técnicos, Asistentes (estos
+Se crearán 3 tipos de usuarios: Directores Técnicos, Asistentes (estos
 últimos encargados de actualizar entre otras cosas, las estadísticas de los Jugadores) y
 Jugadores.
-Los Administradores se encargarán de dar de alta los equipos, los perfiles de los técnicos y
+Los Asistentes se encargarán de dar de alta los equipos, los perfiles de los técnicos y
 actualizar los cambios de todos los usuarios entre los equipos en una temporada de una
 liga. Una Liga consiste de un torneo (puede ser dividido por categoría o edad de jugadores)
 que tiene distintas temporadas generalmente dividida por el año en que transcurre (por
 ejemplo: temporada 2018, 2019, etc).
-Los Usuarios Administradores cargarán los resultados de los partidos que se podrán ver en
-una página donde se calcularán las posiciones cada vez que estos sean cargados. Esto
-permitirá calcular las estadísticas del equipo (Por ejemplo promedios de partidos ganados,
-perdidos, puntos hechos, partidos de local ganados, etc).
+Tanto los Asistentes como los Directores Técnicos se encargarán de los resultados de los partidos que se podrán ver en
+una página donde se calcularán las posiciones cada vez que estos sean cargados.
 Los Usuarios Asistentes podrán cargar los equipos puestos en cancha en los sets de cada
-partido y los cambios hechos lo que permitirá mostrar estadísticas para el Equipo como qué
-formaciones tuvieron mejores rendimientos en los sets. Al mismo tiempo, podrán agregar
+partido y los cambios hechos. Al mismo tiempo, podrán agregar
 estadísticas de los jugadores como por ejemplo: cantidad de remates fallidos y completos,
 remates cruzados o derechos, defensas, bloqueos, saques, etc. Esto permitirá mostrar los
 puntos fuertes del jugador, así como también los puntos a mejorar o hacia qué tipo de juego
 tiende (ofensivo o defensivo).
-Adicionalmente, tanto los equipos (a través de los Asistentes) como los propios jugadores
-van a poder compartir fotos en una galería para compartir con los usuarios.
 
 ## Modelo de Dominio
 
